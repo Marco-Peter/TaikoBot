@@ -31,5 +31,13 @@ class DatabaseSeeder extends Seeder
             'name' => 'Intensive Group',
             'description' => 'Intensive group, which meets every Tuesday',
         ]);
+
+        foreach(\App\Models\User::all() as $u) {
+            $u->teams()->attach(\App\Models\Team::first());
+        }
+
+        foreach(\App\Models\User::find([1, 2, 3]) as $u) {
+            $u->teams()->attach(\App\Models\Team::find([2]));
+        }
     }
 }
