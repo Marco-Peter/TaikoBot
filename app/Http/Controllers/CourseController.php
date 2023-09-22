@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Team;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -13,7 +15,7 @@ class CourseController extends Controller
     public function index()
     {
         return view('management.list-courses', [
-            'Courses' => Course::get(),
+            'courses' => Course::get(),
         ]);
     }
 
@@ -44,9 +46,14 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Course $course)
+    public function edit(Course $course): View
     {
-        //
+        //$this->authorize('update', $course);
+
+        return view('management.edit-course', [
+            'course' => $course,
+            'teams' => Team::get(),
+        ]);
     }
 
     /**
