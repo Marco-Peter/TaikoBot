@@ -9,6 +9,13 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    protected function teams_not_selected(Course $course)
+    {
+        return Team::whereNotIn('id', function ($query) use ($course) {
+            $query->select('team_id')->from('course_team')->where('course_id', '=', $course->id);
+        })->get();
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -52,7 +59,8 @@ class CourseController extends Controller
 
         return view('management.edit-course', [
             'course' => $course,
-            'teams' => Team::get(),
+            'teams' => Team::all(),
+            'teams_not_selected' => $this->teams_not_selected($course),
         ]);
     }
 

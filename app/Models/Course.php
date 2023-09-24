@@ -11,9 +11,20 @@ class Course extends Model
 {
     use HasFactory;
 
+    /**
+     * Return all teams to which this course is available
+     */
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class);
+        return $this->belongsToMany(Team::class)->withPivot('signed_in');
+    }
+
+    public function teams_signed_in(): BelongsToMany {
+        return $this->belongsToMany(Team::class)->wherePivot('signed_in', 1);
+    }
+
+    public function teams_not_signed_in(): BelongsToMany {
+        return $this->belongsToMany(Team::class)->wherePivot('signed_in', 0);
     }
 
     public function lessons(): HasMany
