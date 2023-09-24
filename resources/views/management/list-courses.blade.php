@@ -36,6 +36,7 @@
                         @endforeach
                     </x-slot>
                 </x-table>
+                <a href="{{ route('courses.create') }}">Create Course</a>
             </div>
         </div>
     </div>

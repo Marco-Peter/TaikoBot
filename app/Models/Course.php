@@ -11,6 +11,13 @@ class Course extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'fee',
+        'capacity',
+    ];
+
     /**
      * Return all teams to which this course is available
      */

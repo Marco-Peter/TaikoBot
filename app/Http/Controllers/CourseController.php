@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Team;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -29,17 +30,27 @@ class CourseController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        //
+        return view('management.create-course');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        //$this->authorize('update', $course);
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string',
+            'fee' => 'integer|min:0',
+            'capacity' => 'integer|min:1',
+        ]);
+        $course = Course::create($validated);
+
+        return redirect(route('courses.edit', $course));
     }
 
     /**
@@ -67,16 +78,43 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Course $course)
+    public function update(Request $request, Course $course): RedirectResponse
     {
-        //
+        //$this->authorize('update', $course);
+
+        if ($request["changed_item"]) {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'string',
+                'fee' => 'integer|min:0',
+                'capacity' => 'integer|min:1',
+            ]);
+            $course->update($validated);
+        } elseif ($request["remove_team"]) {
+            $course->teams()->detach($request["remove_team"]);
+        } elseif ($request["autosign_off"]) {
+            $team = $course->teams()->where('team_id', '=', $request["autosign_off"])->first();
+            $team->pivot->signed_in = 0;
+            $team->pivot->save();
+        } elseif ($request["autosign_on"]) {
+            $team = $course->teams()->where('team_id', '=', $request["autosign_on"])->first();
+            $team->pivot->signed_in = 1;
+            $team->pivot->save();
+        } elseif ($request["add_team"]) {
+            $course->teams()->attach($request["add_team"]);
+        }
+
+        return back();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Course $course)
+    public function destroy(Course $course): RedirectResponse
     {
-        //
+        //$this->authorize('update', $course);
+
+        $course->delete();
+        return redirect(route('courses.index'));
     }
 }
