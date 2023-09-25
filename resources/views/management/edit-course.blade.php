@@ -120,8 +120,8 @@
                         <tbody>
                             @foreach ($course->lessons as $lesson)
                             <tr>
-                                <td>{{ $lesson->start }}</td>
-                                <td>{{ $lesson->finish }}</td>
+                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->start }}</a></td>
+                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->finish }}</a></td>
                             </tr>
                             @endforeach
                         </tbody>

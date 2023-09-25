@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\lesson;
+use App\Models\Lesson;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class LessonController extends Controller
@@ -34,7 +35,7 @@ class LessonController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(lesson $lesson)
+    public function show(Lesson $lesson)
     {
         //
     }
@@ -42,15 +43,17 @@ class LessonController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(lesson $lesson)
+    public function edit(Lesson $lesson): View
     {
-        //
+        return view('management.edit-lesson', [
+            'lesson' => $lesson,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, lesson $lesson)
+    public function update(Request $request, Lesson $lesson)
     {
         //
     }
@@ -58,7 +61,7 @@ class LessonController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(lesson $lesson)
+    public function destroy(Lesson $lesson)
     {
         //
     }

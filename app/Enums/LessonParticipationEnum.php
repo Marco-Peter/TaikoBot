@@ -5,17 +5,17 @@ namespace App\Enums;
 enum LessonParticipationEnum: string
 {
     /**
-     * Leads the lesson
+     * Signed out for the lesson manually
      */
-    case TEACHER = 'teacher';
+    case SIGNED_OUT = 'signed_out';
     /**
      * Signed in for the lesson manually
      */
     case SIGNED_IN = 'signed_in';
     /**
-     * Signed out for the lesson manually
+     * Leads the lesson
      */
-    case SIGNED_OUT = 'signed_out';
+    case TEACHER = 'teacher';
     /**
      * Showed up late to the lesson
      */

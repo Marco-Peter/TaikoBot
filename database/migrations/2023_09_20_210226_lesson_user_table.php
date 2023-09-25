@@ -18,7 +18,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Lesson::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->enum('participation', LessonParticipationEnum::values());
+            $table->enum('participation', LessonParticipationEnum::values())->default(LessonParticipationEnum::SIGNED_OUT->value);
+            $table->timestamps();
         });
     }
 

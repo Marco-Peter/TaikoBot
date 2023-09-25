@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
 use App\Models\Team;
 use Illuminate\Contracts\View\View;
@@ -91,16 +92,47 @@ class CourseController extends Controller
             ]);
             $course->update($validated);
         } elseif ($request["remove_team"]) {
+            $team_to_remove = Team::find($request["remove_team"]);
+            $users_to_remove = $team_to_remove->users;
+            $lessons = $course->lessons;
+
+            foreach($lessons as $lesson) {
+                foreach($users_to_remove as $user_to_remove) {
+                    $lesson->participants()->detach($user_to_remove->id);
+                }
+            }
             $course->teams()->detach($request["remove_team"]);
         } elseif ($request["autosign_off"]) {
             $team = $course->teams()->where('team_id', '=', $request["autosign_off"])->first();
+            $lessons = $course->lessons;
+            foreach($lessons as $lesson) {
+                foreach($lesson->participants as $participant) {
+                    $participant->pivot->participation = LessonParticipationEnum::SIGNED_OUT->value;
+                    $participant->pivot->save();
+                }
+            }
             $team->pivot->signed_in = 0;
             $team->pivot->save();
         } elseif ($request["autosign_on"]) {
             $team = $course->teams()->where('team_id', '=', $request["autosign_on"])->first();
+            $lessons = $course->lessons;
+            foreach($lessons as $lesson) {
+                foreach($lesson->participants as $participant) {
+                    $participant->pivot->participation = LessonParticipationEnum::SIGNED_IN->value;
+                    $participant->pivot->save();
+                }
+            }
             $team->pivot->signed_in = 1;
             $team->pivot->save();
         } elseif ($request["add_team"]) {
+            $new_team = Team::find($request["add_team"]);
+            $new_users = $new_team->users;
+            $lessons = $course->lessons;
+            foreach ($lessons as $lesson) {
+                foreach($new_users as $new_user) {
+                    $lesson->participants()->attach($new_user->id);
+                }
+            }
             $course->teams()->attach($request["add_team"]);
         }
 

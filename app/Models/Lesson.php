@@ -22,7 +22,7 @@ class Lesson extends Model
         return (new Carbon($value))->format('Y-m-d H:i');
     }
 
-    public function users(): BelongsToMany
+    public function participants(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withTimestamps()->withPivot('participation');
     }
