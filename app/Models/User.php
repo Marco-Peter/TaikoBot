@@ -64,9 +64,9 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function teams()
+    public function team()
     {
-        return $this->belongsToMany(Team::class)->withTimestamps();
+        return $this->belongsTo(Team::class);
     }
 
     public function lessons()

@@ -33,9 +33,7 @@
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->last_name }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->email }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->role }}</a></td>
-                                @foreach ($user->teams as $team)
-                                    <td><a href="{{ route('users.edit', $user) }}">{{ $team->name }}</a></td>
-                                @endforeach
+                                <td><a href="{{ route('users.edit', $user) }}">{{ $user->team->name }}</a></td>
                             </tr>
                         @endforeach
 

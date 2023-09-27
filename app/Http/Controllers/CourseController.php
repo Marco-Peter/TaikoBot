@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -84,56 +86,15 @@ class CourseController extends Controller
         //$this->authorize('update', $course);
 
         if ($request["changed_item"]) {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'description' => 'string',
-                'fee' => 'integer|min:0',
-                'capacity' => 'integer|min:1',
-            ]);
-            $course->update($validated);
+            $this->change_item($request, $course);
         } elseif ($request["remove_team"]) {
-            $team_to_remove = Team::find($request["remove_team"]);
-            $users_to_remove = $team_to_remove->users;
-            $lessons = $course->lessons;
-
-            foreach($lessons as $lesson) {
-                foreach($users_to_remove as $user_to_remove) {
-                    $lesson->participants()->detach($user_to_remove->id);
-                }
-            }
-            $course->teams()->detach($request["remove_team"]);
+            $this->remove_team($request, $course);
         } elseif ($request["autosign_off"]) {
-            $team = $course->teams()->where('team_id', '=', $request["autosign_off"])->first();
-            $lessons = $course->lessons;
-            foreach($lessons as $lesson) {
-                foreach($lesson->participants as $participant) {
-                    $participant->pivot->participation = LessonParticipationEnum::SIGNED_OUT->value;
-                    $participant->pivot->save();
-                }
-            }
-            $team->pivot->signed_in = 0;
-            $team->pivot->save();
+            $this->autosign_off($request, $course);
         } elseif ($request["autosign_on"]) {
-            $team = $course->teams()->where('team_id', '=', $request["autosign_on"])->first();
-            $lessons = $course->lessons;
-            foreach($lessons as $lesson) {
-                foreach($lesson->participants as $participant) {
-                    $participant->pivot->participation = LessonParticipationEnum::SIGNED_IN->value;
-                    $participant->pivot->save();
-                }
-            }
-            $team->pivot->signed_in = 1;
-            $team->pivot->save();
+            $this->autosign_on($request, $course);
         } elseif ($request["add_team"]) {
-            $new_team = Team::find($request["add_team"]);
-            $new_users = $new_team->users;
-            $lessons = $course->lessons;
-            foreach ($lessons as $lesson) {
-                foreach($new_users as $new_user) {
-                    $lesson->participants()->attach($new_user->id);
-                }
-            }
-            $course->teams()->attach($request["add_team"]);
+            $this->add_team($request, $course);
         }
 
         return back();
@@ -148,5 +109,80 @@ class CourseController extends Controller
 
         $course->delete();
         return redirect(route('courses.index'));
+    }
+
+    private function change_item(Request $request, Course $course): void
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string',
+            'fee' => 'integer|min:0',
+            'capacity' => 'integer|min:1',
+        ]);
+        $course->update($validated);
+    }
+
+    private function add_team(Request $request, Course $course): void
+    {
+        $new_users = $this->get_changing_users(Team::find($request["add_team"]), $course);
+        $lessons = $course->lessons;
+        foreach ($lessons as $lesson) {
+            foreach ($new_users as $new_user) {
+                $lesson->participants()->attach($new_user->id);
+            }
+        }
+        $course->teams()->attach($request["add_team"]);
+    }
+
+    private function remove_team(Request $request, Course $course): void
+    {
+        $course->teams()->detach($request["remove_team"]);
+        $users_to_remove = $this->get_changing_users(Team::find($request["remove_team"]), $course);
+        $lessons = $course->lessons;
+        foreach ($lessons as $lesson) {
+            foreach ($users_to_remove as $user_to_remove) {
+                $lesson->participants()->detach($user_to_remove->id);
+            }
+        }
+    }
+
+    private function get_changing_users(Team $changing_team, Course $course): Collection
+    {
+        $changing_users = $changing_team->users;
+        $remaining_teams = $course->load('teams')->teams;
+        foreach($remaining_teams as $remaining_team) {
+            $changing_users = $changing_users->diff($remaining_team->users);
+        }
+        return $changing_users;
+    }
+
+    private function autosign_on(Request $request, Course $course): void
+    {
+        $team = $course->teams()->where('team_id', '=', $request["autosign_on"])->first();
+        $lessons = $course->lessons;
+        foreach ($lessons as $lesson) {
+            $participants = $lesson->participants->where('team_id', $team->id);
+            foreach ($participants as $participant) {
+                $participant->pivot->participation = LessonParticipationEnum::SIGNED_IN->value;
+                $participant->pivot->save();
+            }
+        }
+        $team->pivot->signed_in = 1;
+        $team->pivot->save();
+    }
+
+    private function autosign_off(Request $request, Course $course)
+    {
+        $team = $course->teams()->where('team_id', '=', $request["autosign_off"])->first();
+        $lessons = $course->lessons;
+        foreach ($lessons as $lesson) {
+            $participants = $lesson->participants->where('team_id', $team->id);
+            foreach ($participants as $participant) {
+                $participant->pivot->participation = LessonParticipationEnum::SIGNED_OUT->value;
+                $participant->pivot->save();
+            }
+        }
+        $team->pivot->signed_in = 0;
+        $team->pivot->save();
     }
 }

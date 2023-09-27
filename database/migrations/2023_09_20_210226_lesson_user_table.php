@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->enum('participation', LessonParticipationEnum::values())->default(LessonParticipationEnum::SIGNED_OUT->value);
             $table->timestamps();
+            $table->unique(['lesson_id', 'user_id']);
         });
     }
 

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,15 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory(10)->create();
-
-        \App\Models\User::factory()->create([
-            'first_name' => 'Test',
-            'last_name' => 'User',
-            'email' => 'test@example.com',
-            'role' => 'admin',
-        ]);
-
         DB::table('teams')->insert([
             'name' => 'Basic Group',
             'description' => 'Basic group, which meets every Thursday',
@@ -32,12 +25,21 @@ class DatabaseSeeder extends Seeder
             'description' => 'Intensive group, which meets every Tuesday',
         ]);
 
-        foreach(\App\Models\User::all() as $u) {
-            $u->teams()->attach(\App\Models\Team::first());
-        }
+        User::factory(10)->create();
 
-        foreach(\App\Models\User::find([1, 2, 3]) as $u) {
-            $u->teams()->attach(\App\Models\Team::find([2]));
+        User::factory(3)->create([
+            'team_id' => 2,
+        ]);
+
+        User::factory()->create([
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'email' => 'test@example.com',
+            'role' => 'admin',
+        ]);
+
+        foreach(\App\Models\User::all() as $u) {
+            $u->team = Team::first();
         }
     }
 }
