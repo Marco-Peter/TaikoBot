@@ -46,14 +46,19 @@
                                 <td class="text-gray-800"><input type="text" name="first_name"></td>
                                 <td class="text-gray-800"><input type="text" name="last_name"></td>
                                 <td class="text-gray-800"><input type="email" name="email"></td>
-                                <td rowspan="3"><input type="radio" name="role" value="student"
-                                        id="student"><label for="student">Student</label>
-                                    <p>
-                                        <input type="radio" name="role" value="teacher" id="teacher"><label
-                                            for="teacher">Teacher</label>
-                                    <p>
-                                        <input type="radio" name="role" value="admin" id="admin"><label
-                                            for="admin">Admin</label>
+                                <td class="text-gray-800">
+                                    <select name="role" id="role">
+                                        <option value="student" selected>Student</option>
+                                        <option value="teacher">Teacher</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </td>
+                                <td class="text-gray-800">
+                                    <select name="team_id" id="team">
+                                        @foreach ($teams as $team)
+                                            <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </td>
                             </tr>
                         </form>

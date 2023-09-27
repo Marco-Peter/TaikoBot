@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -17,6 +18,7 @@ class UserController extends Controller
     {
         return view('management.list-users', [
             'users' => User::get(),
+            'teams' => Team::get(),
         ]);
     }
 
@@ -39,6 +41,7 @@ class UserController extends Controller
             'last_name' => 'required',
             'email' => 'required',
             'role' => 'required',
+            'team_id' => 'required',
         ]);
 
         $validated['password'] = Hash::make('password');
