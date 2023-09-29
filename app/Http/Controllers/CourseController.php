@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
 use App\Models\Team;
-use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -127,9 +126,7 @@ class CourseController extends Controller
         $new_users = $this->get_changing_users(Team::find($request["add_team"]), $course);
         $lessons = $course->lessons;
         foreach ($lessons as $lesson) {
-            foreach ($new_users as $new_user) {
-                $lesson->participants()->attach($new_user->id);
-            }
+            $lesson->participants()->attach($new_users->modelKeys());
         }
         $course->teams()->attach($request["add_team"]);
     }
@@ -140,9 +137,7 @@ class CourseController extends Controller
         $users_to_remove = $this->get_changing_users(Team::find($request["remove_team"]), $course);
         $lessons = $course->lessons;
         foreach ($lessons as $lesson) {
-            foreach ($users_to_remove as $user_to_remove) {
-                $lesson->participants()->detach($user_to_remove->id);
-            }
+            $lesson->participants()->detach($users_to_remove->modelKeys());
         }
     }
 

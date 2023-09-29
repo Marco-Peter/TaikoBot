@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LessonParticipationEnum;
+use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class LessonController extends Controller
@@ -27,9 +31,23 @@ class LessonController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'start' => 'required',
+            'finish' => 'required',
+            'course_id' => 'required|integer',
+        ]);
+
+        $lesson = Lesson::create($validated);
+        $teams_signed_in = Course::find($validated['course_id'])->teams()->wherePivot('signed_in', 1)->get()->modelKeys();
+        $teams_signed_out = Course::find($validated['course_id'])->teams()->wherePivot('signed_in', 0)->get()->modelKeys();
+        $users_signed_in = User::wherein('team_id', $teams_signed_in)->get()->modelKeys();
+        $users_signed_out = User::wherein('team_id', $teams_signed_out)->get()->modelKeys();
+
+        $lesson->participants()->attach($users_signed_in, ['participation' => LessonParticipationEnum::SIGNED_IN->value]);
+        $lesson->participants()->attach($users_signed_out, ['participation' => LessonParticipationEnum::SIGNED_OUT->value]);
+        return back();
     }
 
     /**
@@ -53,9 +71,15 @@ class LessonController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Lesson $lesson)
+    public function update(Request $request, Lesson $lesson): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'start' => 'required|date',
+            'finish' => 'required|date',
+        ]);
+
+        $lesson->update($validated);
+        return redirect(route('courses.edit', $lesson->course));
     }
 
     /**
@@ -63,6 +87,7 @@ class LessonController extends Controller
      */
     public function destroy(Lesson $lesson)
     {
-        //
+        $lesson->delete();
+        return back();
     }
 }

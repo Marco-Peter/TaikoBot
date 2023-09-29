@@ -36,6 +36,7 @@
                         <thead>
                             <th>First Name</th>
                             <th>Last Name</th>
+                            <th>Team</th>
                             <th>Status</th>
                         </thead>
                         <tbody>
@@ -48,7 +49,10 @@
                                             href="{{ route('users.edit', $participant) }}">{{ $participant->last_name }}</a>
                                     </td>
                                     <td><a
-                                            href="{{ route('users.edit', $participant) }}">{{ $participant->participation }}</a>
+                                            href="{{ route('users.edit', $participant) }}">{{ $participant->team->name }}</a>
+                                    </td>
+                                    <td><a
+                                            href="{{ route('users.edit', $participant) }}">{{ $participant->pivot->participation }}</a>
                                     </td>
                                 </tr>
                             @endforeach

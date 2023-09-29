@@ -108,26 +108,49 @@
                 </div>
             </div>
         </div>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <table>
-                        <thead>
-                            <th>Start</th>
-                            <th>End</th>
-                        </thead>
-                        <tbody>
-                            @foreach ($course->lessons as $lesson)
+    </form>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div
+                class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <table>
+                    <thead>
+                        <th></th>
+                        <th>Start</th>
+                        <th>End</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($course->lessons as $lesson)
+                            <form action="{{ route('lessons.destroy', $lesson) }}" method="post">
+                                @csrf
+                                @method('delete')
+                                <tr>
+                                    <td><button type="submit" name="remove_team"
+                                            value="{{ $team->id }}">Remove</button></td>
+                                    <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->start }}</a></td>
+                                    <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->finish }}</a></td>
+                                </tr>
+                            </form>
+                        @endforeach
+                        <form method="POST" action="{{ route('lessons.store') }}">
+                            @csrf
                             <tr>
-                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->start }}</a></td>
-                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->finish }}</a></td>
+                                <td><button type="submit" name="course_id" value="{{ $course->id }}"
+                                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Add</button>
+                                </td>
+                                <td><x-input id="start" name="start" type="datetime-local"
+                                        class="mt-1 block w-full" required />
+                                    <x-input-error for="start" class="mt-2" />
+                                </td>
+                                <td><x-input id="finish" name="finish" type="datetime-local"
+                                        class="mt-1 block w-full" required />
+                                    <x-input-error for="finish" class="mt-2" />
+                                </td>
                             </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                        </form>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </form>
+    </div>
 </x-app-layout>

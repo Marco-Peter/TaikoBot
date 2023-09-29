@@ -12,6 +12,12 @@ class Lesson extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'start',
+        'finish',
+        'course_id',
+    ];
+
     public function getStartAttribute($value)
     {
         return (new Carbon($value))->format('Y-m-d H:i');
