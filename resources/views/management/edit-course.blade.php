@@ -25,10 +25,14 @@
                         <x-input-error for="description" class="mt-2" />
                     </div>
                     <div class="col-span-6 sm:col-span-4">
-                        <x-label for="fee" value="Fee" />
-                        <x-input id="fee" name="fee" type="integer" class="mt-1 block w-full"
-                            value="{{ $course->fee }}" />
-                        <x-input-error for="fee" class="mt-2" />
+                        <h1>Fees</h1>
+                        @foreach (App\Models\WageGroup::all() as $wage_group)
+                            <x-label for="{{ $wage_group->name }}" value="{{ $wage_group->name }}" />
+                            <x-input id="fee" name="{{ $wage_group->name }}" type="integer"
+                                class="mt-1 block w-full"
+                                value="{{ $course->fees->find($wage_group->id)->pivot->fee }}" />
+                            <x-input-error for="fee" class="mt-2" />
+                        @endforeach
                     </div>
                     <div class="col-span-6 sm:col-span-4">
                         <x-label for="capacity" value="Capacity" />
@@ -36,7 +40,7 @@
                             value="{{ $course->capacity }}" />
                         <x-input-error for="capacity" class="mt-2" />
                     </div>
-                    <button name="changed_item" value="field" type="submit"
+                    <button type="submit"
                         class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Change</button>
                 </div>
             </div>
@@ -45,66 +49,17 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
                     class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <h1>Teams</h1>
-                    <table class="w-full">
-                        <caption>Automatically signed in</caption>
-                        <tbody>
-                            @foreach ($course->teams_signed_in as $team)
-                                <tr>
-                                    <td><button name="remove_team" value="{{ $team->id }}" type="submit"
-                                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Remove</button>
-                                    </td>
-                                    <td><button name="autosign_off" value="{{ $team->id }}", type="submit"
-                                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Manual
-                                            Sign-In</button></td>
-                                    <td>{{ $team->name }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <table class="w-full">
-                        <caption>Sign in manually</caption>
-                        <tbody>
-                            @foreach ($course->teams_not_signed_in as $team)
-                                <tr>
-                                    <td><button name="remove_team" value="{{ $team->id }}" type="submit"
-                                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Remove</button>
-                                    </td>
-                                    <td><button name="autosign_on" value="{{ $team->id }}" type="submit"
-                                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Auto
-                                            Sign-In</button></td>
-                                    <td>{{ $team->name }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <table class="w-full">
-                        <caption>Available teams</caption>
-                        <tbody>
-                            @foreach ($teams_not_selected as $team)
-                                <tr>
-                                    <td><button name="add_team" value="{{ $team->id }}" type="submit"
-                                            class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Add</button>
-                                    </td>
-                                    <td>{{ $team->name }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <fieldset>
+                        <legend>Team Availability</legend>
+                        @foreach (App\Models\Team::all() as $team)
+                            <div class="block">
+                                <input type="checkbox" id="team[{{ $team->name }}]" name="teams[{{ $team->id }}]"
+                                    value="1"
+                                    {{ old('teams', $course->teams->contains($team)) ? "checked" : "" }} />
+                                <label for="team[{{ $team->name }}]">{{ $team->name }}</label>
+                            </div>
+                        @endforeach
+                    </fieldset>
                 </div>
             </div>
         </div>
@@ -148,6 +103,34 @@
                                 </td>
                             </tr>
                         </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div
+                class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <table>
+                    <thead>
+                        <th></th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($course->participants as $participant)
+                        <form action="{{ route('courses.add-participant', $participant) }}" method="post">
+                            @csrf
+                            @method('delete')
+                            <tr>
+                                <td><button type="submit" name="remove_participant"
+                                        value="{{ $team->id }}">Remove</button></td>
+                                <td><a href="{{ route('courses.add-participant', $participant) }}">{{ $participant->first_name }}</a></td>
+                                <td><a href="{{ route('courses.add-participant', $participant) }}">{{ $participant->last_name }}</a></td>
+                            </tr>
+                        </form>
+                    @endforeach
                     </tbody>
                 </table>
             </div>

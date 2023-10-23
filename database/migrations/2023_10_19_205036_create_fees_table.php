@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Course;
+use App\Models\WageGroup;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,12 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('courses', function (Blueprint $table) {
+        Schema::create('fees', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
-            $table->text('description');
-            $table->unsignedInteger('capacity');
+            $table->foreignIdFor(Course::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(WageGroup::class)->constrained()->cascadeOnDelete();
+            $table->unsignedInteger('fee');
             $table->timestamps();
+            $table->unique(['course_id', 'wage_group_id']);
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('courses');
+        Schema::dropIfExists('fees');
     }
 };

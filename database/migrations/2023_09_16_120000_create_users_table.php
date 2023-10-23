@@ -2,6 +2,7 @@
 
 use App\Enums\UserRoleEnum;
 use App\Models\Team;
+use App\Models\WageGroup;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->enum('role', UserRoleEnum::values());
             $table->integer('karma')->nullable();
             $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(WageGroup::class)->constrained()->restrictOnDelete();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();

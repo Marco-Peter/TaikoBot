@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
 use App\Models\Team;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -47,10 +45,18 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'string',
-            'fee' => 'integer|min:0',
+            'fees.*' => 'integer|min:0',
             'capacity' => 'integer|min:1',
         ]);
+
+        $offset = array_search("fees", array_keys($validated), true);
+        $fees = array_splice($validated, $offset, 1)["fees"];
+        array_walk($fees, function (&$value) {
+            $value = ["fee" => $value];
+        });
+
         $course = Course::create($validated);
+        $course->fees()->attach($fees);
 
         return redirect(route('courses.edit', $course));
     }
@@ -83,18 +89,20 @@ class CourseController extends Controller
     public function update(Request $request, Course $course): RedirectResponse
     {
         //$this->authorize('update', $course);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string',
+            'fee' => 'integer|min:0',
+            'capacity' => 'integer|min:1',
+            'teams.*' => 'boolean',
+        ]);
 
-        if ($request["changed_item"]) {
-            $this->change_item($request, $course);
-        } elseif ($request["remove_team"]) {
-            $this->remove_team($request, $course);
-        } elseif ($request["autosign_off"]) {
-            $this->autosign_off($request, $course);
-        } elseif ($request["autosign_on"]) {
-            $this->autosign_on($request, $course);
-        } elseif ($request["add_team"]) {
-            $this->add_team($request, $course);
-        }
+        $offset = array_search("teams", array_keys($validated), true);
+        $teams = array_keys(array_splice($validated, $offset, 1)["teams"]);
+
+        dd($request, $validated, $teams);
+        $course->update($validated);
+        $course->teams()->attach($teams);
 
         return back();
     }
@@ -110,74 +118,15 @@ class CourseController extends Controller
         return redirect(route('courses.index'));
     }
 
-    private function change_item(Request $request, Course $course): void
+    public function add_participant(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'string',
-            'fee' => 'integer|min:0',
-            'capacity' => 'integer|min:1',
-        ]);
-        $course->update($validated);
+        dd($request);
+        return back();
     }
 
-    private function add_team(Request $request, Course $course): void
+    public function remove_participant(Request $request): RedirectResponse
     {
-        $new_users = $this->get_changing_users(Team::find($request["add_team"]), $course);
-        $lessons = $course->lessons;
-        foreach ($lessons as $lesson) {
-            $lesson->participants()->attach($new_users->modelKeys());
-        }
-        $course->teams()->attach($request["add_team"]);
-    }
-
-    private function remove_team(Request $request, Course $course): void
-    {
-        $course->teams()->detach($request["remove_team"]);
-        $users_to_remove = $this->get_changing_users(Team::find($request["remove_team"]), $course);
-        $lessons = $course->lessons;
-        foreach ($lessons as $lesson) {
-            $lesson->participants()->detach($users_to_remove->modelKeys());
-        }
-    }
-
-    private function get_changing_users(Team $changing_team, Course $course): Collection
-    {
-        $changing_users = $changing_team->users;
-        $remaining_teams = $course->load('teams')->teams;
-        foreach($remaining_teams as $remaining_team) {
-            $changing_users = $changing_users->diff($remaining_team->users);
-        }
-        return $changing_users;
-    }
-
-    private function autosign_on(Request $request, Course $course): void
-    {
-        $team = $course->teams()->where('team_id', '=', $request["autosign_on"])->first();
-        $lessons = $course->lessons;
-        foreach ($lessons as $lesson) {
-            $participants = $lesson->participants->where('team_id', $team->id);
-            foreach ($participants as $participant) {
-                $participant->pivot->participation = LessonParticipationEnum::SIGNED_IN->value;
-                $participant->pivot->save();
-            }
-        }
-        $team->pivot->signed_in = 1;
-        $team->pivot->save();
-    }
-
-    private function autosign_off(Request $request, Course $course)
-    {
-        $team = $course->teams()->where('team_id', '=', $request["autosign_off"])->first();
-        $lessons = $course->lessons;
-        foreach ($lessons as $lesson) {
-            $participants = $lesson->participants->where('team_id', $team->id);
-            foreach ($participants as $participant) {
-                $participant->pivot->participation = LessonParticipationEnum::SIGNED_OUT->value;
-                $participant->pivot->save();
-            }
-        }
-        $team->pivot->signed_in = 0;
-        $team->pivot->save();
+        dd($request);
+        return back();
     }
 }

@@ -19,12 +19,15 @@
                     <p>
                         <textarea class="text-gray-800" name="description" id="description" cols="30" rows="10">{{ old('description') }}</textarea>
                     <p>
-                        <label for="fee">Fee</label>
-                    <p>
-                        <input class="text-gray-800" type="text" name="fee" id="fee"
-                            value="{{ old('fee') }}">
-                    <p>
-                        <label for="capacity">Capacity</label>
+                    <h1>Fees</h1>
+                    @foreach (App\Models\WageGroup::all() as $wage_group)
+                        <label for="fee[{{ $wage_group->id }}]">{{ $wage_group->name }}</label>
+                        <p>
+                            <input class="text-gray-800" type="text" name="fees[{{ $wage_group->id }}]"
+                                id="fee[{{ $wage_group->id }}]" value="{{ old('fees[' . $wage_group->id . ']') }}">
+                        <p>
+                    @endforeach
+                    <label for="capacity">Capacity</label>
                     <p>
                         <input class="text-gray-800" type="text" name="capacity" id="capacity"
                             value="{{ old('capacity') }}">

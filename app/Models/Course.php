@@ -23,19 +23,27 @@ class Course extends Model
      */
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class)->withPivot('signed_in');
+        return $this->belongsToMany(Team::class);
     }
 
-    public function teams_signed_in(): BelongsToMany {
-        return $this->belongsToMany(Team::class)->wherePivot('signed_in', 1);
-    }
-
-    public function teams_not_signed_in(): BelongsToMany {
-        return $this->belongsToMany(Team::class)->wherePivot('signed_in', 0);
+    /* Contains courses, which can be used for compensation */
+    public function compensation(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'compensations', 'original_id', 'compensation_id');
     }
 
     public function lessons(): HasMany
     {
         return $this->hasMany(Lesson::class);
+    }
+
+    public function fees(): BelongsToMany
+    {
+        return $this->belongsToMany(WageGroup::class, 'fees')->withPivot('fee');
+    }
+
+    public function participants(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->withPivot('paid');
     }
 }

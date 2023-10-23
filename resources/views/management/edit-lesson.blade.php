@@ -24,7 +24,8 @@
                         <x-input-error for="finish" class="mt-2" />
                     </div>
                     <button name="changed_item" value="field" type="submit"
-                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Change</button>
+                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                        Change</button>
                 </div>
             </div>
         </div>
@@ -51,13 +52,24 @@
                                     <td><a
                                             href="{{ route('users.edit', $participant) }}">{{ $participant->team->name }}</a>
                                     </td>
-                                    <td><a
-                                            href="{{ route('users.edit', $participant) }}">{{ $participant->pivot->participation }}</a>
+                                    <td>
+                                        <input type="hidden" name="participant" value="{{ $participant->id }}">
+                                        <select
+                                            class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg"
+                                            name="participation" id="participation">
+                                            @foreach (\App\Enums\LessonParticipationEnum::values() as $key => $value)
+                                                <option value="{{ $key }}" @selected($value == $participant->pivot->participation)>
+                                                    {{ $value }}</option>
+                                            @endforeach
+                                        </select>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    <button name="update_participation" type="submit"
+                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                        Update Participation</button>
                 </div>
             </div>
         </div>

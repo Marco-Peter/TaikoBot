@@ -17,10 +17,11 @@
                         <th>email</th>
                         <th>Role</th>
                         <th>Teams</th>
+                        <th>Wage Group</th>
                     </x-slot>
 
                     <x-slot name="body">
-                        @foreach ($users as $user)
+                        @foreach (App\Models\User::all() as $user)
                             <tr>
                                 <td>
                                     <form action="{{ route('users.destroy', $user) }}" method="POST">
@@ -34,6 +35,7 @@
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->email }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->role }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->team->name }}</a></td>
+                                <td><a href="{{ route('users.edit', $user) }}">{{ $user->wage_group->name }}</a></td>
                             </tr>
                         @endforeach
 
@@ -48,15 +50,22 @@
                                 <td class="text-gray-800"><input type="email" name="email"></td>
                                 <td class="text-gray-800">
                                     <select name="role" id="role">
-                                        <option value="student" selected>Student</option>
-                                        <option value="teacher">Teacher</option>
-                                        <option value="admin">Admin</option>
+                                        @foreach (App\Enums\UserRoleEnum::values() as $role)
+                                            <option value="role">{{ $role }}</option>
+                                        @endforeach
                                     </select>
                                 </td>
                                 <td class="text-gray-800">
                                     <select name="team_id" id="team">
-                                        @foreach ($teams as $team)
+                                        @foreach (App\Models\Team::all() as $team)
                                             <option value="{{ $team->id }}">{{ $team->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td class="text-gray-800">
+                                    <select name="wage_group" id="wage_group">
+                                        @foreach (App\Models\WageGroup::all() as $wage_group)
+                                            <option value="{{ $wage_group->id }}">{{ $wage_group->name }}</option>
                                         @endforeach
                                     </select>
                                 </td>

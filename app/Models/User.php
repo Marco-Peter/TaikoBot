@@ -6,6 +6,8 @@ namespace App\Models;
 
 use App\Enums\UserRoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -65,13 +67,17 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    public function lessons()
+    public function lessons(): BelongsToMany
     {
         return $this->belongsToMany(Lesson::class)->withTimestamps()->withPivot('participation');
+    }
+
+    public function wage_group(): BelongsTo {
+        return $this->belongsTo(WageGroup::class);
     }
 }

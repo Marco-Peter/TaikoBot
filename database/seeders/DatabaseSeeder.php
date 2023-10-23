@@ -15,6 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('wage_groups')->insert([
+            'name' => 'Full',
+            'description' => 'Standard rate for fully employed members',
+        ]);
+
+        DB::table('wage_groups')->insert([
+            'name' => 'Student',
+            'description' => 'Reduced rate for students and unemployed',
+        ]);
+
         DB::table('teams')->insert([
             'name' => 'Basic Group',
             'description' => 'Basic group, which meets every Thursday',
@@ -38,7 +48,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        foreach(\App\Models\User::all() as $u) {
+        foreach (\App\Models\User::all() as $u) {
             $u->team = Team::first();
         }
     }

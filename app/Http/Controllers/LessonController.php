@@ -73,12 +73,22 @@ class LessonController extends Controller
      */
     public function update(Request $request, Lesson $lesson): RedirectResponse
     {
-        $validated = $request->validate([
-            'start' => 'required|date',
-            'finish' => 'required|date',
-        ]);
+        dd($request);
+        if ($request["changed_item"]) {
+            $validated = $request->validate([
+                'start' => 'required|date',
+                'finish' => 'required|date',
+            ]);
+            $lesson->update($validated);
+        } else if ($request["update_participation"]) {
+            $validated = $request->validate([
+                'participant' => 'required',
+                'participation' => 'required',
+            ]);
+            $lesson->participants()->updateExistingPivot($validated['participant'], ['participation' => $validated['participation']]);
+            $lesson->participants()->pivot()->save();
+        }
 
-        $lesson->update($validated);
         return redirect(route('courses.edit', $lesson->course));
     }
 
