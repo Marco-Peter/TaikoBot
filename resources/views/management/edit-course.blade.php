@@ -55,11 +55,52 @@
                             <div class="block">
                                 <input type="checkbox" id="team[{{ $team->name }}]" name="teams[{{ $team->id }}]"
                                     value="1"
-                                    {{ old('teams', $course->teams->contains($team)) ? "checked" : "" }} />
+                                    {{ old('teams', $course->teams->contains($team)) ? 'checked' : '' }} />
                                 <label for="team[{{ $team->name }}]">{{ $team->name }}</label>
                             </div>
                         @endforeach
                     </fieldset>
+                </div>
+            </div>
+        </div>
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div
+                    class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <table>
+                        <thead>
+                            <th>Signed In</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Wage Group</th>
+                            <th>Price</th>
+                            <th>Paid</th>
+                        </thead>
+                        <tbody>
+                            @foreach (App\Models\User::all() as $user)
+                                @php
+                                    $signed_in = $course->participants->contains($user);
+                                @endphp
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="participants[{{ $user->id }}]"
+                                            id="participant[{{ $user->name }}]" value="1"
+                                            {{ old('participants', $signed_in) ? 'checked' : '' }} />
+                                    </td>
+                                    <td>{{ $user->first_name }}</td>
+                                    <td>{{ $user->last_name }}</td>
+                                    <td>{{ $user->wage_group->name }}</td>
+                                    <td>{{ $course->fees->where('id', $user->wage_group->id)->first()->pivot->fee }}
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="paid[{{ $user->id }}]"
+                                            id="paid[{{ $user->name }}]" value="1"
+                                            {{ old('paid', $signed_in && $course->participants->where('id', $user->id)->first()->pivot->paid) ? 'checked' : '' }} />
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -103,34 +144,6 @@
                                 </td>
                             </tr>
                         </form>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div
-                class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <table>
-                    <thead>
-                        <th></th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                    </thead>
-                    <tbody>
-                        @foreach ($course->participants as $participant)
-                        <form action="{{ route('courses.add-participant', $participant) }}" method="post">
-                            @csrf
-                            @method('delete')
-                            <tr>
-                                <td><button type="submit" name="remove_participant"
-                                        value="{{ $team->id }}">Remove</button></td>
-                                <td><a href="{{ route('courses.add-participant', $participant) }}">{{ $participant->first_name }}</a></td>
-                                <td><a href="{{ route('courses.add-participant', $participant) }}">{{ $participant->last_name }}</a></td>
-                            </tr>
-                        </form>
-                    @endforeach
                     </tbody>
                 </table>
             </div>

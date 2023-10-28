@@ -95,14 +95,39 @@ class CourseController extends Controller
             'fee' => 'integer|min:0',
             'capacity' => 'integer|min:1',
             'teams.*' => 'boolean',
+            'participants.*' => 'boolean',
+            'paid.*' => 'boolean',
         ]);
 
         $offset = array_search("teams", array_keys($validated), true);
-        $teams = array_keys(array_splice($validated, $offset, 1)["teams"]);
+        if ($offset) {
+            $teams = array_keys(array_splice($validated, $offset, 1)["teams"]);
+        } else {
+            $teams = [];
+        }
 
-        dd($request, $validated, $teams);
+        $offset = array_search("participants", array_keys($validated), true);
+        if ($offset) {
+            $participants = array_keys(array_splice($validated, $offset, 1)["participants"]);
+        } else {
+            $participants = [];
+        }
+
+        $offset = array_search("paid", array_keys($validated), true);
+        if ($offset) {
+            $paid = array_keys(array_splice($validated, $offset, 1)["paid"]);
+        } else {
+            $paid = [];
+        }
+
+        $parts = array();
+        foreach ($participants as $value) {
+            $parts[$value] = ["paid" => in_array($value, $paid)];
+        }
+
         $course->update($validated);
-        $course->teams()->attach($teams);
+        $course->teams()->sync($teams);
+        $course->participants()->sync($parts);
 
         return back();
     }
