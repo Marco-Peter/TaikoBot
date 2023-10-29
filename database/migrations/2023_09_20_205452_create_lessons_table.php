@@ -15,8 +15,15 @@ return new class extends Migration
         Schema::create('lessons', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Course::class)->constrained()->cascadeOnDelete();
+
+            /* Public information for students */
+            $table->string('title', 255); /* Title or topic of the lesson */
             $table->dateTime('start');
             $table->dateTime('finish');
+
+            /* Internal information for teachers and administration */
+            $table->text('notes'); /* Notes for teachers to organize the lesson */
+
             $table->timestamps();
         });
     }
