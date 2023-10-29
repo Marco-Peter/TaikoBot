@@ -20,11 +20,11 @@
                         <textarea class="text-gray-800" name="description" id="description" cols="30" rows="10">{{ old('description') }}</textarea>
                     <p>
                     <h1>Fees</h1>
-                    @foreach (App\Models\WageGroup::all() as $wage_group)
-                        <label for="fee[{{ $wage_group->id }}]">{{ $wage_group->name }}</label>
+                    @foreach (App\Models\IncomeGroup::all() as $income_group)
+                        <label for="fee[{{ $income_group->id }}]">{{ $income_group->name }}</label>
                         <p>
-                            <input class="text-gray-800" type="text" name="fees[{{ $wage_group->id }}]"
-                                id="fee[{{ $wage_group->id }}]" value="{{ old('fees[' . $wage_group->id . ']') }}">
+                            <input class="text-gray-800" type="text" name="fees[{{ $income_group->id }}]"
+                                id="fee[{{ $income_group->id }}]" value="{{ old('fees[' . $income_group->id . ']') }}">
                         <p>
                     @endforeach
                     <label for="capacity">Capacity</label>

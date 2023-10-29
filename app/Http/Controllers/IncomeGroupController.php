@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WageGroup;
+use App\Models\IncomeGroup;
 use Illuminate\Http\Request;
 
-class WageGroupController extends Controller
+class IncomeGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class WageGroupController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(WageGroup $wageGroup)
+    public function show(IncomeGroup $incomeGroup)
     {
         //
     }
@@ -42,7 +42,7 @@ class WageGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(WageGroup $wageGroup)
+    public function edit(IncomeGroup $incomeGroup)
     {
         //
     }
@@ -50,7 +50,7 @@ class WageGroupController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, WageGroup $wageGroup)
+    public function update(Request $request, IncomeGroup $incomeGroup)
     {
         //
     }
@@ -58,7 +58,7 @@ class WageGroupController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(WageGroup $wageGroup)
+    public function destroy(IncomeGroup $incomeGroup)
     {
         //
     }

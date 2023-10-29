@@ -26,11 +26,11 @@
                     </div>
                     <div class="col-span-6 sm:col-span-4">
                         <h1>Fees</h1>
-                        @foreach (App\Models\WageGroup::all() as $wage_group)
-                            <x-label for="{{ $wage_group->name }}" value="{{ $wage_group->name }}" />
-                            <x-input id="fee" name="{{ $wage_group->name }}" type="integer"
+                        @foreach (App\Models\IncomeGroup::all() as $income_group)
+                            <x-label for="{{ $income_group->name }}" value="{{ $income_group->name }}" />
+                            <x-input id="fee" name="{{ $income_group->name }}" type="integer"
                                 class="mt-1 block w-full"
-                                value="{{ $course->fees->find($wage_group->id)->pivot->fee }}" />
+                                value="{{ $course->fees->find($income_group->id)->pivot->fee }}" />
                             <x-input-error for="fee" class="mt-2" />
                         @endforeach
                     </div>
@@ -72,7 +72,7 @@
                             <th>Signed In</th>
                             <th>First Name</th>
                             <th>Last Name</th>
-                            <th>Wage Group</th>
+                            <th>Income Group</th>
                             <th>Price</th>
                             <th>Paid</th>
                         </thead>
@@ -89,8 +89,8 @@
                                     </td>
                                     <td>{{ $user->first_name }}</td>
                                     <td>{{ $user->last_name }}</td>
-                                    <td>{{ $user->wage_group->name }}</td>
-                                    <td>{{ $course->fees->where('id', $user->wage_group->id)->first()->pivot->fee }}
+                                    <td>{{ $user->income_group->name }}</td>
+                                    <td>{{ $course->fees->where('id', $user->income_group->id)->first()->pivot->fee }}
                                     </td>
                                     <td>
                                         <input type="checkbox" name="paid[{{ $user->id }}]"

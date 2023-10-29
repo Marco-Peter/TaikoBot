@@ -15,12 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('wage_groups')->insert([
+        DB::table('income_groups')->insert([
             'name' => 'Full',
             'description' => 'Standard rate for fully employed members',
         ]);
 
-        DB::table('wage_groups')->insert([
+        DB::table('income_groups')->insert([
             'name' => 'Student',
             'description' => 'Reduced rate for students and unemployed',
         ]);

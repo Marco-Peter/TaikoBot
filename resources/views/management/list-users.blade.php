@@ -17,7 +17,7 @@
                         <th>email</th>
                         <th>Role</th>
                         <th>Teams</th>
-                        <th>Wage Group</th>
+                        <th>Income Group</th>
                     </x-slot>
 
                     <x-slot name="body">
@@ -35,7 +35,7 @@
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->email }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->role }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->team->name }}</a></td>
-                                <td><a href="{{ route('users.edit', $user) }}">{{ $user->wage_group->name }}</a></td>
+                                <td><a href="{{ route('users.edit', $user) }}">{{ $user->income_group->name }}</a></td>
                             </tr>
                         @endforeach
 
@@ -63,9 +63,9 @@
                                     </select>
                                 </td>
                                 <td class="text-gray-800">
-                                    <select name="wage_group" id="wage_group">
-                                        @foreach (App\Models\WageGroup::all() as $wage_group)
-                                            <option value="{{ $wage_group->id }}">{{ $wage_group->name }}</option>
+                                    <select name="income_group" id="income_group">
+                                        @foreach (App\Models\IncomeGroup::all() as $income_group)
+                                            <option value="{{ $income_group->id }}">{{ $income_group->name }}</option>
                                         @endforeach
                                     </select>
                                 </td>
