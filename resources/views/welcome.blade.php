@@ -39,7 +39,7 @@
 
             <div class="max-w-7xl mx-auto p-6 lg:p-8">
                 <div class="flex justify-center">
-                    <img src="{{ URL('images/logo_TZHFR_white_small.png') }}" alt="Taiko Zurich logo">
+                    <img src="{{ URL('/images/logo_TZHFR_white_small.png') }}" alt="Taiko Zurich logo">
                 </div>
 
                 <div class="mt-16">

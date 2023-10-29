@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
-                    <img src="{{ URL('images/logo_TZHFR_white_small.png') }}" alt="Taiko Zurich logo">
+                    <img src="{{ URL('/images/logo_TZHFR_white_small.png') }}" alt="Taiko Zurich logo">
 
                     <h1 class="mt-8 text-2xl font-medium dark:text-white">
                         Welcome to your Dashboard!
@@ -86,7 +86,7 @@
                             Find accompanying documents and videos to help to your learning process.
                         </p>
                         <p class="mt-4 text-sm">
-                            <a href="https://laracasts.com" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
+                            <a href="https://drive.google.com/drive/folders/14NO4j0e1VkxDNnx_u1NmpZr-cfp0rGsz" rel="external" target="__blank" class="inline-flex items-center font-semibold text-indigo-700 dark:text-indigo-300">
                                 Check resources
 
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="ml-1 w-5 h-5 fill-indigo-500 dark:fill-indigo-200">
@@ -102,12 +102,12 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                             </svg>
                             <h2 class="ml-3 text-xl font-semibold dark:text-white">
-                                Authentication
+                                Messages
                             </h2>
                         </div>
 
                         <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                            Authentication and registration views are included with Laravel Jetstream, as well as support for user email verification and resetting forgotten passwords. So, you're free to get started with what matters most: building your application.
+                            Important messages to you about changes in your workshops.
                         </p>
                     </div>
                 </div>

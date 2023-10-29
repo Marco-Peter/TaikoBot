@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ URL('/') }}">
-                        <img src="{{ 'images/favicon_white.png' }}" alt="favicon Taiko Zurich" width="48" height="48" >
+                        <img src="{{ '/images/favicon_white.png' }}" alt="favicon Taiko Zurich" width="48" height="48" >
                     </a>
                 </div>
 
