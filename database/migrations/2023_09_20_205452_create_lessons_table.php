@@ -2,6 +2,7 @@
 
 use App\Models\Course;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->dateTime('finish');
 
             /* Internal information for teachers and administration */
-            $table->text('notes'); /* Notes for teachers to organize the lesson */
+            $table->text('notes')->default(new Expression("('')")); /* Notes for teachers to organize the lesson */
 
             $table->timestamps();
         });

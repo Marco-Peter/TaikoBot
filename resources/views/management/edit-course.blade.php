@@ -27,9 +27,9 @@
                     <div class="col-span-6 sm:col-span-4">
                         <h1>Fees</h1>
                         @foreach (App\Models\IncomeGroup::all() as $income_group)
-                            <x-label for="{{ $income_group->name }}" value="{{ $income_group->name }}" />
-                            <x-input id="fee" name="{{ $income_group->name }}" type="integer"
-                                class="mt-1 block w-full"
+                            <x-label for="fees[{{ $income_group->id }}]" value="{{ $income_group->name }}" />
+                            <x-input id="fees[{{ $income_group->id }}]" name="fees[{{ $income_group->id }}]"
+                                type="integer" class="mt-1 block w-full"
                                 value="{{ $course->fees->find($income_group->id)->pivot->fee }}" />
                             <x-input-error for="fee" class="mt-2" />
                         @endforeach
@@ -53,8 +53,8 @@
                         <legend>Team Availability</legend>
                         @foreach (App\Models\Team::all() as $team)
                             <div class="block">
-                                <input type="checkbox" id="team[{{ $team->name }}]" name="teams[{{ $team->id }}]"
-                                    value="1"
+                                <input type="checkbox" id="team[{{ $team->name }}]"
+                                    name="teams[{{ $team->id }}]" value="1"
                                     {{ old('teams', $course->teams->contains($team)) ? 'checked' : '' }} />
                                 <label for="team[{{ $team->name }}]">{{ $team->name }}</label>
                             </div>
@@ -72,30 +72,34 @@
                             <th>Signed In</th>
                             <th>First Name</th>
                             <th>Last Name</th>
+                            <th>Team</th>
                             <th>Income Group</th>
                             <th>Price</th>
                             <th>Paid</th>
                         </thead>
                         <tbody>
-                            @foreach (App\Models\User::all() as $user)
+                            @foreach ($course->invitees()->get() as $invitee)
                                 @php
-                                    $signed_in = $course->participants->contains($user);
+                                    //dd(\App\Models\User::first(), $invitee);
+                                    $signed_in = $course->participants->contains($invitee);
                                 @endphp
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="participants[{{ $user->id }}]"
-                                            id="participant[{{ $user->name }}]" value="1"
+                                        <input type="checkbox" name="participants[{{ $invitee->id }}]"
+                                            id="participant[{{ $invitee->name }}]" value="1"
                                             {{ old('participants', $signed_in) ? 'checked' : '' }} />
                                     </td>
-                                    <td>{{ $user->first_name }}</td>
-                                    <td>{{ $user->last_name }}</td>
-                                    <td>{{ $user->income_group->name }}</td>
-                                    <td>{{ $course->fees->where('id', $user->income_group->id)->first()->pivot->fee }}
+                                    <td>{{ $invitee->first_name }}</td>
+                                    <td>{{ $invitee->last_name }}</td>
+                                    <td>{{ $invitee->team->name }}</td>
+                                    <td>{{ $invitee->income_group->name }}</td>
+                                    <td>
+                                        {{ $course->fees->where('id', $invitee->income_group->id)->first()->pivot->fee }}
                                     </td>
                                     <td>
-                                        <input type="checkbox" name="paid[{{ $user->id }}]"
-                                            id="paid[{{ $user->name }}]" value="1"
-                                            {{ old('paid', $signed_in && $course->participants->where('id', $user->id)->first()->pivot->paid) ? 'checked' : '' }} />
+                                        <input type="checkbox" name="paid[{{ $invitee->id }}]"
+                                            id="paid[{{ $invitee->name }}]" value="1"
+                                            {{ old('paid', $signed_in && $course->participants->where('id', $invitee->id)->first()->pivot->paid) ? 'checked' : '' }} />
                                     </td>
                                 </tr>
                             @endforeach
@@ -114,6 +118,7 @@
                         <th></th>
                         <th>Start</th>
                         <th>End</th>
+                        <th>Title</th>
                     </thead>
                     <tbody>
                         @foreach ($course->lessons as $lesson)
@@ -125,6 +130,7 @@
                                             value="{{ $team->id }}">Remove</button></td>
                                     <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->start }}</a></td>
                                     <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->finish }}</a></td>
+                                    <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->title }}</a></td>
                                 </tr>
                             </form>
                         @endforeach
@@ -141,6 +147,11 @@
                                 <td><x-input id="finish" name="finish" type="datetime-local"
                                         class="mt-1 block w-full" required />
                                     <x-input-error for="finish" class="mt-2" />
+                                </td>
+                                <td>
+                                    <x-input id="title" name="title" type="text" class="mt-1 block w-full"
+                                        required autocomplete="title" value="{{ $course->title }}" />
+                                    <x-input-error for="title" class="mt-2" />
                                 </td>
                             </tr>
                         </form>

@@ -37,16 +37,12 @@ class LessonController extends Controller
             'start' => 'required',
             'finish' => 'required',
             'course_id' => 'required|integer',
+            'title' => 'required|string|max:255',
         ]);
 
         $lesson = Lesson::create($validated);
-        $teams_signed_in = Course::find($validated['course_id'])->teams()->wherePivot('signed_in', 1)->get()->modelKeys();
-        $teams_signed_out = Course::find($validated['course_id'])->teams()->wherePivot('signed_in', 0)->get()->modelKeys();
-        $users_signed_in = User::wherein('team_id', $teams_signed_in)->get()->modelKeys();
-        $users_signed_out = User::wherein('team_id', $teams_signed_out)->get()->modelKeys();
-
-        $lesson->participants()->attach($users_signed_in, ['participation' => LessonParticipationEnum::SIGNED_IN->value]);
-        $lesson->participants()->attach($users_signed_out, ['participation' => LessonParticipationEnum::SIGNED_OUT->value]);
+        $participants = Course::find($validated['course_id'])->participants()->get()->modelKeys();
+        $lesson->participants()->attach($participants);
         return back();
     }
 

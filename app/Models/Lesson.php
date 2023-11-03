@@ -16,6 +16,8 @@ class Lesson extends Model
         'start',
         'finish',
         'course_id',
+        'title',
+        'notes',
     ];
 
     public function getStartAttribute($value)

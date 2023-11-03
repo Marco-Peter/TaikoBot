@@ -9,8 +9,13 @@
         @method('patch')
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="col-span-6 sm:col-span-4">
+                        <x-label for="title" value="Title" />
+                        <x-input id="title" name="title" type="text" class="mt-1 block w-full" required
+                            autocomplete="title" value="{{ $lesson->title }}" />
+                        <x-input-error for="title" class="mt-2" />
+                    </div>
                     <div class="col-span-6 sm:col-span-4">
                         <x-label for="start" value="Start" />
                         <x-input id="start" name="start" type="datetime-local" class="mt-1 block w-full" required
@@ -22,6 +27,13 @@
                         <x-input id="finish" name="finish" type="datetime-local" class="mt-1 block w-full"
                             value="{{ $lesson->finish }}" />
                         <x-input-error for="finish" class="mt-2" />
+                    </div>
+                    <div class="col-span-6 sm:col-span-4">
+                        <x-label for="notes" value="Notes" />
+                        <textarea name="notes" id="notes" cols="30" rows="10"
+                            placeholder="Lesson planning, anouncements - not visible to students"
+                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ $lesson->notes }}</textarea>
+                        <x-input-error for="notes" class="mt-2" />
                     </div>
                     <button name="changed_item" value="field" type="submit"
                         class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">

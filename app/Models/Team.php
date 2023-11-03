@@ -22,6 +22,6 @@ class Team extends Model
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class)->withTimestamps()->withPivot('signed_in');
+        return $this->belongsToMany(Course::class)->withTimestamps();
     }
 }

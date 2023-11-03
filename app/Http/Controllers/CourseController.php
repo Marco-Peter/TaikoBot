@@ -92,7 +92,7 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'string',
-            'fee' => 'integer|min:0',
+            'fees.*' => 'integer|min:0',
             'capacity' => 'integer|min:1',
             'teams.*' => 'boolean',
             'participants.*' => 'boolean',
@@ -126,8 +126,15 @@ class CourseController extends Controller
         }
 
         $course->update($validated);
+        foreach ($validated["fees"] as $key => $value) {
+            $course->fees()->updateExistingPivot($key, ['fee' => $value]);
+        }
         $course->teams()->sync($teams);
         $course->participants()->sync($parts);
+
+        foreach ($course->lessons as $lesson) {
+            $lesson->participants()->sync($participants);
+        }
 
         return back();
     }
