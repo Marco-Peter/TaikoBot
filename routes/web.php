@@ -3,7 +3,8 @@
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\UserController;
-use App\Models\Lesson;
+use App\Livewire\MyCourses;
+use App\Livewire\MyLessons;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,4 +35,6 @@ Route::middleware([
     Route::post('/courses/{id}/removed-participant', [CourseController::class, 'remove_participant']);
     Route::resource('courses', CourseController::class);
     Route::resource('lessons', LessonController::class);
+    Route::get('/my-courses', MyCourses::class)->name('my-courses');
+    Route::get('/my-lessons', MyLessons::class)->name('my-lessons');
 });

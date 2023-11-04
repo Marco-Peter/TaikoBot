@@ -18,14 +18,26 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link href="{{ route('my-courses') }}" :active="request()->routeIs('my-courses')">
+                        {{ __('My Courses') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link href="{{ route('my-lessons') }}" :active="request()->routeIs('my-lessons')">
+                        {{ __('My Lessons') }}
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
-                        {{ __('Users') }}
+                        {{ __('Manage Users') }}
                     </x-nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link href="{{ route('courses.index') }}" :active="request()->routeIs(['courses.*', 'lessons.*'])">
-                        {{ __('Courses') }}
+                        {{ __('Manage Courses') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -103,12 +115,20 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
+            <x-responsive-nav-link href="{{ route('my-courses') }}" :active="request()->routeIs('my-courses')">
+                {{ __('My Courses') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('my-lessons') }}" :active="request()->routeIs('my-lessons')">
+                {{ __('My Lessons') }}
+            </x-responsive-nav-link>
+
             <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
-                {{ __('User Management') }}
+                {{ __('Manage Users') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link href="{{ route('courses.index') }}" :active="request()->routeIs(['courses.*', 'lessons.*'])">
-                {{ __('Courses') }}
+                {{ __('Manage Courses') }}
             </x-responsive-nav-link>
         </div>
 
