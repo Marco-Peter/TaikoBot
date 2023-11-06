@@ -31,8 +31,6 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
     Route::resource('users', UserController::class);
-    Route::post('/courses/{id}/add-participant', [CourseController::class, 'add_participant']);
-    Route::post('/courses/{id}/removed-participant', [CourseController::class, 'remove_participant']);
     Route::resource('courses', CourseController::class);
     Route::resource('lessons', LessonController::class);
     Route::get('/my-courses', MyCourses::class)->name('my-courses');

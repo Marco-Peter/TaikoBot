@@ -80,4 +80,9 @@ class User extends Authenticatable
     public function income_group(): BelongsTo {
         return $this->belongsTo(IncomeGroup::class);
     }
+
+    public function courses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class)->withTimestamps()->withPivot('paid');
+    }
 }
