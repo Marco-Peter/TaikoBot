@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div
                 class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <table>
+                <table class="border-separate table-auto border-solid border-spacing-30">
                     <thead>
                         <th>Title</th>
                         <th>Start</th>
@@ -28,6 +28,10 @@
                                     @if ($lesson->pivot->participation === App\Enums\LessonParticipationEnum::SIGNED_IN->value)
                                     <x-button class="ml-3" wire:click="signOut({{ $lesson }})"
                                         wire:loading.attr="disabled">{{ __('Sign Out') }}
+                                    </x-button>
+                                    @elseif ($lesson->pivot->participation === App\Enums\LessonParticipationEnum::SIGNED_OUT->value)
+                                    <x-button class="ml-3" wire:click="signIn({{ $lesson }})"
+                                        wire:loading.attr="disabled">{{ __('Sign In') }}
                                     </x-button>
                                     @endif
                                 </td>

@@ -24,6 +24,13 @@ class MyLessons extends Component
         ]);
     }
 
+    public function signIn(Lesson $lesson)
+    {
+        $lesson->participants()->updateExistingPivot($this->user, [
+            'participation' => LessonParticipationEnum::SIGNED_IN->value,
+        ]);
+    }
+
     public function render()
     {
         return view('livewire.my-lessons');

@@ -12,6 +12,7 @@
                 <x-table>
                     <x-slot name="header">
                         <th></th>
+                        <th></th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>fee</th>
@@ -25,8 +26,11 @@
                                     <form action="{{ route('courses.destroy', $course) }}" method="POST">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit">Delete</button>
+                                        <x-danger-button type="submit">Delete</x-danger-button>
                                     </form>
+                                </td>
+                                <td><x-button
+                                        onclick="window.location.href='{{ route('courses.edit', $course) }}';">Edit</x-button>
                                 </td>
                                 <td><a href="{{ route('courses.edit', $course) }}">{{ $course->name }}</a></td>
                                 <td><a href="{{ route('courses.edit', $course) }}">{{ $course->description }}</a></td>
@@ -36,7 +40,7 @@
                         @endforeach
                     </x-slot>
                 </x-table>
-                <a href="{{ route('courses.create') }}">Create Course</a>
+                <x-button onclick="window.location.href='{{ route('courses.create') }}';">Create Course</x-button>
             </div>
         </div>
     </div>

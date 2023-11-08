@@ -27,7 +27,7 @@
                                     <form action="{{ route('users.destroy', $user) }}" method="POST">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit">Delete</button>
+                                        <x-danger-button type="submit">Delete</x-danger-button>
                                     </form>
                                 </td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->first_name }}</a></td>
@@ -43,7 +43,7 @@
                             @csrf
                             <tr>
                                 <td>
-                                    <button type="submit">Add</button>
+                                    <x-button type="submit">Add</x-button>
                                 </td>
                                 <td class="text-gray-800"><input type="text" name="first_name"></td>
                                 <td class="text-gray-800"><input type="text" name="last_name"></td>

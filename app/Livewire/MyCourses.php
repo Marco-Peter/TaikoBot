@@ -28,6 +28,12 @@ class MyCourses extends Component
         $course->add_participant($this->user);
     }
 
+    public function signOutFromCourse(Course $course)
+    {
+        $this->showingCourseInfo = false;
+        $course->remove_participant($this->user);
+    }
+
     public function render()
     {
         return view('livewire.my-courses');

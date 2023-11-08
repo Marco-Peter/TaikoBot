@@ -21,9 +21,8 @@
                     <div class="col-span-6 sm:col-span-4">
                         <x-label for="description" value="Description" />
                         <textarea id="description" name="description" cols="30" rows="10"
-                        placeholder="Public course description - make it catchy"
-                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
-                            >{{ $course->description }}</textarea>
+                            placeholder="Public course description - make it catchy"
+                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ $course->description }}</textarea>
                         <x-input-error for="description" class="mt-2" />
                     </div>
                     <div class="col-span-6 sm:col-span-4">
@@ -42,8 +41,6 @@
                             value="{{ $course->capacity }}" />
                         <x-input-error for="capacity" class="mt-2" />
                     </div>
-                    <button type="submit"
-                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Change</button>
                 </div>
             </div>
         </div>
@@ -108,9 +105,12 @@
                         </tbody>
                     </table>
                 </div>
+                <x-button type="submit"
+                    class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Save Changes</x-button>
             </div>
         </div>
     </form>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div

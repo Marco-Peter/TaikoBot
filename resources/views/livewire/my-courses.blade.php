@@ -15,6 +15,7 @@
                         <th>Name</th>
                         <th>Start</th>
                         <th>End</th>
+                        <th></th>
                     </thead>
                     <tbody>
                         @foreach ($user->courses as $course)
@@ -22,6 +23,11 @@
                                 <td>{{ $course->name }}</td>
                                 <td>{{ $course->lessons()->orderBy('start', 'asc')->first()->start }}</td>
                                 <td>{{ $course->lessons()->orderBy('start', 'desc')->first()->finish }}</td>
+                                <td>
+                                    <x-button class="ml-3" wire:click="showCourseInfo" wire:loading.attr="disabled">
+                                        {{ __('Details') }}
+                                    </x-button>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -35,29 +41,30 @@
             <div
                 class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                 <h1>Available</h1>
-                <table>
+                <table class="table-auto">
                     <thead>
                         <th>Name</th>
                         <th>Start</th>
                         <th>End</th>
+                        <th></th>
                     </thead>
                     <tbody>
                         @foreach ($user->team->courses->diff($user->courses) as $course)
                             <tr>
-                                <td><a href="#"
-                                        wire:click.prevent="showCourseInfo">{{ $course->name }}</a>
-                                </td>
-                                <td><a href="#"
-                                        wire:click.prevent="showCourseInfo">{{ $course->lessons()->orderBy('start', 'asc')->first()->start }}</a>
-                                </td>
-                                <td><a href="#"
-                                        wire:click.prevent="showCourseInfo">{{ $course->lessons()->orderBy('start', 'desc')->first()->finish }}</a>
+                                <td>{{ $course->name }}</td>
+                                <td>{{ $course->lessons()->orderBy('start', 'asc')->first()->start }}</td>
+                                <td>{{ $course->lessons()->orderBy('start', 'desc')->first()->finish }}</td>
+                                <td>
+                                    <x-button class="ml-3" wire:click="showCourseInfo" wire:loading.attr="disabled">
+                                        {{ __('Details') }}
+                                    </x-button>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                <!-- Delete User Confirmation Modal -->
+
+                <!-- Course Information Modal -->
                 <x-dialog-modal wire:model.live="showingCourseInfo">
                     <x-slot name="title">
                         {{ $course->name }}
@@ -72,9 +79,17 @@
                             {{ __('Back') }}
                         </x-secondary-button>
 
-                        <x-button class="ml-3" wire:click="signInToCourse({{ $course }})" wire:loading.attr="disabled">
-                            {{ __('Sign In') }}
-                        </x-button>
+                        @if ($user->courses->contains($course))
+                            <x-danger-button class="ml-3" wire:click="signOutFromCourse({{ $course }})"
+                                wire:loading.attr="disabled">
+                                {{ __('Sign Out') }}
+                            </x-danger-button>
+                        @else
+                            <x-button class="ml-3" wire:click="signInToCourse({{ $course }})"
+                                wire:loading.attr="disabled">
+                                {{ __('Sign In') }}
+                            </x-button>
+                        @endif
                     </x-slot>
                 </x-dialog-modal>
             </div>
