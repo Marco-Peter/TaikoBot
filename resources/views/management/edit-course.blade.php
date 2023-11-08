@@ -20,8 +20,10 @@
                     </div>
                     <div class="col-span-6 sm:col-span-4">
                         <x-label for="description" value="Description" />
-                        <x-input id="description" name="description" type="text" class="mt-1 block w-full"
-                            value="{{ $course->description }}" />
+                        <textarea id="description" name="description" cols="30" rows="10"
+                        placeholder="Public course description - make it catchy"
+                        class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                            >{{ $course->description }}</textarea>
                         <x-input-error for="description" class="mt-2" />
                     </div>
                     <div class="col-span-6 sm:col-span-4">

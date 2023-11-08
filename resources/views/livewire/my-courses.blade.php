@@ -43,14 +43,40 @@
                     </thead>
                     <tbody>
                         @foreach ($user->team->courses->diff($user->courses) as $course)
-                        <tr>
-                            <td>{{ $course->name }}</td>
-                            <td>{{ $course->lessons()->orderBy('start', 'asc')->first()->start }}</td>
-                            <td>{{ $course->lessons()->orderBy('start', 'desc')->first()->finish }}</td>
-                        </tr>
-                    @endforeach
+                            <tr>
+                                <td><a href="#"
+                                        wire:click.prevent="showCourseInfo">{{ $course->name }}</a>
+                                </td>
+                                <td><a href="#"
+                                        wire:click.prevent="showCourseInfo">{{ $course->lessons()->orderBy('start', 'asc')->first()->start }}</a>
+                                </td>
+                                <td><a href="#"
+                                        wire:click.prevent="showCourseInfo">{{ $course->lessons()->orderBy('start', 'desc')->first()->finish }}</a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
+                <!-- Delete User Confirmation Modal -->
+                <x-dialog-modal wire:model.live="showingCourseInfo">
+                    <x-slot name="title">
+                        {{ $course->name }}
+                    </x-slot>
+
+                    <x-slot name="content">
+                        {{ $course->description }}
+                    </x-slot>
+
+                    <x-slot name="footer">
+                        <x-secondary-button wire:click="$toggle('showingCourseInfo')" wire:loading.attr="disabled">
+                            {{ __('Back') }}
+                        </x-secondary-button>
+
+                        <x-button class="ml-3" wire:click="signInToCourse({{ $course }})" wire:loading.attr="disabled">
+                            {{ __('Sign In') }}
+                        </x-button>
+                    </x-slot>
+                </x-dialog-modal>
             </div>
         </div>
     </div>

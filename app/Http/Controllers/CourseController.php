@@ -121,8 +121,8 @@ class CourseController extends Controller
         }
 
         $parts = array();
-        foreach ($participants as $value) {
-            $parts[$value] = ["paid" => in_array($value, $paid)];
+        foreach ($participants as $participant) {
+            $parts[$participant] = ["paid" => in_array($participant, $paid)];
         }
 
         $course->update($validated);

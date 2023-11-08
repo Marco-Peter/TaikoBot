@@ -32,7 +32,7 @@
                         <input class="text-gray-800" type="text" name="capacity" id="capacity"
                             value="{{ old('capacity') }}">
                     <p>
-                        <button type="submit">Create Course</button>
+                        <x-button class="mt-3" type="submit">{{ __('Create Course') }}</x-button>
                 </form>
             </div>
         </div>

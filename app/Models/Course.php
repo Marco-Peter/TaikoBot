@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\DB;
 
 class Course extends Model
 {
@@ -47,6 +46,22 @@ class Course extends Model
     public function participants(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot('paid');
+    }
+
+    public function add_participant(User $user, bool $paid = false)
+    {
+        $this->participants()->attach($user, ['paid' => $paid]);
+        foreach ($this->lessons as $lesson) {
+            $lesson->participants()->attach($user);
+        }
+    }
+
+    public function remove_participant(User $user)
+    {
+        foreach ($this->lessons as $lesson) {
+            $lesson->participants()->detach($user);
+        }
+        $this->participants()->detach($user);
     }
 
     public function invitees(): Builder
