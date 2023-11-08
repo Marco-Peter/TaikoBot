@@ -1,11 +1,11 @@
 services:
     laravel.test:
         build:
-            context: ./vendor/laravel/sail/runtimes/8.2
+            context: ./vendor/laravel/sail/runtimes/8.1
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: sail-8.2/app
+        image: sail-8.1/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -104,7 +104,7 @@ services:
     phpmyadmin:
         image: 'phpmyadmin:latest'
         ports:
-            - 8080:80
+            - '8080:80'
         networks:
             - sail
         environment:

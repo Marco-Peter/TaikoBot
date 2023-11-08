@@ -64,3 +64,12 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Setup of Sail-Environment (Docker)
+1. Clone repository into a directory under the WSL or Linux environment.
+2. Execute the sail_setup.sh script.
+3. Start sail (`.vendor/bin/sail up -d`, or `sail up -d`, when shell alias is set).
+4. Install JavaScript dependencies (`sail npm install`).
+5. Migrate database (`sail artisan migrate --seed`).
+6. Generate application encryption key (`sail artisan key:generate`).
+7. Start the vite development server (`sail npm run dev`).
