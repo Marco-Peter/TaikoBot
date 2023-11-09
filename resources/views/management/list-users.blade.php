@@ -35,7 +35,8 @@
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->email }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->role }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->team->name }}</a></td>
-                                <td><a href="{{ route('users.edit', $user) }}">{{ $user->income_group->name }}</a></td>
+                                <td><a href="{{ route('users.edit', $user) }}">{{ $user->income_group->name }}</a>
+                                </td>
                             </tr>
                         @endforeach
 
@@ -51,7 +52,8 @@
                                 <td class="text-gray-800">
                                     <select name="role" id="role">
                                         @foreach (App\Enums\UserRoleEnum::values() as $role)
-                                            <option value="role">{{ $role }}</option>
+                                            <option value="role" @selected($role === App\Enums\UserRoleEnum::STUDENT->value)>{{ $role }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </td>

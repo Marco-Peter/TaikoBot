@@ -106,7 +106,8 @@
                     </table>
                 </div>
                 <x-button type="submit"
-                    class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Save Changes</x-button>
+                    class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Save
+                    Changes</x-button>
             </div>
         </div>
     </form>
@@ -128,8 +129,10 @@
                                 @csrf
                                 @method('delete')
                                 <tr>
-                                    <td><button type="submit" name="remove_team"
-                                            value="{{ $team->id }}">Remove</button></td>
+                                    <td>
+                                        <x-danger-button type="submit"
+                                            value="{{ $team->id }}">Remove</x-danger-button>
+                                    </td>
                                     <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->start }}</a></td>
                                     <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->finish }}</a></td>
                                     <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->title }}</a></td>
@@ -139,8 +142,9 @@
                         <form method="POST" action="{{ route('lessons.store') }}">
                             @csrf
                             <tr>
-                                <td><button type="submit" name="course_id" value="{{ $course->id }}"
-                                        class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Add</button>
+                                <td>
+                                    <x-button type="submit" name="course_id"
+                                        value="{{ $course->id }}">Add</x-button>
                                 </td>
                                 <td><x-input id="start" name="start" type="datetime-local"
                                         class="mt-1 block w-full" required />
