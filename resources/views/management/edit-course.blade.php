@@ -124,7 +124,7 @@
                         <th>Title</th>
                     </thead>
                     <tbody>
-                        @foreach ($course->lessons as $lesson)
+                        @foreach ($course->lessons->sortBy('start') as $lesson)
                             <form action="{{ route('lessons.destroy', $lesson) }}" method="post">
                                 @csrf
                                 @method('delete')
