@@ -12,6 +12,7 @@
                 <x-table>
                     <x-slot name="header">
                         <th></th>
+                        <th></th>
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>email</th>
@@ -30,6 +31,11 @@
                                         <x-danger-button type="submit">Delete</x-danger-button>
                                     </form>
                                 </td>
+                                <td><a href="{{ route('users.edit', $user) }}"><img
+                                            class="h-8 w-8 rounded-full object-cover"
+                                            src="{{ $user->profile_photo_url }}" alt="{{ $user->name }}" />
+                                    </a>
+                                </td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->first_name }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->last_name }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->email }}</a></td>
@@ -43,7 +49,7 @@
                         <form action="{{ route('users.store') }}" method="POST">
                             @csrf
                             <tr>
-                                <td>
+                                <td colspan="2">
                                     <x-button type="submit">Add</x-button>
                                 </td>
                                 <td class="text-gray-800"><input type="text" name="first_name"></td>

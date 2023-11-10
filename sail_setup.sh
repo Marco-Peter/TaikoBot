@@ -8,3 +8,4 @@ docker run --rm \
     composer install --ignore-platform-reqs
 
 cp .env.example .env
+ln -s ../storage/app/public/ storage
