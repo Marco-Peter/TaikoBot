@@ -7,10 +7,8 @@
         <title>Taiko Zürich</title>
 
         <!-- Favicon -->
-        <link rel="icon" href="https://taikozuerich.ch/wp-content/uploads/favicon_black-150x150.png" sizes="32x32" />
-        <link rel="icon" href="https://taikozuerich.ch/wp-content/uploads/favicon_black.png" sizes="192x192" />
-        <link rel="apple-touch-icon" href="https://taikozuerich.ch/wp-content/uploads/favicon_black.png" />
-        <meta name="msapplication-TileImage" content="https://taikozuerich.ch/wp-content/uploads/favicon_black.png" />
+        <link rel="icon" href="/images/favicon_black.png"/>
+        <link rel="apple-touch-icon" href="/images/favicon_black.png" />
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -39,7 +37,10 @@
 
             <div class="max-w-7xl mx-auto p-6 lg:p-8">
                 <div class="flex justify-center">
-                    <img src="{{ URL('/images/logo_TZHFR_white_small.png') }}" alt="Taiko Zurich logo">
+                    <picture>
+                        <source srcset="{{ url('/images/logo_TZHFR_white_small.png') }}" media="(prefers-color-scheme: dark)">
+                        <img src="{{ url('/images/logo_TZHFR_black_small.png') }}" alt="Taiko Zurich logo" />
+                    </picture>
                 </div>
 
                 <div class="mt-16">
