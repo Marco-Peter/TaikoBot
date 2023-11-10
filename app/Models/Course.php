@@ -15,7 +15,6 @@ class Course extends Model
     protected $fillable = [
         'name',
         'description',
-        'fee',
         'capacity',
     ];
 
@@ -40,7 +39,7 @@ class Course extends Model
 
     public function fees(): BelongsToMany
     {
-        return $this->belongsToMany(IncomeGroup::class, 'fees')->withPivot('fee');
+        return $this->belongsToMany(IncomeGroup::class, 'fees')->withPivot('fee')->withTimestamps();
     }
 
     public function participants(): BelongsToMany
