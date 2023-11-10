@@ -9,6 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div
                 class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                @if ($user->lessons->count())
                 <table class="border-separate table-auto border-solid border-spacing-30">
                     <thead>
                         <th>Title</th>
@@ -39,6 +40,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                @else
+                <p>No taiko lessons planned for you 😭</p>
+                @endif
             </div>
         </div>
     </div>

@@ -9,7 +9,8 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div
                 class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <h1>Signed Up</h1>
+                @if ($user->courses->count())
+                <p>Signed Up</p>
                 <table>
                     <thead>
                         <th>Name</th>
@@ -32,6 +33,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                @else
+                <p>You are not signed in to any courses</p>
+                @endif
             </div>
         </div>
     </div>
@@ -40,6 +44,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div
                 class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                @if ($user->team->courses->count())
                 <h1>Available</h1>
                 <table class="table-auto">
                     <thead>
@@ -92,6 +97,9 @@
                         @endif
                     </x-slot>
                 </x-dialog-modal>
+                @else
+                <p>No new courses available</p>
+                @endif
             </div>
         </div>
     </div>

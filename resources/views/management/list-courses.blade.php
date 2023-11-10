@@ -9,6 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div
                 class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                @if ($courses->count())
                 <x-table>
                     <x-slot name="header">
                         <th></th>
@@ -40,6 +41,9 @@
                         @endforeach
                     </x-slot>
                 </x-table>
+                @else
+                <p>No courses available</p>
+                @endif
                 <x-button onclick="window.location.href='{{ route('courses.create') }}';">Create Course</x-button>
             </div>
         </div>
