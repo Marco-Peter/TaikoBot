@@ -40,6 +40,7 @@ class LessonController extends Controller
             'course_id' => 'required|integer',
             'title' => 'required|string|max:255',
         ]);
+        $validated['notes'] = '';
 
         $lesson = Lesson::create($validated);
         $participants = Course::find($validated['course_id'])->participants()->get()->modelKeys();
@@ -78,6 +79,8 @@ class LessonController extends Controller
             $validated = $request->validate([
                 'start' => 'required|date',
                 'finish' => 'required|date',
+                'title' => 'required|string|max:255',
+                'notes' => 'required|string',
             ]);
             $lesson->update($validated);
         } else if ($request["update_participation"]) {

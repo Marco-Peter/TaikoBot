@@ -23,7 +23,7 @@ return new class extends Migration
             $table->dateTime('finish');
 
             /* Internal information for teachers and administration */
-            $table->text('notes')->default(new Expression("('')")); /* Notes for teachers to organize the lesson */
+            $table->text('notes'); /* Notes for teachers to organize the lesson */
 
             $table->timestamps();
         });
