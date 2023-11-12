@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -16,6 +17,8 @@ class UserController extends Controller
      */
     public function index():View
     {
+        Gate::authorize('edit-users');
+
         return view('management.list-users', [
             'users' => User::get(),
             'teams' => Team::get(),
@@ -35,7 +38,8 @@ class UserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        //$this->authorize('create');
+        Gate::authorize('edit-users');
+
         $validated = $request->validate([
             'first_name' => 'required',
             'last_name' => 'required',
@@ -79,6 +83,8 @@ class UserController extends Controller
      */
     public function destroy(User $user): RedirectResponse
     {
+        Gate::authorize('edit-users');
+
         $this->authorize('delete');
         $user->delete();
         return redirect(route('users.index'));

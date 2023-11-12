@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
 use App\Models\Lesson;
-use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class LessonController extends Controller
 {
@@ -33,6 +32,8 @@ class LessonController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        Gate::authorize('edit-courses');
+
         $validated = $request->validate([
             'start' => 'required',
             'finish' => 'required',
@@ -59,6 +60,8 @@ class LessonController extends Controller
      */
     public function edit(Lesson $lesson): View
     {
+        Gate::authorize('edit-courses');
+
         return view('management.edit-lesson', [
             'lesson' => $lesson,
         ]);
@@ -69,7 +72,8 @@ class LessonController extends Controller
      */
     public function update(Request $request, Lesson $lesson): RedirectResponse
     {
-        dd($request);
+        Gate::authorize('edit-courses');
+
         if ($request["changed_item"]) {
             $validated = $request->validate([
                 'start' => 'required|date',
@@ -93,6 +97,8 @@ class LessonController extends Controller
      */
     public function destroy(Lesson $lesson)
     {
+        Gate::authorize('edit-courses');
+
         $lesson->delete();
         return back();
     }

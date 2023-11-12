@@ -29,17 +29,21 @@
                     </x-nav-link>
                 </div>
 
+                @can('edit-users')
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
                         {{ __('Manage Users') }}
                     </x-nav-link>
                 </div>
+                @endcan
 
+                @can('edit-courses')
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link href="{{ route('courses.index') }}" :active="request()->routeIs(['courses.*', 'lessons.*'])">
                         {{ __('Manage Courses') }}
                     </x-nav-link>
                 </div>
+                @endcan
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">

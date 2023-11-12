@@ -7,6 +7,7 @@ use App\Models\Team;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CourseController extends Controller
 {
@@ -22,6 +23,8 @@ class CourseController extends Controller
      */
     public function index()
     {
+        Gate::authorize('edit-courses');
+
         return view('management.list-courses', [
             'courses' => Course::get(),
         ]);
@@ -32,6 +35,8 @@ class CourseController extends Controller
      */
     public function create(): View
     {
+        Gate::authorize('edit-courses');
+
         return view('management.create-course');
     }
 
@@ -40,7 +45,7 @@ class CourseController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        //$this->authorize('update', $course);
+        Gate::authorize('edit-courses');
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -74,7 +79,7 @@ class CourseController extends Controller
      */
     public function edit(Course $course): View
     {
-        //$this->authorize('update', $course);
+        Gate::authorize('edit-courses');
 
         return view('management.edit-course', [
             'course' => $course,
@@ -88,7 +93,8 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course): RedirectResponse
     {
-        //$this->authorize('update', $course);
+        Gate::authorize('edit-courses');
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'string',
@@ -144,7 +150,7 @@ class CourseController extends Controller
      */
     public function destroy(Course $course): RedirectResponse
     {
-        //$this->authorize('update', $course);
+        Gate::authorize('edit-courses');
 
         $course->delete();
         return redirect(route('courses.index'));
