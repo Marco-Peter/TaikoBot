@@ -127,13 +127,17 @@
                 {{ __('My Lessons') }}
             </x-responsive-nav-link>
 
+            @can('edit-users')
             <x-responsive-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.*')">
                 {{ __('Manage Users') }}
             </x-responsive-nav-link>
+            @endcan
 
+            @can('edit-courses')
             <x-responsive-nav-link href="{{ route('courses.index') }}" :active="request()->routeIs(['courses.*', 'lessons.*'])">
                 {{ __('Manage Courses') }}
             </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->
