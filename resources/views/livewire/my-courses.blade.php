@@ -25,7 +25,7 @@
                                 <td>{{ $course->lessons()->orderBy('start', 'asc')->first()->start }}</td>
                                 <td>{{ $course->lessons()->orderBy('start', 'desc')->first()->finish }}</td>
                                 <td>
-                                    <x-button class="ml-3" wire:click="showCourseInfo" wire:loading.attr="disabled">
+                                    <x-button class="ml-3" wire:click="showCourseInfo({{ $course->id }})" wire:loading.attr="disabled">
                                         {{ __('Details') }}
                                     </x-button>
                                 </td>
@@ -60,7 +60,7 @@
                                 <td>{{ $course->lessons()->orderBy('start', 'asc')->first()->start }}</td>
                                 <td>{{ $course->lessons()->orderBy('start', 'desc')->first()->finish }}</td>
                                 <td>
-                                    <x-button class="ml-3" wire:click="showCourseInfo" wire:loading.attr="disabled">
+                                    <x-button class="ml-3" wire:click="showCourseInfo({{ $course->id }})" wire:key="$course">
                                         {{ __('Details') }}
                                     </x-button>
                                 </td>
@@ -70,27 +70,27 @@
                 </table>
 
                 <!-- Course Information Modal -->
-                <x-dialog-modal wire:model.live="showingCourseInfo">
+                <x-dialog-modal wire:model.live="courseInfoVisible" wire:key="{{ $displayedCourse }}">
                     <x-slot name="title">
-                        {{ $course->name }}
+                        {{ $displayedCourse_name }}
                     </x-slot>
 
                     <x-slot name="content">
-                        {{ $course->description }}
+                        {{ $displayedCourse_description }}
                     </x-slot>
 
                     <x-slot name="footer">
-                        <x-secondary-button wire:click="$toggle('showingCourseInfo')" wire:loading.attr="disabled">
+                        <x-secondary-button wire:click="$toggle('courseInfoVisible')" wire:loading.attr="disabled">
                             {{ __('Back') }}
                         </x-secondary-button>
 
-                        @if ($user->courses->contains($course))
-                            <x-danger-button class="ml-3" wire:click="signOutFromCourse({{ $course }})"
+                        @if ($displayedCourse_signedIn)
+                            <x-danger-button class="ml-3" wire:click="signOutFromCourse({{ $displayedCourse_id }})"
                                 wire:loading.attr="disabled">
                                 {{ __('Sign Out') }}
                             </x-danger-button>
                         @else
-                            <x-button class="ml-3" wire:click="signInToCourse({{ $course }})"
+                            <x-button class="ml-3" wire:click="signInToCourse({{ $displayedCourse_id }})"
                                 wire:loading.attr="disabled">
                                 {{ __('Sign In') }}
                             </x-button>
