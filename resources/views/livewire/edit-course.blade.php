@@ -1,11 +1,11 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Course Management') }}
-        </h2>
-    </x-slot>
+<x-slot name="header">
+    <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        {{ __('Course Management') }}
+    </h2>
+</x-slot>
 
-    <form method="POST" action="{{ route('courses.update', $course) }}">
+<div>
+    <form wire:submit="save">
         @csrf
         @method('patch')
         <div class="py-12">
@@ -42,75 +42,75 @@
                         <x-input-error for="capacity" class="mt-2" />
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <fieldset>
-                        <legend>Team Availability</legend>
-                        @foreach (App\Models\Team::all() as $team)
-                            <div class="block">
-                                <input type="checkbox" id="team[{{ $team->name }}]"
-                                    name="teams[{{ $team->id }}]" value="1"
-                                    {{ old('teams', $course->teams->contains($team)) ? 'checked' : '' }} />
-                                <label for="team[{{ $team->name }}]">{{ $team->name }}</label>
-                            </div>
-                        @endforeach
-                    </fieldset>
-                </div>
-            </div>
-        </div>
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <table>
-                        <thead>
-                            <th>Signed In</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Team</th>
-                            <th>Income Group</th>
-                            <th>Price</th>
-                            <th>Paid</th>
-                        </thead>
-                        <tbody>
-                            @foreach ($course->invitees()->get() as $invitee)
-                                @php
-                                    //dd(\App\Models\User::first(), $invitee);
-                                    $signed_in = $course->participants->contains($invitee);
-                                @endphp
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="participants[{{ $invitee->id }}]"
-                                            id="participant[{{ $invitee->name }}]" value="1"
-                                            {{ old('participants', $signed_in) ? 'checked' : '' }} />
-                                    </td>
-                                    <td>{{ $invitee->first_name }}</td>
-                                    <td>{{ $invitee->last_name }}</td>
-                                    <td>{{ $invitee->team->name }}</td>
-                                    <td>{{ $invitee->income_group->name }}</td>
-                                    <td>
-                                        {{ $course->fees->where('id', $invitee->income_group->id)->first()->pivot->fee }}
-                                    </td>
-                                    <td>
-                                        <input type="checkbox" name="paid[{{ $invitee->id }}]"
-                                            id="paid[{{ $invitee->name }}]" value="1"
-                                            {{ old('paid', $signed_in && $course->participants->where('id', $invitee->id)->first()->pivot->paid) ? 'checked' : '' }} />
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
                 <x-button type="submit"
                     class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">Save
                     Changes</x-button>
             </div>
         </div>
     </form>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div
+                class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <fieldset>
+                    <legend>Team Availability</legend>
+                    @foreach (App\Models\Team::all() as $team)
+                        <div class="block">
+                            <input type="checkbox" id="team[{{ $team->name }}]" name="teams[{{ $team->id }}]"
+                                value="1" {{ old('teams', $course->teams->contains($team)) ? 'checked' : '' }} />
+                            <label for="team[{{ $team->name }}]">{{ $team->name }}</label>
+                        </div>
+                    @endforeach
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div
+                class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <table>
+                    <thead>
+                        <th>Signed In</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Team</th>
+                        <th>Income Group</th>
+                        <th>Price</th>
+                        <th>Paid</th>
+                    </thead>
+                    <tbody>
+                        @foreach ($course->invitees()->get() as $invitee)
+                            @php
+                                //dd(\App\Models\User::first(), $invitee);
+                                $signed_in = $course->participants->contains($invitee);
+                            @endphp
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="participants[{{ $invitee->id }}]"
+                                        id="participant[{{ $invitee->name }}]" value="1"
+                                        {{ old('participants', $signed_in) ? 'checked' : '' }} />
+                                </td>
+                                <td>{{ $invitee->first_name }}</td>
+                                <td>{{ $invitee->last_name }}</td>
+                                <td>{{ $invitee->team->name }}</td>
+                                <td>{{ $invitee->income_group->name }}</td>
+                                <td>
+                                    {{ $course->fees->where('id', $invitee->income_group->id)->first()->pivot->fee }}
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="paid[{{ $invitee->id }}]"
+                                        id="paid[{{ $invitee->name }}]" value="1"
+                                        {{ old('paid', $signed_in && $course->participants->where('id', $invitee->id)->first()->pivot->paid) ? 'checked' : '' }} />
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -166,4 +166,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</div>

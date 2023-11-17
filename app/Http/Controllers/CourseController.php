@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Gate;
 
 class CourseController extends Controller
 {
+    protected $only = [
+        'index',
+    ];
+
     protected function teams_not_selected(Course $course)
     {
         return Team::whereNotIn('id', function ($query) use ($course) {

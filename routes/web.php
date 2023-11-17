@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\CourseController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\UserController;
+use App\Livewire\EditCourse;
+use App\Livewire\ListCourses;
 use App\Livewire\MyCourses;
 use App\Livewire\MyLessons;
 use Illuminate\Support\Facades\Artisan;
@@ -32,7 +33,8 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
     Route::resource('users', UserController::class);
-    Route::resource('courses', CourseController::class);
+    Route::get('courses', ListCourses::class)->name('courses.index');
+    Route::get('course/edit', EditCourse::class)->name('courses.edit');
     Route::resource('lessons', LessonController::class);
     Route::get('/my-courses', MyCourses::class)->name('my-courses');
     Route::get('/my-lessons', MyLessons::class)->name('my-lessons');
