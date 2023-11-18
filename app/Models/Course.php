@@ -18,6 +18,12 @@ class Course extends Model
         'capacity',
     ];
 
+    protected $attributes = [
+        'name' => '',
+        'description' => '',
+        'capacity' => 0,
+    ];
+
     /**
      * Return all teams to which this course is available
      */

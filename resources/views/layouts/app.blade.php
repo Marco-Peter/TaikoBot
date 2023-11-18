@@ -14,8 +14,6 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- Styles -->
-        @livewireStyles
     </head>
     <body class="font-sans antialiased text-gray-900 dark:text-gray-100">
         <x-banner />
@@ -37,9 +35,6 @@
                 {{ $slot }}
             </main>
         </div>
-
         @stack('modals')
-
-        @livewireScripts
     </body>
 </html>

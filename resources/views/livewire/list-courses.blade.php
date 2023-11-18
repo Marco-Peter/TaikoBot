@@ -28,13 +28,13 @@
                                             wire:click="delete({{ $course->id }})">Delete</x-danger-button>
                                     </td>
                                     <td><x-button
-                                            onclick="window.location.href='{{ route('courses.edit', $course) }}';">Edit</x-button>
+                                            onclick="window.location.href='{{ route('course.edit', $course) }}';">Edit</x-button>
                                     </td>
-                                    <td><a href="{{ route('courses.edit', $course) }}">{{ $course->name }}</a></td>
-                                    <td><a href="{{ route('courses.edit', $course) }}">{{ $course->description }}</a>
+                                    <td><a href="{{ route('course.edit', $course) }}">{{ $course->name }}</a></td>
+                                    <td><a href="{{ route('course.edit', $course) }}">{{ $course->description }}</a>
                                     </td>
-                                    <td><a href="{{ route('courses.edit', $course) }}">{{ $course->fee }}</a></td>
-                                    <td><a href="{{ route('courses.edit', $course) }}">{{ $course->capacity }}</a>
+                                    <td><a href="{{ route('course.edit', $course) }}">{{ $course->fee }}</a></td>
+                                    <td><a href="{{ route('course.edit', $course) }}">{{ $course->capacity }}</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -43,7 +43,7 @@
                 @else
                     <p>No courses available</p>
                 @endif
-                <x-button onclick="window.location.href='{{ route('courses.edit') }}';">Create Course</x-button>
+                <x-button onclick="window.location.href='{{ route('course.edit') }}';">Create Course</x-button>
             </div>
         </div>
     </div>

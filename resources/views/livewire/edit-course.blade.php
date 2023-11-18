@@ -6,28 +6,25 @@
 
 <div>
     <form wire:submit="save">
-        @csrf
-        @method('patch')
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
                     class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="col-span-6 sm:col-span-4">
                         <x-label for="name" value="Name" />
-                        <x-input id="name" name="name" type="text" class="mt-1 block w-full" required
-                            autocomplete="name" value="{{ $course->name }}" />
+                        <x-input type="text" wire:model="name" class="mt-1 block w-full" />
                         <x-input-error for="name" class="mt-2" />
                     </div>
                     <div class="col-span-6 sm:col-span-4">
                         <x-label for="description" value="Description" />
-                        <textarea id="description" name="description" cols="30" rows="10"
+                        <textarea wire:model="description" cols="30" rows="10"
                             placeholder="Public course description - make it catchy"
-                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ $course->description }}</textarea>
+                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
                         <x-input-error for="description" class="mt-2" />
                     </div>
                     <div class="col-span-6 sm:col-span-4">
                         <h1>Fees</h1>
-                        @foreach (App\Models\IncomeGroup::all() as $income_group)
+                        @foreach ($course->fees as $income_group)
                             <x-label for="fees[{{ $income_group->id }}]" value="{{ $income_group->name }}" />
                             <x-input id="fees[{{ $income_group->id }}]" name="fees[{{ $income_group->id }}]"
                                 type="integer" class="mt-1 block w-full"
@@ -37,8 +34,7 @@
                     </div>
                     <div class="col-span-6 sm:col-span-4">
                         <x-label for="capacity" value="Capacity" />
-                        <x-input id="capacity" name="capacity" type="integer" class="mt-1 block w-full"
-                            value="{{ $course->capacity }}" />
+                        <x-input type="integer" wire:model="capacity" class="mt-1 block w-full" />
                         <x-input-error for="capacity" class="mt-2" />
                     </div>
                 </div>
@@ -56,10 +52,9 @@
                 <fieldset>
                     <legend>Team Availability</legend>
                     @foreach (App\Models\Team::all() as $team)
-                        <div class="block">
-                            <input type="checkbox" id="team[{{ $team->name }}]" name="teams[{{ $team->id }}]"
-                                value="1" {{ old('teams', $course->teams->contains($team)) ? 'checked' : '' }} />
-                            <label for="team[{{ $team->name }}]">{{ $team->name }}</label>
+                        <div class="block" wire:key="{{ $team->id }}">
+                            <input id="publishedTeams[{{ $team->id }}]" type="checkbox" value="{{ $team->id }}" wire:model="publishedTeams" wire:click="update_publishedTeams" />
+                            <label for="publishedTeams[{{ $team->id }}]">{{ $team->name }}</label>
                         </div>
                     @endforeach
                 </fieldset>
@@ -81,9 +76,8 @@
                         <th>Paid</th>
                     </thead>
                     <tbody>
-                        @foreach ($course->invitees()->get() as $invitee)
+                        @foreach ($invitees as $invitee)
                             @php
-                                //dd(\App\Models\User::first(), $invitee);
                                 $signed_in = $course->participants->contains($invitee);
                             @endphp
                             <tr>

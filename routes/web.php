@@ -34,7 +34,7 @@ Route::middleware([
     })->name('dashboard');
     Route::resource('users', UserController::class);
     Route::get('courses', ListCourses::class)->name('courses.index');
-    Route::get('course/edit', EditCourse::class)->name('courses.edit');
+    Route::get('course/edit/{course?}', EditCourse::class)->name('course.edit');
     Route::resource('lessons', LessonController::class);
     Route::get('/my-courses', MyCourses::class)->name('my-courses');
     Route::get('/my-lessons', MyLessons::class)->name('my-lessons');
