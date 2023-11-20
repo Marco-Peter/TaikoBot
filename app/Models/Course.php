@@ -53,20 +53,8 @@ class Course extends Model
         return $this->belongsToMany(User::class)->withPivot('paid');
     }
 
-    public function add_participant(User $user, bool $paid = false)
-    {
-        $this->participants()->attach($user, ['paid' => $paid]);
-        foreach ($this->lessons as $lesson) {
-            $lesson->participants()->attach($user);
-        }
-    }
-
-    public function remove_participant(User $user)
-    {
-        foreach ($this->lessons as $lesson) {
-            $lesson->participants()->detach($user);
-        }
-        $this->participants()->detach($user);
+    public function participants_paid() : BelongsToMany {
+        return $this->participants()->wherePivot('paid', 1);
     }
 
     public function invitees(): Builder

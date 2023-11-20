@@ -53,7 +53,8 @@
                     <legend>Team Availability</legend>
                     @foreach (App\Models\Team::all() as $team)
                         <div class="block" wire:key="{{ $team->id }}">
-                            <input id="publishedTeams[{{ $team->id }}]" type="checkbox" value="{{ $team->id }}" wire:model="publishedTeams" wire:click="update_publishedTeams" />
+                            <input id="publishedTeams[{{ $team->id }}]" type="checkbox" value="{{ $team->id }}"
+                                wire:model="publishedTeams" wire:click="update_publishedTeams" />
                             <label for="publishedTeams[{{ $team->id }}]">{{ $team->name }}</label>
                         </div>
                     @endforeach
@@ -77,14 +78,11 @@
                     </thead>
                     <tbody>
                         @foreach ($invitees as $invitee)
-                            @php
-                                $signed_in = $course->participants->contains($invitee);
-                            @endphp
                             <tr>
                                 <td>
                                     <input type="checkbox" name="participants[{{ $invitee->id }}]"
-                                        id="participant[{{ $invitee->name }}]" value="1"
-                                        {{ old('participants', $signed_in) ? 'checked' : '' }} />
+                                        value="{{ $invitee->id }}" wire:model="participants"
+                                        wire:click="update_participants" />
                                 </td>
                                 <td>{{ $invitee->first_name }}</td>
                                 <td>{{ $invitee->last_name }}</td>
@@ -95,8 +93,8 @@
                                 </td>
                                 <td>
                                     <input type="checkbox" name="paid[{{ $invitee->id }}]"
-                                        id="paid[{{ $invitee->name }}]" value="1"
-                                        {{ old('paid', $signed_in && $course->participants->where('id', $invitee->id)->first()->pivot->paid) ? 'checked' : '' }} />
+                                        @disabled(!in_array($invitee->id, $participants)) value="{{ $invitee->id }}" wire:model="paid"
+                                        wire:click="update_payment({{ $invitee->id }})" />
                                 </td>
                             </tr>
                         @endforeach
@@ -119,38 +117,30 @@
                     </thead>
                     <tbody>
                         @foreach ($course->lessons->sortBy('start') as $lesson)
-                            <form action="{{ route('lessons.destroy', $lesson) }}" method="post">
-                                @csrf
-                                @method('delete')
-                                <tr>
-                                    <td>
-                                        <x-danger-button type="submit"
-                                            value="{{ $team->id }}">Remove</x-danger-button>
-                                    </td>
-                                    <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->start }}</a></td>
-                                    <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->finish }}</a></td>
-                                    <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->title }}</a></td>
-                                </tr>
-                            </form>
-                        @endforeach
-                        <form method="POST" action="{{ route('lessons.store') }}">
-                            @csrf
                             <tr>
                                 <td>
-                                    <x-button type="submit" name="course_id"
-                                        value="{{ $course->id }}">Add</x-button>
+                                    <x-danger-button type="button"
+                                        wire:click="remove_lesson({{ $lesson->id }})">Remove</x-danger-button>
                                 </td>
-                                <td><x-input id="start" name="start" type="datetime-local"
-                                        class="mt-1 block w-full" required />
+                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->start }}</a></td>
+                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->finish }}</a></td>
+                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->title }}</a></td>
+                            </tr>
+                        @endforeach
+                        <form wire:submit="add_lesson">
+                            <tr>
+                                <td>
+                                    <x-button type="submit">Add</x-button>
+                                </td>
+                                <td><x-input type="datetime-local" wire:model="lesson_start"
+                                        class="mt-1 block w-full" />
                                     <x-input-error for="start" class="mt-2" />
                                 </td>
-                                <td><x-input id="finish" name="finish" type="datetime-local"
-                                        class="mt-1 block w-full" required />
+                                <td><x-input type="datetime-local" wire:model="lesson_end" class="mt-1 block w-full" />
                                     <x-input-error for="finish" class="mt-2" />
                                 </td>
                                 <td>
-                                    <x-input id="title" name="title" type="text" class="mt-1 block w-full"
-                                        required autocomplete="title" value="{{ $course->title }}" />
+                                    <x-input type="text" class="mt-1 block w-full" wire:model="lesson_title" />
                                     <x-input-error for="title" class="mt-2" />
                                 </td>
                             </tr>
