@@ -15,12 +15,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('lesson_user', function (Blueprint $table) {
-            $table->id();
             $table->foreignIdFor(Lesson::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->primary(['lesson_id', 'user_id']);
             $table->enum('participation', LessonParticipationEnum::values())->default(LessonParticipationEnum::SIGNED_IN->value);
             $table->timestamps();
-            $table->unique(['lesson_id', 'user_id']);
         });
     }
 

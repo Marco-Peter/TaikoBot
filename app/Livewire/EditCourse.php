@@ -3,15 +3,15 @@
 namespace App\Livewire;
 
 use App\Models\Course;
+use App\Models\IncomeGroup;
 use App\Models\Lesson;
-use DateTime;
-use Livewire\Component;
+use App\Models\Team;
 use Livewire\Attributes\Rule;
+use Livewire\Component;
 
 class EditCourse extends Component
 {
     public Course $course;
-    public Team $teams;
 
     #[Rule('required|string|min:3')]
     public string $name = '';
@@ -22,16 +22,20 @@ class EditCourse extends Component
     #[Rule('required|int')]
     public int $capacity = 0;
 
+    public array $fees = [];
+
     #[Rule('required|string|min:3')]
     public string $lesson_title = '';
 
-    #[Rule('required|datetime')]
-    public DateTime $lesson_start;
+    #[Rule('required|date')]
+    public  $lesson_start;
 
-    #[Rule('required|datetime')]
-    public DateTime $lesson_end;
+    #[Rule('required|date')]
+    public  $lesson_end;
 
-    public $publishedTeams = [];
+    public $teams = [];
+    public $selectedTeams = [];
+
     public $invitees = [];
     public $participants = [];
     public $paid = [];
@@ -43,16 +47,22 @@ class EditCourse extends Component
         $this->name = $course->name;
         $this->description = $course->description;
         $this->capacity = $course->capacity;
-        $this->publishedTeams = $course->teams->pluck('id')->all();
-        $this->invitees = $this->course->invitees()->get();
+
+        $this->teams = Team::all()->toArray();
+
+        foreach ($course->incomeGroups as $incomeGroup) {
+            $this->fees[$incomeGroup->id] = ["name" => $incomeGroup->name, "fee" => strval($incomeGroup->pivot->fee)];
+        }
+        $this->selectedTeams = $course->teams->pluck('id')->toArray();
+        $this->invitees = $course->invitees()->with(['team', 'incomeGroup'])->get()->toArray();
         $this->participants = $course->participants->pluck('id')->all();
         $this->paid = $course->participants_paid()->get()->pluck('id')->all();
     }
 
-    public function update_publishedTeams()
+    public function update_selectedTeams()
     {
-        $this->course->teams()->sync($this->publishedTeams);
-        $this->invitees = $this->course->invitees()->get();
+        $this->course->teams()->sync($this->selectedTeams);
+        $this->invitees = $this->course->invitees()->with(['team', 'incomeGroup'])->get()->toArray();
     }
 
     public function update_participants()
@@ -74,7 +84,13 @@ class EditCourse extends Component
     public function add_lesson()
     {
         $this->validate();
-        dd();
+        $this->course->lessons()->create([
+            'start' => $this->lesson_start,
+            'finish' => $this->lesson_end,
+            'title' => $this->lesson_title,
+            'notes' => '',
+        ]);
+        $this->reset('lesson_start', 'lesson_end', 'lesson_title');
     }
 
     public function render()
@@ -86,5 +102,7 @@ class EditCourse extends Component
     {
         $this->validate();
         $this->course->save();
+        dd($this->incomeGroup);
+        $this->course->fees();
     }
 }

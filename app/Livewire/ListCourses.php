@@ -15,6 +15,12 @@ class ListCourses extends Component
         $this->courses = Course::all();
     }
 
+    public function delete(Course $course)
+    {
+        $course->delete();
+        return redirect()->to(route('courses.index'));
+    }
+
     public function render()
     {
         return view('livewire.list-courses');

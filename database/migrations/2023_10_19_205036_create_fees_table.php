@@ -14,12 +14,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('fees', function (Blueprint $table) {
-            $table->id();
             $table->foreignIdFor(Course::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(IncomeGroup::class)->constrained()->cascadeOnDelete();
+            $table->primary(['course_id', 'income_group_id']);
             $table->unsignedInteger('fee');
             $table->timestamps();
-            $table->unique(['course_id', 'income_group_id']);
         });
     }
 

@@ -43,7 +43,7 @@
                 @else
                     <p>No courses available</p>
                 @endif
-                <x-button onclick="window.location.href='{{ route('course.edit') }}';">Create Course</x-button>
+                <x-button onclick="window.location.href='{{ route('course.create') }}';">Create Course</x-button>
             </div>
         </div>
     </div>

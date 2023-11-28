@@ -24,11 +24,11 @@
                     </div>
                     <div class="col-span-6 sm:col-span-4">
                         <h1>Fees</h1>
-                        @foreach ($course->fees as $income_group)
+                        @foreach ($course->incomeGroups as $income_group)
                             <x-label for="fees[{{ $income_group->id }}]" value="{{ $income_group->name }}" />
                             <x-input id="fees[{{ $income_group->id }}]" name="fees[{{ $income_group->id }}]"
                                 type="integer" class="mt-1 block w-full"
-                                value="{{ $course->fees->find($income_group->id)->pivot->fee }}" />
+                                value="{{ $course->incomeGroups->find($income_group->id)->pivot->fee }}" />
                             <x-input-error for="fee" class="mt-2" />
                         @endforeach
                     </div>
@@ -53,9 +53,9 @@
                     <legend>Team Availability</legend>
                     @foreach (App\Models\Team::all() as $team)
                         <div class="block" wire:key="{{ $team->id }}">
-                            <input id="publishedTeams[{{ $team->id }}]" type="checkbox" value="{{ $team->id }}"
-                                wire:model="publishedTeams" wire:click="update_publishedTeams" />
-                            <label for="publishedTeams[{{ $team->id }}]">{{ $team->name }}</label>
+                            <input id="selectedTeams[{{ $team->id }}]" type="checkbox" value="{{ $team->id }}"
+                                wire:model="selectedTeams" wire:click="update_selectedTeams" />
+                            <label for="selectedTeams[{{ $team->id }}]">{{ $team->name }}</label>
                         </div>
                     @endforeach
                 </fieldset>
@@ -80,21 +80,21 @@
                         @foreach ($invitees as $invitee)
                             <tr>
                                 <td>
-                                    <input type="checkbox" name="participants[{{ $invitee->id }}]"
-                                        value="{{ $invitee->id }}" wire:model="participants"
+                                    <input type="checkbox" name="participants[{{ $invitee['id'] }}]"
+                                        value="{{ $invitee['id'] }}" wire:model="participants"
                                         wire:click="update_participants" />
                                 </td>
-                                <td>{{ $invitee->first_name }}</td>
-                                <td>{{ $invitee->last_name }}</td>
-                                <td>{{ $invitee->team->name }}</td>
-                                <td>{{ $invitee->income_group->name }}</td>
+                                <td>{{ $invitee['first_name'] }}</td>
+                                <td>{{ $invitee['last_name'] }}</td>
+                                <td>{{ $invitee['team']['name'] }}</td>
+                                <td>{{ $invitee['income_group']['name'] }}</td>
                                 <td>
-                                    {{ $course->fees->where('id', $invitee->income_group->id)->first()->pivot->fee }}
+                                    {{ $course->incomeGroups->where('id', $invitee['income_group']['id'])->first()->pivot->fee }}
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="paid[{{ $invitee->id }}]"
-                                        @disabled(!in_array($invitee->id, $participants)) value="{{ $invitee->id }}" wire:model="paid"
-                                        wire:click="update_payment({{ $invitee->id }})" />
+                                    <input type="checkbox" name="paid[{{ $invitee['id'] }}]"
+                                        @disabled(!in_array($invitee['id'], $participants)) value="{{ $invitee['id'] }}" wire:model="paid"
+                                        wire:click="update_payment({{ $invitee['id'] }})" />
                                 </td>
                             </tr>
                         @endforeach
@@ -110,7 +110,7 @@
                 class="text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                 <table>
                     <thead>
-                        <th></th>
+                        <th colspan="2"></th>
                         <th>Start</th>
                         <th>End</th>
                         <th>Title</th>
@@ -119,17 +119,21 @@
                         @foreach ($course->lessons->sortBy('start') as $lesson)
                             <tr>
                                 <td>
+                                    <x-button
+                                        onclick="window.location.href='{{ route('lessons.edit', $lesson) }}';">Edit</x-button>
+                                </td>
+                                <td>
                                     <x-danger-button type="button"
                                         wire:click="remove_lesson({{ $lesson->id }})">Remove</x-danger-button>
                                 </td>
-                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->start }}</a></td>
-                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->finish }}</a></td>
-                                <td><a href="{{ route('lessons.edit', $lesson) }}">{{ $lesson->title }}</a></td>
+                                <td>{{ $lesson->start }}</td>
+                                <td>{{ $lesson->finish }}</td>
+                                <td>{{ $lesson->title }}</td>
                             </tr>
                         @endforeach
                         <form wire:submit="add_lesson">
                             <tr>
-                                <td>
+                                <td colspan="2">
                                     <x-button type="submit">Add</x-button>
                                 </td>
                                 <td><x-input type="datetime-local" wire:model="lesson_start"

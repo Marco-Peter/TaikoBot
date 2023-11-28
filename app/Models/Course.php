@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use PHPUnit\Framework\TestStatus\Incomplete;
 
 class Course extends Model
 {
@@ -35,7 +36,8 @@ class Course extends Model
     /* Contains courses, which can be used for compensation */
     public function compensation(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class, 'compensations', 'original_id', 'compensation_id');
+        return $this->belongsToMany(Course::class, 'compensations', 'original_id', 'compensation_id')
+            ->withTimestamps();
     }
 
     public function lessons(): HasMany
@@ -43,17 +45,18 @@ class Course extends Model
         return $this->hasMany(Lesson::class);
     }
 
-    public function fees(): BelongsToMany
+    public function incomeGroups(): BelongsToMany
     {
         return $this->belongsToMany(IncomeGroup::class, 'fees')->withPivot('fee')->withTimestamps();
     }
 
     public function participants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('paid');
+        return $this->belongsToMany(User::class)->withPivot('paid')->withTimestamps();
     }
 
-    public function participants_paid() : BelongsToMany {
+    public function participants_paid(): BelongsToMany
+    {
         return $this->participants()->wherePivot('paid', 1);
     }
 

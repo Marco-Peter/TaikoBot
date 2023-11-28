@@ -41,7 +41,7 @@
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->email }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->role }}</a></td>
                                 <td><a href="{{ route('users.edit', $user) }}">{{ $user->team->name }}</a></td>
-                                <td><a href="{{ route('users.edit', $user) }}">{{ $user->income_group->name }}</a>
+                                <td><a href="{{ route('users.edit', $user) }}">{{ $user->incomeGroup->name }}</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -71,9 +71,9 @@
                                     </select>
                                 </td>
                                 <td class="text-gray-800">
-                                    <select name="income_group" id="income_group">
-                                        @foreach (App\Models\IncomeGroup::all() as $income_group)
-                                            <option value="{{ $income_group->id }}">{{ $income_group->name }}</option>
+                                    <select name="incomeGroup" id="incomeGroup">
+                                        @foreach (App\Models\IncomeGroup::all() as $incomeGroup)
+                                            <option value="{{ $incomeGroup->id }}">{{ $incomeGroup->name }}</option>
                                         @endforeach
                                     </select>
                                 </td>

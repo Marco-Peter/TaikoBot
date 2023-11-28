@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\UserController;
+use App\Livewire\CreateCourse;
 use App\Livewire\EditCourse;
 use App\Livewire\ListCourses;
 use App\Livewire\MyCourses;
@@ -34,6 +35,7 @@ Route::middleware([
     })->name('dashboard');
     Route::resource('users', UserController::class);
     Route::get('courses', ListCourses::class)->name('courses.index');
+    Route::get('course/create', CreateCourse::class)->name('course.create');
     Route::get('course/edit/{course?}', EditCourse::class)->name('course.edit');
     Route::resource('lessons', LessonController::class);
     Route::get('/my-courses', MyCourses::class)->name('my-courses');
