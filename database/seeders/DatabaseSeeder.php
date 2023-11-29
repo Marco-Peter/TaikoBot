@@ -69,8 +69,7 @@ class DatabaseSeeder extends Seeder
 
         Course::factory(5)->hasAttached(
             IncomeGroup::all(),
-            ['fee' => 200],
-            'fees'
+            ['fee' => 200]
         )
             ->withLessons()
             ->create();
