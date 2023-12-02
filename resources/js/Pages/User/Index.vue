@@ -17,7 +17,7 @@ function destroy(id) {
 <template>
     <AppLayout template="Users">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            <h2 class="font-semibold text-xl leading-tight">
                 Users
             </h2>
         </template>
@@ -46,9 +46,8 @@ function destroy(id) {
                                 <td>{{ user.last_name }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.role }}</td>
-                                <td>{{ user.assembler.name }}</td>
-                                <td>{{ new Date(user.created_at).toLocaleString() }}</td>
-                                <td>{{ new Date(user.updated_at).toLocaleString() }}</td>
+                                <td>{{ user.team.name }}</td>
+                                <td>{{ user.income_group.name }}</td>
                                 <td>
                                     <Link :href="route('users.edit', user.id)">
                                     <SecondaryButton>Edit</SecondaryButton>
@@ -64,5 +63,6 @@ function destroy(id) {
                 </div>
             </div>
         </div>
+        {{ users }}
     </AppLayout>
 </template>
