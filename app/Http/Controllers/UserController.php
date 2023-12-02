@@ -2,35 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnum;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class UserController extends Controller
 {
+    protected $only = ['index', 'create', 'store', 'edit', 'update', 'destroy'];
+
     /**
      * Display a listing of the resource.
      */
-    public function index():View
+    public function index(): Response
     {
         Gate::authorize('edit-users');
 
-        return view('management.list-users', [
-            'users' => User::get(),
-            'teams' => Team::get(),
+        $users = User::all();
+
+        return Inertia::render('User/Index', [
+            'users' => $users,
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): Response
     {
-        //
+        Gate::authorize('edit-users');
+
+        return Inertia::render('User/Create', [
+            'roles' => UserRoleEnum::values(),
+        ]);
     }
 
     /**
@@ -40,42 +50,61 @@ class UserController extends Controller
     {
         Gate::authorize('edit-users');
 
+
         $validated = $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required',
-            'role' => 'required',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'email' => 'required|email|unique:App\Models\User',
+            'role' => [
+                'required',
+                Rule::enum(UserRoleEnum::class),
+            ],
             'team_id' => 'required',
         ]);
 
         $validated['password'] = Hash::make('password');
         User::create($validated);
 
-        return redirect(route('users.index'));
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
+        return to_route('users.index')->with('message', 'User created successfully');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(User $user): Response
     {
-        //
+        Gate::authorize('edit-users');
+
+        return Inertia::render('User/Edit', [
+            'user' => $user,
+            'roles' => UserRoleEnum::values(),
+            'teams' => Team::all(['id', 'name']),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): RedirectResponse
     {
-        //
+        Gate::authorize('edit-users');
+
+        $validated = $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('App\Models\User')->ignore($user->id),
+            ],
+            'role' => [
+                'required',
+                Rule::enum(UserRoleEnum::class),
+            ],
+            'team_id' => 'required|exists:teams,id',
+        ]);
+
+        return to_route('users.index')->with('message', 'User updated successfully');
     }
 
     /**
@@ -85,8 +114,7 @@ class UserController extends Controller
     {
         Gate::authorize('edit-users');
 
-        $this->authorize('delete');
         $user->delete();
-        return redirect(route('users.index'));
+        return to_route('users.index')->with('message', 'User deleted successfully');
     }
 }
