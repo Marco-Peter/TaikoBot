@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Team;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CourseController extends Controller
 {
     protected $only = [
         'index',
+        'edit',
     ];
 
     protected function teams_not_selected(Course $course)
@@ -25,23 +28,23 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         Gate::authorize('edit-courses');
 
-        return view('management.list-courses', [
-            'courses' => Course::get(),
+        return Inertia::render('Course/Index', [
+            'courses' => Course::all(),
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): View
+    public function create(): Response
     {
         Gate::authorize('edit-courses');
 
-        return view('management.create-course');
+        return Inertia::render('Course/Create');
     }
 
     /**
@@ -73,7 +76,7 @@ class CourseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Course $course)
+    public function show(Course $course): Response
     {
         //
     }
@@ -81,14 +84,12 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Course $course): View
+    public function edit(Course $course): Response
     {
         Gate::authorize('edit-courses');
 
-        return view('management.edit-course', [
+        return Inertia::render('Course/Edit', [
             'course' => $course,
-            'teams' => Team::all(),
-            'teams_not_selected' => $this->teams_not_selected($course),
         ]);
     }
 

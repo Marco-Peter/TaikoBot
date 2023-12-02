@@ -14,14 +14,6 @@ defineProps({
 
 const showingNavigationDropdown = ref(false);
 
-const switchToTeam = (team) => {
-    router.put(route('current-team.update'), {
-        team_id: team.id,
-    }, {
-        preserveState: false,
-    });
-};
-
 const logout = () => {
     router.post(route('logout'));
 };
@@ -55,6 +47,10 @@ const logout = () => {
 
                                 <NavLink :href="route('users.index')" :active="route().current('users.*')">
                                     User Management
+                                </NavLink>
+
+                                <NavLink :href="route('courses.index')" :active="route().current('courses.*')">
+                                    Course Management
                                 </NavLink>
                             </div>
                         </div>
@@ -143,6 +139,10 @@ const logout = () => {
 
                         <ResponsiveNavLink :href="route('users.index')" :active="route().current('users.*')">
                             User Management
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('courses.index')" :active="route().current('courses.*')">
+                            Course Management
                         </ResponsiveNavLink>
                     </div>
 
