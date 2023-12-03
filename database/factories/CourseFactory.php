@@ -24,12 +24,12 @@ class CourseFactory extends Factory
             'capacity' => $this->faker->numberBetween(10, 40),
         ];
     }
-
+/*
     public function withFees(): static
     {
         return $this->hasAttached(IncomeGroup::all(), ['fee' => 200], 'fees');
     }
-
+*/
     public function withLessons(): static
     {
         return $this->has(Lesson::factory(10));

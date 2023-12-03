@@ -7,14 +7,24 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
-const props = defineProps({ course: Object });
+const props = defineProps({ course: Object, teams: Object, tarifGroups: Object });
+
+let fees = {};
+for (let el of props.course.teams) {
+    fees[el.id] = el.pivot.fee;
+}
 
 const form = useForm({
     name: props.course.name,
     description: props.course.description,
     capacity: String(props.course.capacity),
+    teams: props.course.teams.map(({id}) => id),
+    fees: fees,
 });
 
+const submit = () => {
+    form.put(route("courses.update", props.course.id));
+}
 </script>
 
 <template>
@@ -45,7 +55,19 @@ const form = useForm({
                         <TextInput id="capacity" v-model="form.capacity" type="number" class="mt-1 block w-full" />
                         <InputError :message="form.errors.capacity" class="mt-2" />
 
-                        <PrimaryButton type="submit">Submit</PrimaryButton>
+                        <div v-for="tg in tarifGroups" :key="tg.id">
+                            <InputLabel :for="tg.name" :value="tg.name" />
+                            <TextInput :id="tg.name" v-model="form.fees[tg.id]" type="number" class="mt-1 block w-full" />
+                            <InputError :message="form.errors.fees" class="mt-2" />
+                        </div>
+
+                        <div v-for="team in props.teams" :key="team.id">
+                            <input type="checkbox" :id="team.name" v-model="form.teams" :value="String(team.id)"
+                            class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"/>
+                            <label :for="team.name" class="ml-3">{{ team.name }}</label>
+                        </div>
+
+                        <PrimaryButton type="submit" class="mt-3">Submit</PrimaryButton>
                         <Link :href="route('courses.index')">
                         <SecondaryButton>Cancel</SecondaryButton>
                         </Link>
@@ -53,5 +75,10 @@ const form = useForm({
                 </div>
             </div>
         </div>
+        <p>{{ course }}</p>
+        <p>{{ teams }}</p>
+        <p>{{ form.teams }}</p>
+        <p>{{ tarifGroups }}</p>
+        <p>{{ form.fees }}</p>
     </AppLayout>
 </template>

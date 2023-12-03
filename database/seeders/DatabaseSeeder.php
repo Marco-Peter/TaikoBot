@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Team;
 use App\Models\User;
 use App\Models\Course;
 use App\Models\IncomeGroup;
@@ -17,6 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+/*
         IncomeGroup::factory()->create([
             'name' => 'Full',
             'description' => 'Standard rate for fully employed members',
@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Student',
             'description' => 'Reduced rate for students and unemployed',
         ]);
-
+*/
         DB::table('teams')->insert([
             'name' => 'Basic Group',
             'description' => 'Basic group, which meets every Thursday',

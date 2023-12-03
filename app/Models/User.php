@@ -34,6 +34,7 @@ class User extends Authenticatable
         'password',
         'role',
         'team_id',
+        /*'income_group_id',*/
     ];
 
     /**

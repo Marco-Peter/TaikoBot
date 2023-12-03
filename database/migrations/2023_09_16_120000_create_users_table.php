@@ -24,7 +24,7 @@ return new class extends Migration
             $table->enum('role', UserRoleEnum::values());
             $table->integer('karma')->nullable();
             $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(IncomeGroup::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(IncomeGroup::class)->nullable()->constrained()->restrictOnDelete();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();

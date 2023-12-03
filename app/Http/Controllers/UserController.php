@@ -25,7 +25,7 @@ class UserController extends Controller
     {
         Gate::authorize('edit-users');
 
-        $users = User::with(['team', 'incomeGroup'])->get();
+        $users = User::with(['team'/*, 'incomeGroup'*/])->get();
 
         return Inertia::render('User/Index', [
             'users' => $users,
@@ -42,7 +42,7 @@ class UserController extends Controller
         return Inertia::render('User/Create', [
             'roles' => UserRoleEnum::values(),
             'teams' => Team::all(['id', 'name']),
-            'incomeGroups' => IncomeGroup::all(['id', 'name']),
+            /*'incomeGroups' => IncomeGroup::all(['id', 'name']),*/
         ]);
     }
 
@@ -63,7 +63,7 @@ class UserController extends Controller
                 Rule::enum(UserRoleEnum::class),
             ],
             'team_id' => 'required',
-            'income_group_id' => 'required|exists:income_groups,id',
+            /*'income_group_id' => 'required|exists:income_groups,id',*/
         ]);
 
         $validated['password'] = Hash::make('password');
@@ -83,7 +83,7 @@ class UserController extends Controller
             'user' => $user,
             'roles' => UserRoleEnum::values(),
             'teams' => Team::all(['id', 'name']),
-            'incomeGroups' => IncomeGroup::all(['id', 'name']),
+            /*'incomeGroups' => IncomeGroup::all(['id', 'name']),*/
         ]);
     }
 
@@ -107,7 +107,7 @@ class UserController extends Controller
                 Rule::enum(UserRoleEnum::class),
             ],
             'team_id' => 'required|exists:teams,id',
-            'income_group_id' => 'required|exists:income_groups,id',
+            /*'income_group_id' => 'required|exists:income_groups,id',*/
         ]);
 
         return to_route('users.index')->with('message', 'User updated successfully');

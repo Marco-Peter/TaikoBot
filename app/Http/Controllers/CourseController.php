@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\IncomeGroup;
 use App\Models\Team;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,7 +15,10 @@ class CourseController extends Controller
 {
     protected $only = [
         'index',
+        'create',
+        'store',
         'edit',
+        'update',
     ];
 
     protected function teams_not_selected(Course $course)
@@ -44,7 +47,10 @@ class CourseController extends Controller
     {
         Gate::authorize('edit-courses');
 
-        return Inertia::render('Course/Create');
+        return Inertia::render('Course/Create', [
+            'teams' => Team::all(['id', 'name']),
+            /*'tarifGroups' => IncomeGroup::all(['id', 'name']),*/
+        ]);
     }
 
     /**
@@ -68,7 +74,7 @@ class CourseController extends Controller
         });
 
         $course = Course::create($validated);
-        $course->fees()->attach($fees);
+        $course->incomeGroups()->attach($fees);
 
         return redirect(route('courses.edit', $course));
     }
@@ -89,7 +95,9 @@ class CourseController extends Controller
         Gate::authorize('edit-courses');
 
         return Inertia::render('Course/Edit', [
-            'course' => $course,
+            'course' => $course->load(['teams:id', 'incomeGroups:id']),
+            'teams' => Team::all(['id', 'name']),
+            'tarifGroups' => IncomeGroup::all(['id', 'name']),
         ]);
     }
 
@@ -138,7 +146,7 @@ class CourseController extends Controller
 
         $course->update($validated);
         foreach ($validated["fees"] as $key => $value) {
-            $course->fees()->updateExistingPivot($key, ['fee' => $value]);
+            $course->incomeGroups()->updateExistingPivot($key, ['fee' => $value]);
         }
         $course->teams()->sync($teams);
         $course->participants()->sync($parts);

@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'password' => Hash::make('password'),
             'role' => $this->faker->randomElement(['admin', 'teacher', 'student']),
             'team_id' => Team::find(1),
-            'income_group_id' => IncomeGroup::find(random_int(1, IncomeGroup::count())),
+            /*'income_group_id' => IncomeGroup::find(random_int(1, IncomeGroup::count())),*/
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'remember_token' => Str::random(10),
