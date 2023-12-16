@@ -30,7 +30,7 @@ class Course extends Model
      */
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class)->withTimestamps();
+        return $this->belongsToMany(Team::class);
     }
 
     /* Contains courses, which can be used for compensation */

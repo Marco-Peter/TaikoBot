@@ -63,6 +63,5 @@ function destroy(id) {
                 </div>
             </div>
         </div>
-        {{ users }}
     </AppLayout>
 </template>

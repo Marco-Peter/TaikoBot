@@ -55,6 +55,5 @@ function destroy(id) {
                 </div>
             </div>
         </div>
-        {{ courses }}
     </AppLayout>
 </template>

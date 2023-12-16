@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\IncomeGroup;
 use App\Models\Team;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -19,6 +19,7 @@ class CourseController extends Controller
         'store',
         'edit',
         'update',
+        'destroy',
     ];
 
     protected function teams_not_selected(Course $course)
@@ -63,28 +64,13 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'string',
-            'fees.*' => 'integer|min:0',
             'capacity' => 'integer|min:1',
+            'teams.*' => 'integer',
         ]);
 
-        $offset = array_search("fees", array_keys($validated), true);
-        $fees = array_splice($validated, $offset, 1)["fees"];
-        array_walk($fees, function (&$value) {
-            $value = ["fee" => $value];
-        });
-
         $course = Course::create($validated);
-        $course->incomeGroups()->attach($fees);
-
-        return redirect(route('courses.edit', $course));
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Course $course): Response
-    {
-        //
+        $course->teams()->sync($validated['teams'] ?? []);
+        return redirect(route('courses.index'));
     }
 
     /**
@@ -95,9 +81,14 @@ class CourseController extends Controller
         Gate::authorize('edit-courses');
 
         return Inertia::render('Course/Edit', [
-            'course' => $course->load(['teams:id', 'incomeGroups:id']),
+            'course' => $course->load([
+                'teams:id',
+                'lessons' => function (Builder $query) {
+                    $query->orderBy('start', 'asc')
+                        ->select('id', 'course_id', 'title', 'start', 'finish');
+                },
+            ]),
             'teams' => Team::all(['id', 'name']),
-            'tarifGroups' => IncomeGroup::all(['id', 'name']),
         ]);
     }
 
@@ -111,51 +102,14 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'string',
-            'fees.*' => 'integer|min:0',
             'capacity' => 'integer|min:1',
-            'teams.*' => 'boolean',
-            'participants.*' => 'boolean',
-            'paid.*' => 'boolean',
+            'teams.*' => 'integer',
         ]);
 
-        $offset = array_search("teams", array_keys($validated), true);
-        if ($offset) {
-            $teams = array_keys(array_splice($validated, $offset, 1)["teams"]);
-        } else {
-            $teams = [];
-        }
-
-        $offset = array_search("participants", array_keys($validated), true);
-        if ($offset) {
-            $participants = array_keys(array_splice($validated, $offset, 1)["participants"]);
-        } else {
-            $participants = [];
-        }
-
-        $offset = array_search("paid", array_keys($validated), true);
-        if ($offset) {
-            $paid = array_keys(array_splice($validated, $offset, 1)["paid"]);
-        } else {
-            $paid = [];
-        }
-
-        $parts = array();
-        foreach ($participants as $participant) {
-            $parts[$participant] = ["paid" => in_array($participant, $paid)];
-        }
 
         $course->update($validated);
-        foreach ($validated["fees"] as $key => $value) {
-            $course->incomeGroups()->updateExistingPivot($key, ['fee' => $value]);
-        }
-        $course->teams()->sync($teams);
-        $course->participants()->sync($parts);
-
-        foreach ($course->lessons as $lesson) {
-            $lesson->participants()->sync($participants);
-        }
-
-        return back();
+        $course->teams()->sync($validated['teams'] ?? []);
+        return redirect(route('courses.index'));
     }
 
     /**

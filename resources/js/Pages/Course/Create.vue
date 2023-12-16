@@ -7,14 +7,13 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
-const props = defineProps({ teams: Object, tarifGroups: Object });
+const props = defineProps({ teams: Object });
 
 const form = useForm({
     name: '',
     description: '',
     capacity: '',
     teams: [],
-    fees: {},
 });
 
 const submit = () => {
@@ -50,12 +49,7 @@ const submit = () => {
                         <TextInput id="capacity" v-model="form.capacity" type="number" class="mt-1 block w-full" />
                         <InputError :message="form.errors.capacity" class="mt-2" />
 
-                        <div v-for="tg in tarifGroups" :key="tg.id">
-                            <InputLabel :for="tg.name" :value="tg.name" />
-                            <TextInput :id="tg.name" v-model="form.fees[tg.id]" type="number" class="mt-1 block w-full" />
-                            <InputError :message="form.errors.fees" class="mt-2" />
-                        </div>
-
+                        <h1 class="font-semibold text-xl mb-2 mt-3">Publish to Groups</h1>
                         <div v-for="team in teams" :key="team.id">
                             <input type="checkbox" :id="team.name" v-model="form.teams" :value="String(team.id)"
                                 class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />

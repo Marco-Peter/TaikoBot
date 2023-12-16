@@ -5,25 +5,26 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import DangerButton from '@/Components/DangerButton.vue';
+import { Link, useForm, router } from '@inertiajs/vue3';
 
-const props = defineProps({ course: Object, teams: Object, tarifGroups: Object });
-
-let fees = {};
-for (let el of props.course.teams) {
-    fees[el.id] = el.pivot.fee;
-}
+const props = defineProps({ course: Object, teams: Object });
 
 const form = useForm({
     name: props.course.name,
     description: props.course.description,
     capacity: String(props.course.capacity),
-    teams: props.course.teams.map(({id}) => id),
-    fees: fees,
+    teams: props.course.teams.map(({ id }) => id),
 });
 
 const submit = () => {
     form.put(route("courses.update", props.course.id));
+}
+
+function destroyLesson(id) {
+    if (confirm("Are you sure you want to delete this lesson?")) {
+        router.delete(route('lessons.destroy', id));
+    }
 }
 </script>
 
@@ -55,15 +56,10 @@ const submit = () => {
                         <TextInput id="capacity" v-model="form.capacity" type="number" class="mt-1 block w-full" />
                         <InputError :message="form.errors.capacity" class="mt-2" />
 
-                        <div v-for="tg in tarifGroups" :key="tg.id">
-                            <InputLabel :for="tg.name" :value="tg.name" />
-                            <TextInput :id="tg.name" v-model="form.fees[tg.id]" type="number" class="mt-1 block w-full" />
-                            <InputError :message="form.errors.fees" class="mt-2" />
-                        </div>
-
+                        <h1 class="font-semibold text-xl mb-2 mt-3">Publish to Groups</h1>
                         <div v-for="team in props.teams" :key="team.id">
                             <input type="checkbox" :id="team.name" v-model="form.teams" :value="String(team.id)"
-                            class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"/>
+                                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
                             <label :for="team.name" class="ml-3">{{ team.name }}</label>
                         </div>
 
@@ -75,10 +71,42 @@ const submit = () => {
                 </div>
             </div>
         </div>
-        <p>{{ course }}</p>
-        <p>{{ teams }}</p>
-        <p>{{ form.teams }}</p>
-        <p>{{ tarifGroups }}</p>
-        <p>{{ form.fees }}</p>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <Link :href="route('lessons.create', {course_id: props.course.id})">
+                <PrimaryButton>Add Lesson</PrimaryButton>
+                </Link>
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <h1 class="font-semibold text-xl mb-2 mt-3">Lessons</h1>
+                    <table v-if="course.lessons.length">
+                        <thead>
+                            <tr>
+                                <th>Start</th>
+                                <th>Finish</th>
+                                <th>Title</th>
+                                <th colspan="2"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="lesson in course.lessons">
+                                <td>{{ lesson.start }}</td>
+                                <td>{{ lesson.finish }}</td>
+                                <td>{{ lesson.title }}</td>
+                                <td>
+                                    <Link :href="route('lessons.edit', lesson.id)">
+                                    <SecondaryButton>Edit</SecondaryButton>
+                                    </Link>
+                                </td>
+                                <td>
+                                    <DangerButton @click="destroyLesson(lesson.id)">Delete</DangerButton>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p v-else>No Lessons available</p>
+                </div>
+            </div>
+        </div>
     </AppLayout>
 </template>
