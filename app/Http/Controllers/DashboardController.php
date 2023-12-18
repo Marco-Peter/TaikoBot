@@ -14,28 +14,32 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $user = Auth::user();
-        $user
-            ->load([
-                'courses',
-                'lessons',
-                'team:id' => [
-                    'courses:id,name' => [
-                        'lessons' => function (Builder $query) {
-                            $query->select('course_id', 'start')
-                                ->orderBy('start', 'asc')->limit(1);
-                        },
-                    ],
-                ]
-            ]);
+        $user = Auth::user()->load([
+            'lessons' => function (Builder $query) {
+                $query->select('id', 'course_id', 'title', 'start')
+                    ->orderBy('start', 'asc');
+            }
+        ]);
+
+        $coursesSignedUp = $user->courses->load([
+            'lessons' => function (Builder $query) {
+                $query->select('course_id', 'start')
+                    ->orderBy('start', 'asc');
+            },
+        ]);
+
+        $coursesNotSignedUp = $user->team->courses->diff($coursesSignedUp)->load([
+            'lessons' => function (Builder $query) {
+                $query->select('course_id', 'start')
+                    ->orderBy('start', 'asc');
+            },
+        ]);
+        //dd($coursesSignedUp);
 
         return Inertia::render('Dashboard', [
-            'user' => $user->only(
-                'first_name',
-                'courses',
-                'lessons',
-                'team',
-            ),
+            'user' => $user->only('id', 'first_name', 'lessons'),
+            'coursesSignedUp' => $coursesSignedUp,
+            'coursesNotSignedUp' => $coursesNotSignedUp,
         ]);
     }
 }

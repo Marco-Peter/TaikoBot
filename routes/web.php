@@ -35,6 +35,8 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::resource('users', UserController::class);
+
+    Route::post('courses/{course}/signup', [CourseController::class, 'signUp'])->name('courses.signup');
     Route::resource('courses', CourseController::class);
     Route::resource('lessons', LessonController::class);
 });

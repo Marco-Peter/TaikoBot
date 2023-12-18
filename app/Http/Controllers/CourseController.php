@@ -7,6 +7,7 @@ use App\Models\Team;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -87,7 +88,7 @@ class CourseController extends Controller
                         ->select('id', 'course_id', 'title', 'start', 'finish');
                 },
             ]),
-            'teams' => Team::all(['id', 'name']),
+            'signedIn' => $course->participants->contains(Auth::user()),
         ]);
     }
 
@@ -151,5 +152,14 @@ class CourseController extends Controller
     {
         dd($request);
         return back();
+    }
+
+    public function signUp(Course $course): RedirectResponse
+    {
+        $user = Auth::user();
+        $user->courses()->attach($course->id);
+        $user->lessons()->attach($course->lessons);
+
+        return redirect(route('dashboard'))->with('message', 'Signed up successfully');
     }
 }

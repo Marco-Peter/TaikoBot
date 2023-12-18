@@ -1,14 +1,16 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
-import { Link, useForm, router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 
-const props = defineProps({ course: Object, teams: Object });
+const props = defineProps({ course: Object, signedIn: Boolean });
+
+function signUp(id) {
+    if (confirm("By signing up you confirm having read and agree with the terms of service as well as the code of conduct.")) {
+        router.post(route('courses.signup', id));
+    }
+}
 </script>
 
 <template>
@@ -49,9 +51,7 @@ const props = defineProps({ course: Object, teams: Object });
                         </tbody>
                     </table>
                     <p v-else>No Lessons available</p>
-                    <Link :href="route('dashboard')">
-                    <PrimaryButton>Sign Up</PrimaryButton>
-                    </Link>
+                    <PrimaryButton v-if="!signedIn" @click="signUp(course)">Sign Up</PrimaryButton>
 
                     <Link :href="route('dashboard')">
                     <SecondaryButton>Back</SecondaryButton>

@@ -36,8 +36,7 @@ class Course extends Model
     /* Contains courses, which can be used for compensation */
     public function compensation(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class, 'compensations', 'original_id', 'compensation_id')
-            ->withTimestamps();
+        return $this->belongsToMany(Course::class, 'compensations', 'original_id', 'compensation_id');
     }
 
     public function lessons(): HasMany
@@ -47,12 +46,12 @@ class Course extends Model
 
     public function incomeGroups(): BelongsToMany
     {
-        return $this->belongsToMany(IncomeGroup::class, 'fees')->withPivot('fee')->withTimestamps();
+        return $this->belongsToMany(IncomeGroup::class, 'fees')->withPivot('fee');
     }
 
     public function participants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('paid')->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('paid');
     }
 
     public function participants_paid(): BelongsToMany

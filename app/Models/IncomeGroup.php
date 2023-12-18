@@ -23,6 +23,6 @@ class IncomeGroup extends Model
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class, 'fees')->as('fee')->withPivot('fee')->withTimestamps();
+        return $this->belongsToMany(Course::class, 'fees')->as('fee')->withPivot('fee');
     }
 }

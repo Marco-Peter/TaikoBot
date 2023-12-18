@@ -32,7 +32,7 @@ class Lesson extends Model
 
     public function participants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withTimestamps()->withPivot('participation');
+        return $this->belongsToMany(User::class)->withPivot('participation');
     }
 
     public function course(): BelongsTo

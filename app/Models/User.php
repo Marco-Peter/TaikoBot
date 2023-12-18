@@ -75,7 +75,7 @@ class User extends Authenticatable
 
     public function lessons(): BelongsToMany
     {
-        return $this->belongsToMany(Lesson::class)->withTimestamps()->withPivot('participation');
+        return $this->belongsToMany(Lesson::class)->withPivot('participation');
     }
 
     public function incomeGroup(): BelongsTo {
@@ -84,6 +84,6 @@ class User extends Authenticatable
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class)->withTimestamps()->withPivot('paid');
+        return $this->belongsToMany(Course::class)->withPivot('paid');
     }
 }

@@ -3,7 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link } from '@inertiajs/vue3';
 
-const props = defineProps({ user: Object });
+const props = defineProps({ user: Object, coursesSignedUp: Object, coursesNotSignedUp: Object });
 </script>
 
 <template>
@@ -25,12 +25,14 @@ const props = defineProps({ user: Object });
                             <tr>
                                 <th>Date</th>
                                 <th>Title</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="lesson in user.lessons">
                                 <td>{{ lesson.start }}</td>
                                 <td>{{ lesson.title }}</td>
+                                <td>{{ lesson.pivot.participation }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -45,7 +47,8 @@ const props = defineProps({ user: Object });
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                         Your Signed Up Courses
                     </h2>
-                    <table v-if="user.courses.length">
+                    <p>Those are the courses and workshops you are signed up for. Looking forward to see you!</p>
+                    <table v-if="coursesSignedUp.length">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -53,9 +56,14 @@ const props = defineProps({ user: Object });
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="course in user.courses">
+                            <tr v-for="course in coursesSignedUp">
                                 <td>{{ course.name }}</td>
-                                <td>{{ course.capacity }}</td>
+                                <td>{{ course.lessons[0].start }}</td>
+                                <td>
+                                    <Link :href="route('courses.show', [course.id])">
+                                    <SecondaryButton>Details</SecondaryButton>
+                                    </Link>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -71,7 +79,7 @@ const props = defineProps({ user: Object });
                         Your Available Courses
                     </h2>
                     <p>Looking for new challenges? Here you can sign up to new courses and workshops.</p>
-                    <table v-if="user.team.courses.length">
+                    <table v-if="coursesNotSignedUp.length">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -80,7 +88,7 @@ const props = defineProps({ user: Object });
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="course in user.team.courses">
+                            <tr v-for="course in coursesNotSignedUp">
                                 <td>{{ course.name }}</td>
                                 <td>{{ course.lessons[0].start }}</td>
                                 <td>
@@ -95,5 +103,6 @@ const props = defineProps({ user: Object });
                 </div>
             </div>
         </div>
+        {{ coursesSignedUp }}
     </AppLayout>
 </template>
