@@ -15,7 +15,7 @@ function destroy(id) {
 </script>
 
 <template>
-    <AppLayout template="Courses">
+    <AppLayout title="Courses">
         <template #header>
             <h2 class="font-semibold text-xl leading-tight">
                 Courses

@@ -17,6 +17,7 @@ class CourseController extends Controller
         'index',
         'create',
         'store',
+        'show',
         'edit',
         'update',
         'destroy',
@@ -71,6 +72,23 @@ class CourseController extends Controller
         $course = Course::create($validated);
         $course->teams()->sync($validated['teams'] ?? []);
         return redirect(route('courses.index'));
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Course $course): Response
+    {
+        return Inertia::render('Course/Show', [
+            'course' => $course->load([
+                'teams:id',
+                'lessons' => function (Builder $query) {
+                    $query->orderBy('start', 'asc')
+                        ->select('id', 'course_id', 'title', 'start', 'finish');
+                },
+            ]),
+            'teams' => Team::all(['id', 'name']),
+        ]);
     }
 
     /**

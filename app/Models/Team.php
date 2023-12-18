@@ -22,6 +22,6 @@ class Team extends Model
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class)->withTimestamps();
+        return $this->belongsToMany(Course::class);
     }
 }

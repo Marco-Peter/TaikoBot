@@ -22,7 +22,7 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout template="Create Course">
+    <AppLayout title="Create Course">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Create Course

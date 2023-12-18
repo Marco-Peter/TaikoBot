@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -32,10 +33,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
     Route::resource('users', UserController::class);
     Route::resource('courses', CourseController::class);
     Route::resource('lessons', LessonController::class);

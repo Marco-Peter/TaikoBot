@@ -24,10 +24,10 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout template="Edit Order">
+    <AppLayout title="Edit User">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Edit Order
+                Edit User
             </h2>
         </template>
 
