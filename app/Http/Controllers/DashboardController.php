@@ -18,7 +18,8 @@ class DashboardController extends Controller
             'lessons' => function (Builder $query) {
                 $query->select('id', 'course_id', 'title', 'start')
                     ->orderBy('start', 'asc');
-            }
+            },
+            'lessons.course:id,name',
         ]);
 
         $coursesSignedUp = $user->courses->load([

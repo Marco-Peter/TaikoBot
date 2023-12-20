@@ -38,5 +38,9 @@ Route::middleware([
 
     Route::post('courses/{course}/signup', [CourseController::class, 'signUp'])->name('courses.signup');
     Route::resource('courses', CourseController::class);
+
+    Route::post('lessons/{lesson}/signout',[LessonController::class, 'signOut'])->name('lessons.signout');
+    Route::post('lessons/{lesson}/signin',[LessonController::class, 'signIn'])->name('lessons.signin');
+    Route::post('lessons/{lesson}/send-message',[LessonController::class, 'sendMessage'])->name('lessons.sendmessage');
     Route::resource('lessons', LessonController::class);
 });

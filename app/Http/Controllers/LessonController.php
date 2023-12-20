@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -90,6 +92,32 @@ class LessonController extends Controller
         Gate::authorize('edit-courses');
 
         $lesson->delete();
+        return back();
+    }
+
+    public function signOut(Request $request, Lesson $lesson): RedirectResponse
+    {
+        Auth::user()->lessons()->updateExistingPivot($lesson->id, [
+            'participation' => LessonParticipationEnum::SIGNED_OUT->value,
+            'message' => $request->message,
+        ]);
+        return back();
+    }
+
+    public function signIn(Request $request, Lesson $lesson): RedirectResponse
+    {
+        Auth::user()->lessons()->updateExistingPivot($lesson->id, [
+            'participation' => LessonParticipationEnum::SIGNED_IN->value,
+            'message' => $request->message,
+        ]);
+        return back();
+    }
+
+    public function sendMessage(Request $request, Lesson $lesson): RedirectResponse
+    {
+        Auth::user()->lessons()->updateExistingPivot($lesson->id, [
+            'message' => $request->message,
+        ]);
         return back();
     }
 }
