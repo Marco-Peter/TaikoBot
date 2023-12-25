@@ -61,5 +61,30 @@ const submit = () => {
                 </div>
             </div>
         </div>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <h2 class="font-semibold text-xl leading-tight">Participants</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="participant in lesson.participants">
+                                <td>{{ participant.first_name }}</td>
+                                <td>{{ participant.last_name }}</td>
+                                <td>{{ participant.pivot.participation }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {{ lesson }}
     </AppLayout>
 </template>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -106,8 +107,11 @@ class CourseController extends Controller
                     $query->orderBy('start', 'asc')
                         ->select('id', 'course_id', 'title', 'start', 'finish');
                 },
+                'participants:id,first_name,last_name',
             ]),
-            'teams' => Team::all(['id', 'name']),
+            'teams' => Team::with([
+                'users:id,first_name,last_name,team_id',
+            ])->get(['id', 'name']),
         ]);
     }
 
@@ -142,15 +146,23 @@ class CourseController extends Controller
         return redirect(route('courses.index'));
     }
 
-    public function add_participant(Request $request): RedirectResponse
+    public function addParticipant(Request $request, Course $course): RedirectResponse
     {
-        dd($request);
+        $user = User::find($request->user);
+        if (!$user->hasSignedUpToCourse($course)) {
+            $user->courses()->attach($course->id);
+            $user->lessons()->attach($course->lessons);
+        }
+
         return back();
     }
 
-    public function remove_participant(Request $request): RedirectResponse
+    public function removeParticipant(Request $request, Course $course): RedirectResponse
     {
-        dd($request);
+        $user = User::find($request->user);
+        $user->lessons()->detach($course->lessons);
+        $user->courses()->detach($course->id);
+
         return back();
     }
 
@@ -161,5 +173,14 @@ class CourseController extends Controller
         $user->lessons()->attach($course->lessons);
 
         return redirect(route('dashboard'))->with('message', 'Signed up successfully');
+    }
+
+    public function setPaid(Request $request, Course $course): RedirectResponse
+    {
+        $user = User::find($request->user);
+        $course->participants()->updateExistingPivot($user, [
+            'paid' => $request->paid,
+        ]);
+        return back();
     }
 }

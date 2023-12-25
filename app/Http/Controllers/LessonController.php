@@ -61,6 +61,9 @@ class LessonController extends Controller
     {
         Gate::authorize('edit-courses');
 
+        $lesson->load([
+            'participants:id,first_name,last_name'
+        ]);
         return Inertia::render('Lesson/Edit', [
             'lesson' => $lesson,
         ]);

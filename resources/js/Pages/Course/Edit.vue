@@ -7,6 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { Link, useForm, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const props = defineProps({ course: Object, teams: Object });
 
@@ -17,6 +18,9 @@ const form = useForm({
     teams: props.course.teams.map(({ id }) => id),
 });
 
+const newParticipantTeam = ref("");
+const newParticipant = ref("");
+
 const submit = () => {
     form.put(route("courses.update", props.course.id));
 }
@@ -25,6 +29,20 @@ function destroyLesson(id) {
     if (confirm("Are you sure you want to delete this lesson?")) {
         router.delete(route('lessons.destroy', id));
     }
+}
+
+function addUser(user) {
+    router.post(route('courses.addParticipant', props.course.id), { 'user': user.id});
+}
+
+function removeUser(user) {
+    if (confirm(`Are you sure you want to remove ${user.first_name} ${user.last_name} from the course?`)) {
+        router.post(route("courses.removeParticipant", props.course.id), { 'user': user.id });
+    }
+}
+
+function updatePaid(user, paid) {
+    router.post(route("courses.setPaid", props.course.id), { 'user': user, 'paid': paid });
 }
 </script>
 
@@ -74,7 +92,7 @@ function destroyLesson(id) {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <Link :href="route('lessons.create', {course_id: props.course.id})">
+                <Link :href="route('lessons.create', { course_id: props.course.id })">
                 <PrimaryButton>Add Lesson</PrimaryButton>
                 </Link>
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
@@ -108,5 +126,52 @@ function destroyLesson(id) {
                 </div>
             </div>
         </div>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <h1 class="font-semibold text-xl mb-2 mt-3">Participants</h1>
+                    <select v-model="newParticipantTeam"
+                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                        <option value="" disabled>--- Select a Group ---</option>
+                        <option v-for="(team, index) in teams" :value="index">{{ team.name  }}</option>
+                    </select>
+
+                    <select v-model="newParticipant" :disabled="newParticipantTeam===''"
+                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                        <option value="" disabled>--- Select a Participant ---</option>
+                        <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users" :value="user">{{ user.first_name }} {{ user.last_name }}</option>
+                    </select>
+                    <PrimaryButton @click="addUser(newParticipant)">Add Participant</PrimaryButton>
+
+                    <table v-if="course.participants.length">
+                        <thead>
+                            <tr>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Paid</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="participant in props.course.participants" :key="participant.id">
+                                <td>{{ participant.first_name }}</td>
+                                <td>{{ participant.last_name }}</td>
+                                <td>
+                                    <input type="checkbox" v-model="participant.pivot.paid" true-value="1" false-value="0"
+                                        @change="updatePaid(participant.id, participant.pivot.paid)"
+                                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
+                                </td>
+                                <td>
+                                    <DangerButton @click="removeUser(participant)">Remove</DangerButton>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p v-else>No Participants signed up</p>
+                </div>
+            </div>
+        </div>
+        <p>{{ teams }}</p>
     </AppLayout>
 </template>
