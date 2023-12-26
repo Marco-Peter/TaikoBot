@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\IncomeGroup;
 use App\Models\Lesson;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,12 +23,6 @@ class CourseFactory extends Factory
             'capacity' => $this->faker->numberBetween(10, 40),
         ];
     }
-/*
-    public function withFees(): static
-    {
-        return $this->hasAttached(IncomeGroup::all(), ['fee' => 200], 'fees');
-    }
-*/
     public function withLessons(): static
     {
         return $this->has(Lesson::factory(10));

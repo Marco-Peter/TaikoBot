@@ -34,7 +34,6 @@ class User extends Authenticatable
         'password',
         'role',
         'team_id',
-        /*'income_group_id',*/
     ];
 
     /**
@@ -76,10 +75,6 @@ class User extends Authenticatable
     public function lessons(): BelongsToMany
     {
         return $this->belongsToMany(Lesson::class)->withPivot('participation');
-    }
-
-    public function incomeGroup(): BelongsTo {
-        return $this->belongsTo(IncomeGroup::class);
     }
 
     public function courses(): BelongsToMany

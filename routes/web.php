@@ -44,7 +44,7 @@ Route::middleware([
 
     Route::post('lessons/{lesson}/signout', [LessonController::class, 'signOut'])->name('lessons.signout');
     Route::post('lessons/{lesson}/signin', [LessonController::class, 'signIn'])->name('lessons.signin');
-    Route::post('lessons/{lesson}/send-message', [LessonController::class, 'sendMessage'])->name('lessons.sendmessage');
+    Route::post('lessons/{lesson}/send-message', [LessonController::class, 'sendMessage'])->name('lessons.sendMessage');
     Route::post('lessons/{lesson}/add-teacher', [LessonController::class, 'addTeacher'])->name('lessons.addTeacher');
     Route::post('lessons/{lesson}/remove-teacher', [LessonController::class, 'removeTeacher'])->name('lessons.removeTeacher');
     Route::post('lessons/{lesson}/set-late', [LessonController::class, 'setLate'])->name('lessons.setLate');

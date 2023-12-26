@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -43,11 +42,6 @@ class Course extends Model
         return $this->hasMany(Lesson::class);
     }
 
-    public function incomeGroups(): BelongsToMany
-    {
-        return $this->belongsToMany(IncomeGroup::class, 'fees')->withPivot('fee');
-    }
-
     public function participants(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot('paid');
@@ -56,18 +50,5 @@ class Course extends Model
     public function participants_paid(): BelongsToMany
     {
         return $this->participants()->wherePivot('paid', 1);
-    }
-
-    public function invitees(): Builder
-    {
-        return User::select([
-            'users.id', 'users.first_name', 'users.last_name', 'users.email', 'users.email_verified_at',
-            'users.password', 'users.two_factor_secret', 'users.two_factor_recovery_codes',
-            'users.two_factor_confirmed_at', 'users.role', 'users.karma', 'users.team_id', 'users.income_group_id',
-            'users.remember_token', 'users.profile_photo_path', 'users.created_at', 'users.updated_at'
-        ])
-            ->join('course_team', 'users.team_id', '=', 'course_team.team_id')
-            ->join('courses', 'courses.id', '=', 'course_team.course_id')
-            ->where('courses.id', $this->id);
     }
 }

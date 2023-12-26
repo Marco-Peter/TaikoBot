@@ -36,7 +36,6 @@ function destroy(id) {
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Teams</th>
-                                <!--<th>Income Group</th>-->
                                 <th colspan="2"></th>
                             </tr>
                         </thead>
@@ -47,7 +46,6 @@ function destroy(id) {
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.role }}</td>
                                 <td>{{ user.team.name }}</td>
-                                <!--<td>{{ user.income_group.name }}</td>-->
                                 <td>
                                     <Link :href="route('users.edit', user.id)">
                                     <SecondaryButton>Edit</SecondaryButton>

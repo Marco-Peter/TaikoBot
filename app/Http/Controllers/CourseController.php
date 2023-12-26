@@ -53,7 +53,6 @@ class CourseController extends Controller
 
         return Inertia::render('Course/Create', [
             'teams' => Team::all(['id', 'name']),
-            /*'tarifGroups' => IncomeGroup::all(['id', 'name']),*/
         ]);
     }
 
