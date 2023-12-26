@@ -69,7 +69,7 @@ class LessonController extends Controller
             ->get(['id', 'first_name', 'last_name', 'participation', 'message']);
         $teachers = $lesson->participants()
             ->wherePivot('participation', LessonParticipationEnum::TEACHER->value)
-            ->get(['id', 'first_name', 'last_name']);
+            ->get(['id', 'first_name', 'last_name', 'message']);
 
         return Inertia::render('Lesson/Edit', [
             'lesson' => $lesson,
@@ -134,7 +134,6 @@ class LessonController extends Controller
 
     public function sendMessage(Request $request, Lesson $lesson): RedirectResponse
     {
-        dd($request);
         Auth::user()->lessons()->updateExistingPivot($lesson->id, [
             'message' => $request->message,
         ]);

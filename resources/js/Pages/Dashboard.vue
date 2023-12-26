@@ -6,20 +6,21 @@ import { Link, router } from '@inertiajs/vue3';
 
 const props = defineProps({ user: Object, coursesSignedUp: Object, coursesNotSignedUp: Object });
 
-function signOut(id) {
+function signOut(lesson) {
     let message = prompt("Message to teachers", "");
-    router.post(route('lessons.signout', id), { 'message': message });
+    router.post(route('lessons.signout', lesson.id), { 'message': message });
 }
 
-function signIn(id) {
+function signIn(lesson) {
     let message = prompt("Message to teachers", "");
-    router.post(route('lessons.signin', id), { 'message': message});
+    router.post(route('lessons.signin', lesson.id), { 'message': message });
 }
 
-function sendMessage(id) {
-    let message = prompt("Message to teachers", "");
+function sendMessage(lesson) {
+    let target = lesson.pivot.participation == 'teacher' ? "students" : "teachers";
+    let message = prompt(`Message to ${target}`, "");
     if (message != null) {
-        router.post(route('lessons.sendMessage', id), { 'message': message});
+        router.post(route('lessons.sendMessage', lesson.id), { 'message': message });
     }
 }
 </script>
@@ -64,11 +65,17 @@ function sendMessage(id) {
                                 <td>{{ lesson.title }}</td>
                                 <td>{{ lesson.course.name }}</td>
                                 <td>
-                                    <DangerButton v-if="lesson.pivot.participation == 'signed_in'" @click="signOut(lesson.id)">Sign Out</DangerButton>
-                                    <SecondaryButton v-else @click="signIn(lesson.id)">Sign In</SecondaryButton>
+                                    <Link v-if="lesson.pivot.participation == 'teacher'"
+                                        :href="route('lessons.edit', [lesson.id])">
+                                    <SecondaryButton>Edit Lesson</SecondaryButton>
+                                    </Link>
+                                    <DangerButton v-else-if="lesson.pivot.participation == 'signed_in'"
+                                        @click="signOut(lesson)">Sign Out</DangerButton>
+                                    <SecondaryButton v-else-if="lesson.pivot.participation == 'signed_out'"
+                                        @click="signIn(lesson)">Sign In</SecondaryButton>
                                 </td>
                                 <td>
-                                    <SecondaryButton @click="sendMessage(lesson.id)">Send Message</SecondaryButton>
+                                    <SecondaryButton @click="sendMessage(lesson)">Send Message</SecondaryButton>
                                 </td>
                             </tr>
                         </tbody>

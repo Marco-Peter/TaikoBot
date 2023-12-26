@@ -101,6 +101,7 @@ function setNoShow(participant) {
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th></th>
+                                <th>Message</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,6 +111,7 @@ function setNoShow(participant) {
                                 <td>
                                     <DangerButton @click="removeTeacher(lessonteacher)">Remove</DangerButton>
                                 </td>
+                                <td>{{ lessonteacher.message }}</td>
                             </tr>
                         </tbody>
                     </table>
