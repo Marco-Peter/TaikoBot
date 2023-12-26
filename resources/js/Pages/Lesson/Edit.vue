@@ -44,7 +44,7 @@ function setNoShow(participant) {
 </script>
 
 <template>
-    <AppLayout title="Edit Lesosn">
+    <AppLayout title="Edit Lesson">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 Edit Lesson

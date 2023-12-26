@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->primary(['lesson_id', 'user_id']);
             $table->enum('participation', LessonParticipationEnum::values())->default(LessonParticipationEnum::SIGNED_IN->value);
-            $table->string('message');
+            $table->string('message')->default("");
             $table->timestamps();
         });
     }

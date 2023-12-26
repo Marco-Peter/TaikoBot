@@ -103,6 +103,7 @@ function updatePaid(user, paid) {
                                 <th>Start</th>
                                 <th>Finish</th>
                                 <th>Title</th>
+                                <th>Teachers</th>
                                 <th colspan="2"></th>
                             </tr>
                         </thead>
@@ -111,6 +112,7 @@ function updatePaid(user, paid) {
                                 <td>{{ lesson.start }}</td>
                                 <td>{{ lesson.finish }}</td>
                                 <td>{{ lesson.title }}</td>
+                                <td><p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name }}</p></td>
                                 <td>
                                     <Link :href="route('lessons.edit', lesson.id)">
                                     <SecondaryButton>Edit</SecondaryButton>
@@ -173,6 +175,5 @@ function updatePaid(user, paid) {
                 </div>
             </div>
         </div>
-        <p>{{ teams }}</p>
     </AppLayout>
 </template>
