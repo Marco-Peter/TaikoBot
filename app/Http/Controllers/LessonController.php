@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Enums\LessonParticipationEnum;
+use App\Enums\UserRoleEnum;
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -61,11 +64,24 @@ class LessonController extends Controller
     {
         Gate::authorize('edit-courses');
 
-        $lesson->load([
-            'participants:id,first_name,last_name'
-        ]);
+        $participants = $lesson->participants()
+            ->wherePivot('participation', '<>', LessonParticipationEnum::TEACHER->value)
+            ->get(['id', 'first_name', 'last_name', 'participation']);
+        $teachers = $lesson->participants()
+            ->wherePivot('participation', LessonParticipationEnum::TEACHER->value)
+            ->get(['id', 'first_name', 'last_name']);
+
         return Inertia::render('Lesson/Edit', [
             'lesson' => $lesson,
+            'participants' => $participants,
+            'lessonteachers' => $teachers,
+            'teachers' => User::where('role', UserRoleEnum::TEACHER->value)
+                ->orWhere('role', UserRoleEnum::ADMIN->value)
+                ->orderBy('first_name', 'asc')->get([
+                    'id',
+                    'first_name',
+                    'last_name',
+                ]),
         ]);
     }
 
@@ -121,6 +137,39 @@ class LessonController extends Controller
         Auth::user()->lessons()->updateExistingPivot($lesson->id, [
             'message' => $request->message,
         ]);
+        return back();
+    }
+
+    public function addTeacher(Request $request, Lesson $lesson): RedirectResponse
+    {
+        $teacher = User::find($request->teacher);
+        $lesson->participants()->attach($teacher, [
+            'participation' => LessonParticipationEnum::TEACHER->value,
+        ]);
+        return back();
+    }
+
+    public function removeTeacher(Request $request, Lesson $lesson): RedirectResponse
+    {
+        $teacher = User::find($request->teacher);
+        $lesson->participants()->detach($teacher);
+
+        return back();
+    }
+
+    public function setLate(Request $request, Lesson $lesson): RedirectResponse
+    {
+        $participant = User::find($request->participant);
+        $lesson->participants()
+            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::LATE->value]);
+        return back();
+    }
+
+    public function setNoShow(Request $request, Lesson $lesson): RedirectResponse
+    {
+        $participant = User::find($request->participant);
+        $lesson->participants()
+            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::NO_SHOW->value]);
         return back();
     }
 }

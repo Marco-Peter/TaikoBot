@@ -32,7 +32,7 @@ function destroyLesson(id) {
 }
 
 function addUser(user) {
-    router.post(route('courses.addParticipant', props.course.id), { 'user': user.id});
+    router.post(route('courses.addParticipant', props.course.id), { 'user': user.id });
 }
 
 function removeUser(user) {
@@ -134,13 +134,14 @@ function updatePaid(user, paid) {
                     <select v-model="newParticipantTeam"
                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                         <option value="" disabled>--- Select a Group ---</option>
-                        <option v-for="(team, index) in teams" :value="index">{{ team.name  }}</option>
+                        <option v-for="(team, index) in teams" :value="index">{{ team.name }}</option>
                     </select>
 
-                    <select v-model="newParticipant" :disabled="newParticipantTeam===''"
+                    <select v-model="newParticipant" :disabled="newParticipantTeam === ''"
                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                         <option value="" disabled>--- Select a Participant ---</option>
-                        <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users" :value="user">{{ user.first_name }} {{ user.last_name }}</option>
+                        <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users"
+                            :value="user">{{ user.first_name }} {{ user.last_name }}</option>
                     </select>
                     <PrimaryButton @click="addUser(newParticipant)">Add Participant</PrimaryButton>
 
