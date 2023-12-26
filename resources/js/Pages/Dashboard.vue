@@ -18,7 +18,9 @@ function signIn(id) {
 
 function sendMessage(id) {
     let message = prompt("Message to teachers", "");
-    router.post(route('lessons.sendmessage', id), { 'message': message});
+    if (message != null) {
+        router.post(route('lessons.sendMessage', id), { 'message': message});
+    }
 }
 </script>
 
@@ -53,8 +55,7 @@ function sendMessage(id) {
                                 <th>Date</th>
                                 <th>Title</th>
                                 <th>Course</th>
-                                <th>Status</th>
-                                <th colspan="2"></th>
+                                <th colspan="2">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,7 +63,6 @@ function sendMessage(id) {
                                 <td>{{ lesson.start }}</td>
                                 <td>{{ lesson.title }}</td>
                                 <td>{{ lesson.course.name }}</td>
-                                <td>{{ lesson.pivot.participation }}</td>
                                 <td>
                                     <DangerButton v-if="lesson.pivot.participation == 'signed_in'" @click="signOut(lesson.id)">Sign Out</DangerButton>
                                     <SecondaryButton v-else @click="signIn(lesson.id)">Sign In</SecondaryButton>

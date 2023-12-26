@@ -66,7 +66,7 @@ class LessonController extends Controller
 
         $participants = $lesson->participants()
             ->wherePivot('participation', '<>', LessonParticipationEnum::TEACHER->value)
-            ->get(['id', 'first_name', 'last_name', 'participation']);
+            ->get(['id', 'first_name', 'last_name', 'participation', 'message']);
         $teachers = $lesson->participants()
             ->wherePivot('participation', LessonParticipationEnum::TEACHER->value)
             ->get(['id', 'first_name', 'last_name']);
@@ -134,6 +134,7 @@ class LessonController extends Controller
 
     public function sendMessage(Request $request, Lesson $lesson): RedirectResponse
     {
+        dd($request);
         Auth::user()->lessons()->updateExistingPivot($lesson->id, [
             'message' => $request->message,
         ]);

@@ -128,6 +128,7 @@ function setNoShow(participant) {
                                 <th>First Name</th>
                                 <th>Last Name</th>
                                 <th colspan="3">Status</th>
+                                <th>Message from Student</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -141,6 +142,7 @@ function setNoShow(participant) {
                                 <td v-if="participant.pivot.participation == 'signed_in'">
                                     <SecondaryButton @click="setNoShow(participant)">No Show</SecondaryButton>
                                 </td>
+                                <td>{{ participant.message }}</td>
                             </tr>
                         </tbody>
                     </table>
