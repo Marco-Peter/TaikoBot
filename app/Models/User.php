@@ -86,4 +86,9 @@ class User extends Authenticatable
     {
         return $this->courses->contains($course);
     }
+
+    public function hasSignedInToLesson(Lesson $lesson)
+    {
+        return $this->lessons->contains($lesson);
+    }
 }

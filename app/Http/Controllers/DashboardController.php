@@ -35,7 +35,6 @@ class DashboardController extends Controller
                     ->orderBy('start', 'asc');
             },
         ]);
-        //dd($coursesSignedUp);
 
         return Inertia::render('Dashboard', [
             'user' => $user->only('id', 'first_name', 'lessons'),

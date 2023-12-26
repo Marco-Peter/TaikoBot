@@ -144,16 +144,28 @@ class LessonController extends Controller
     public function addTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
         $teacher = User::find($request->teacher);
-        $lesson->participants()->attach($teacher, [
-            'participation' => LessonParticipationEnum::TEACHER->value,
-        ]);
+        if ($teacher->hasSignedInToLesson($lesson)) {
+            $lesson->participants()->updateExistingPivot($teacher, [
+                'participation' => LessonParticipationEnum::TEACHER->value,
+            ]);
+        } else {
+            $lesson->participants()->attach($teacher, [
+                'participation' => LessonParticipationEnum::TEACHER->value,
+            ]);
+        }
         return back();
     }
 
     public function removeTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
         $teacher = User::find($request->teacher);
-        $lesson->participants()->detach($teacher);
+        if ($teacher->hasSignedUpToCourse($lesson->course)) {
+            $lesson->participants()->updateExistingPivot($teacher, [
+                'participation' => LessonParticipationEnum::SIGNED_OUT->value,
+            ]);
+        } else {
+            $lesson->participants()->detach($teacher);
+        }
 
         return back();
     }
