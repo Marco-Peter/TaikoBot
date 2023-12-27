@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,24 +18,29 @@ class DashboardController extends Controller
         $user = Auth::user()->load([
             'lessons' => function (Builder $query) {
                 $query->select('id', 'course_id', 'title', 'start')
-                    ->orderBy('start', 'asc');
+                    ->where('start', '>', Carbon::now()->toDateString())
+                    ->oldest('start');
             },
             'lessons.course:id,name',
         ]);
 
-        $coursesSignedUp = $user->courses->load([
-            'lessons' => function (Builder $query) {
-                $query->select('course_id', 'start')
-                    ->orderBy('start', 'asc');
-            },
-        ]);
+        $coursesNotSignedUp = $user->team->courses->diff($user->courses)
+            ->where('firstLesson.start', '>', Carbon::now()->toDateString())
+            ->values()
+            ->load([
+                'firstLesson:course_id,start',
+                'lastLesson:course_id,finish',
+            ]);
+        $coursesSignedUp = $user->courses
+            ->where('lastLesson.finish', '>', Carbon::now()->toDateString())
+            ->values()
+            ->load([
+                'firstLesson:course_id,start',
+                'lastLesson:course_id,finish',
+            ]);
 
-        $coursesNotSignedUp = $user->team->courses->diff($coursesSignedUp)->load([
-            'lessons' => function (Builder $query) {
-                $query->select('course_id', 'start')
-                    ->orderBy('start', 'asc');
-            },
-        ]);
+        $coursesSignedUp->setHidden(['description', 'created_at', 'updated_at', 'pivot']);
+        $coursesNotSignedUp->setHidden(['description', 'created_at', 'updated_at', 'pivot']);
 
         return Inertia::render('Dashboard', [
             'user' => $user->only('id', 'first_name', 'lessons'),

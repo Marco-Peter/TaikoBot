@@ -89,7 +89,7 @@ function sendMessage(lesson) {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                        Your Signed Up Courses
+                        Your Signed Up Courses and Workshops
                     </h2>
                     <p>Those are the courses and workshops you are signed up for. Looking forward to see you!</p>
                     <table v-if="coursesSignedUp.length">
@@ -97,12 +97,15 @@ function sendMessage(lesson) {
                             <tr>
                                 <th>Name</th>
                                 <th>Begin</th>
+                                <th>End</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="course in coursesSignedUp">
                                 <td>{{ course.name }}</td>
-                                <td>{{ course.lessons[0].start }}</td>
+                                <td>{{ course.first_lesson.start }}</td>
+                                <td>{{ course.last_lesson.finish }}</td>
                                 <td>
                                     <Link :href="route('courses.show', [course.id])">
                                     <SecondaryButton>Details</SecondaryButton>
@@ -120,7 +123,7 @@ function sendMessage(lesson) {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                        Your Available Courses
+                        Your Available Courses and Workshops
                     </h2>
                     <p>Looking for new challenges? Here you can sign up to new courses and workshops.</p>
                     <table v-if="coursesNotSignedUp.length">
@@ -128,13 +131,15 @@ function sendMessage(lesson) {
                             <tr>
                                 <th>Name</th>
                                 <th>Begin</th>
+                                <th>End</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="course in coursesNotSignedUp">
                                 <td>{{ course.name }}</td>
-                                <td>{{ course.lessons[0].start }}</td>
+                                <td>{{ course.first_lesson.start }}</td>
+                                <td>{{ course.last_lesson.finish }}</td>
                                 <td>
                                     <Link :href="route('courses.show', [course.id])">
                                     <SecondaryButton>Details</SecondaryButton>

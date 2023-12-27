@@ -7,7 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
-const props = defineProps({ course_id: Number });
+const props = defineProps({ course_id: String });
 
 const form = useForm({
     title: '',

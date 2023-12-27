@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Course extends Model
 {
@@ -40,6 +41,16 @@ class Course extends Model
     public function lessons(): HasMany
     {
         return $this->hasMany(Lesson::class);
+    }
+
+    public function firstLesson(): HasOne
+    {
+        return $this->hasOne(Lesson::class)->oldest('start');
+    }
+
+    public function lastLesson(): HasOne
+    {
+        return $this->hasOne(Lesson::class)->latest('finish');
     }
 
     public function participants(): BelongsToMany
