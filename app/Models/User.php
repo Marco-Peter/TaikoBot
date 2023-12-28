@@ -74,15 +74,21 @@ class User extends Authenticatable
 
     public function lessons(): BelongsToMany
     {
-        return $this->belongsToMany(Lesson::class)->withTimestamps()->withPivot('participation');
-    }
-
-    public function incomeGroup(): BelongsTo {
-        return $this->belongsTo(IncomeGroup::class);
+        return $this->belongsToMany(Lesson::class)->withPivot('participation');
     }
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class)->withTimestamps()->withPivot('paid');
+        return $this->belongsToMany(Course::class)->withPivot('paid');
+    }
+
+    public function hasSignedUpToCourse(Course $course)
+    {
+        return $this->courses->contains($course);
+    }
+
+    public function hasSignedInToLesson(Lesson $lesson)
+    {
+        return $this->lessons->contains($lesson);
     }
 }

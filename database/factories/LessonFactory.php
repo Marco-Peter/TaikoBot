@@ -19,7 +19,7 @@ class LessonFactory extends Factory
      */
     public function definition(): array
     {
-        $startdate = fake()->dateTime();
+        $startdate = fake()->dateTimeBetween('-3 months', '+3 months');
         return [
             'title' => fake()->sentence(2),
             'start' => $startdate,

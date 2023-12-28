@@ -3,10 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Team;
 use App\Models\User;
 use App\Models\Course;
-use App\Models\IncomeGroup;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -17,16 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        IncomeGroup::factory()->create([
-            'name' => 'Full',
-            'description' => 'Standard rate for fully employed members',
-        ]);
-
-        IncomeGroup::factory()->create([
-            'name' => 'Student',
-            'description' => 'Reduced rate for students and unemployed',
-        ]);
-
         DB::table('teams')->insert([
             'name' => 'Basic Group',
             'description' => 'Basic group, which meets every Thursday',
@@ -67,14 +55,6 @@ class DatabaseSeeder extends Seeder
             'profile_photo_path' => 'profile-photos/Taiko1_1300-auto.jpg',
         ]);
 
-        Course::factory(5)->hasAttached(
-            IncomeGroup::all(),
-            ['fee' => 200],
-            'fees'
-        )
-            ->withLessons()
-            ->create();
-
-        //Course::factory()->count(5)->withFees();
+        Course::factory(5)->withLessons()->create();
     }
 }

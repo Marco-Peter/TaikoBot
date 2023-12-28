@@ -4,15 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Team;
-use Illuminate\Contracts\View\View;
+use App\Models\User;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CourseController extends Controller
 {
     protected $only = [
         'index',
+        'create',
+        'store',
+        'show',
+        'edit',
+        'update',
+        'destroy',
     ];
 
     protected function teams_not_selected(Course $course)
@@ -25,23 +35,25 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): Response
     {
         Gate::authorize('edit-courses');
 
-        return view('management.list-courses', [
-            'courses' => Course::get(),
+        return Inertia::render('Course/Index', [
+            'courses' => Course::all(),
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): View
+    public function create(): Response
     {
         Gate::authorize('edit-courses');
 
-        return view('management.create-course');
+        return Inertia::render('Course/Create', [
+            'teams' => Team::all(['id', 'name']),
+        ]);
     }
 
     /**
@@ -54,41 +66,52 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'string',
-            'fees.*' => 'integer|min:0',
             'capacity' => 'integer|min:1',
+            'teams.*' => 'integer',
         ]);
 
-        $offset = array_search("fees", array_keys($validated), true);
-        $fees = array_splice($validated, $offset, 1)["fees"];
-        array_walk($fees, function (&$value) {
-            $value = ["fee" => $value];
-        });
-
         $course = Course::create($validated);
-        $course->fees()->attach($fees);
-
-        return redirect(route('courses.edit', $course));
+        $course->teams()->sync($validated['teams'] ?? []);
+        return redirect(route('courses.index'));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Course $course)
+    public function show(Course $course): Response
     {
-        //
+        return Inertia::render('Course/Show', [
+            'course' => $course->load([
+                'teams:id',
+                'lessons' => function (Builder $query) {
+                    $query->orderBy('start', 'asc')
+                        ->select('id', 'course_id', 'title', 'start', 'finish');
+                },
+            ]),
+            'signedIn' => $course->participants->contains(Auth::user()),
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Course $course): View
+    public function edit(Course $course): Response
     {
         Gate::authorize('edit-courses');
 
-        return view('management.edit-course', [
-            'course' => $course,
-            'teams' => Team::all(),
-            'teams_not_selected' => $this->teams_not_selected($course),
+        return Inertia::render('Course/Edit', [
+            'course' => $course->load([
+                'teams:id',
+                'lessons' => function (Builder $query) {
+                    $query->orderBy('start', 'asc')
+                        ->select('id', 'course_id', 'title', 'start', 'finish');
+                },
+                'lessons.teachers:id,first_name,last_name',
+                'participants:id,first_name,last_name',
+            ]),
+            'teams' => Team::with([
+                'users:id,first_name,last_name,team_id',
+            ])->get(['id', 'name']),
         ]);
     }
 
@@ -102,51 +125,14 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'string',
-            'fees.*' => 'integer|min:0',
             'capacity' => 'integer|min:1',
-            'teams.*' => 'boolean',
-            'participants.*' => 'boolean',
-            'paid.*' => 'boolean',
+            'teams.*' => 'integer',
         ]);
 
-        $offset = array_search("teams", array_keys($validated), true);
-        if ($offset) {
-            $teams = array_keys(array_splice($validated, $offset, 1)["teams"]);
-        } else {
-            $teams = [];
-        }
-
-        $offset = array_search("participants", array_keys($validated), true);
-        if ($offset) {
-            $participants = array_keys(array_splice($validated, $offset, 1)["participants"]);
-        } else {
-            $participants = [];
-        }
-
-        $offset = array_search("paid", array_keys($validated), true);
-        if ($offset) {
-            $paid = array_keys(array_splice($validated, $offset, 1)["paid"]);
-        } else {
-            $paid = [];
-        }
-
-        $parts = array();
-        foreach ($participants as $participant) {
-            $parts[$participant] = ["paid" => in_array($participant, $paid)];
-        }
 
         $course->update($validated);
-        foreach ($validated["fees"] as $key => $value) {
-            $course->fees()->updateExistingPivot($key, ['fee' => $value]);
-        }
-        $course->teams()->sync($teams);
-        $course->participants()->sync($parts);
-
-        foreach ($course->lessons as $lesson) {
-            $lesson->participants()->sync($participants);
-        }
-
-        return back();
+        $course->teams()->sync($validated['teams'] ?? []);
+        return redirect(route('courses.index'));
     }
 
     /**
@@ -160,15 +146,41 @@ class CourseController extends Controller
         return redirect(route('courses.index'));
     }
 
-    public function add_participant(Request $request): RedirectResponse
+    public function addParticipant(Request $request, Course $course): RedirectResponse
     {
-        dd($request);
+        $user = User::find($request->user);
+        if (!$user->hasSignedUpToCourse($course)) {
+            $user->courses()->attach($course->id);
+            $user->lessons()->attach($course->lessons);
+        }
+
         return back();
     }
 
-    public function remove_participant(Request $request): RedirectResponse
+    public function removeParticipant(Request $request, Course $course): RedirectResponse
     {
-        dd($request);
+        $user = User::find($request->user);
+        $user->lessons()->detach($course->lessons);
+        $user->courses()->detach($course->id);
+
+        return back();
+    }
+
+    public function signUp(Course $course): RedirectResponse
+    {
+        $user = Auth::user();
+        $user->courses()->attach($course->id);
+        $user->lessons()->attach($course->lessons);
+
+        return redirect(route('dashboard'))->with('message', 'Signed up successfully');
+    }
+
+    public function setPaid(Request $request, Course $course): RedirectResponse
+    {
+        $user = User::find($request->user);
+        $course->participants()->updateExistingPivot($user, [
+            'paid' => $request->paid,
+        ]);
         return back();
     }
 }

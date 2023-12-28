@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LessonParticipationEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,7 +33,13 @@ class Lesson extends Model
 
     public function participants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withTimestamps()->withPivot('participation');
+        return $this->belongsToMany(User::class)->withPivot('participation');
+    }
+
+    public function teachers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)
+            ->wherePivot('participation', LessonParticipationEnum::TEACHER->value);
     }
 
     public function course(): BelongsTo
