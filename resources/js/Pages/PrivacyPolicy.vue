@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Privacy Policy" />
+    <Head title="Membership Expectations" />
 
     <div class="font-sans text-gray-900 dark:text-gray-100 antialiased">
         <div class="pt-4 bg-gray-100 dark:bg-gray-900">
