@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -9,8 +9,10 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 defineProps({
-    title: String,
+    title: String
 });
+
+const page = usePage();
 
 const showingNavigationDropdown = ref(false);
 
@@ -45,11 +47,11 @@ const logout = () => {
                                     Dashboard
                                 </NavLink>
 
-                                <NavLink :href="route('users.index')" :active="route().current('users.*')">
+                                <NavLink v-if="page.props.auth.canEditUsers" :href="route('users.index')" :active="route().current('users.*')">
                                     User Management
                                 </NavLink>
 
-                                <NavLink :href="route('courses.index')" :active="route().current('courses.*')">
+                                <NavLink v-if="page.props.auth.canEditCourses" :href="route('courses.index')" :active="route().current('courses.*')">
                                     Course Management
                                 </NavLink>
                             </div>
