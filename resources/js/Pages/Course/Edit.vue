@@ -27,22 +27,25 @@ const submit = () => {
 
 function destroyLesson(id) {
     if (confirm("Are you sure you want to delete this lesson?")) {
-        router.delete(route('lessons.destroy', id));
+        router.delete(route('lessons.destroy', id), { preserveScroll: true });
     }
 }
 
 function addUser(user) {
-    router.post(route('courses.addParticipant', props.course.id), { 'user': user.id });
+    router.post(route('courses.addParticipant', props.course.id),
+        { 'user': user.id }, { preserveScroll: true });
 }
 
 function removeUser(user) {
     if (confirm(`Are you sure you want to remove ${user.first_name} ${user.last_name} from the course?`)) {
-        router.post(route("courses.removeParticipant", props.course.id), { 'user': user.id });
+        router.post(route("courses.removeParticipant", props.course.id),
+            { 'user': user.id }, { preserveScroll: true });
     }
 }
 
 function updatePaid(user, paid) {
-    router.post(route("courses.setPaid", props.course.id), { 'user': user, 'paid': paid });
+    router.post(route("courses.setPaid", props.course.id),
+        { 'user': user, 'paid': paid }, { preserveScroll: true });
 }
 </script>
 
@@ -112,7 +115,10 @@ function updatePaid(user, paid) {
                                 <td>{{ lesson.start }}</td>
                                 <td>{{ lesson.finish }}</td>
                                 <td>{{ lesson.title }}</td>
-                                <td><p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name }}</p></td>
+                                <td>
+                                    <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name }}
+                                    </p>
+                                </td>
                                 <td>
                                     <Link :href="route('lessons.edit', lesson.id)">
                                     <SecondaryButton>Edit</SecondaryButton>

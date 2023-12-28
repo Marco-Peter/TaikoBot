@@ -9,7 +9,7 @@ defineProps({ users: Object })
 
 function destroy(id) {
     if (confirm("Are you sure you want to delete?")) {
-        router.delete(route('users.destroy', id));
+        router.delete(route('users.destroy', id), { preserveScroll: true });
     }
 }
 </script>

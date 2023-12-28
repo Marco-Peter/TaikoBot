@@ -25,21 +25,25 @@ const submit = () => {
 }
 
 function addTeacher(teacher) {
-    router.post(route('lessons.addTeacher', props.lesson.id), { 'teacher': teacher.id });
+    router.post(route('lessons.addTeacher', props.lesson.id),
+        { 'teacher': teacher.id }, { preserveScroll: true });
 }
 
 function removeTeacher(teacher) {
     if (confirm(`Are you sure you want to remove ${teacher.first_name} ${teacher.last_name} as teacher from this lesson?`)) {
-        router.post(route('lessons.removeTeacher', props.lesson.id), { 'teacher': teacher.id });
+        router.post(route('lessons.removeTeacher', props.lesson.id),
+            { 'teacher': teacher.id }, { preserveScroll: true });
     }
 }
 
 function setLate(participant) {
-    router.post(route('lessons.setLate', props.lesson.id), { 'participant': participant.id});
+    router.post(route('lessons.setLate', props.lesson.id),
+        { 'participant': participant.id }, { preserveScroll: true });
 }
 
 function setNoShow(participant) {
-    router.post(route('lessons.setNoShow', props.lesson.id), { 'participant': participant.id});
+    router.post(route('lessons.setNoShow', props.lesson.id),
+        { 'participant': participant.id }, { preserveScroll: true });
 }
 </script>
 
