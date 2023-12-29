@@ -58,7 +58,7 @@ const submit = () => {
                         <p>
                             <select v-model="form.team_id" id="team"
                                 class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                <option disabled value="">Please select one</option>
+                                <option disabled value=null>Please select one</option>
                                 <option v-for="team in teams" :value="team.id">{{ team.name }}</option>
                             </select>
                         </p>

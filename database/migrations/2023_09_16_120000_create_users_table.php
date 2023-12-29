@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', UserRoleEnum::values());
+            $table->enum('role', UserRoleEnum::values())->default(UserRoleEnum::STUDENT->value);
             $table->integer('karma')->nullable();
-            $table->foreignIdFor(Team::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Team::class)->nullable()->constrained()->cascadeOnDelete();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();

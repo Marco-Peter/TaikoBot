@@ -45,7 +45,7 @@ function destroy(id) {
                                 <td>{{ user.last_name }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.role }}</td>
-                                <td>{{ user.team.name }}</td>
+                                <td>{{ user.team ? user.team.name : 'NO GROUP' }}</td>
                                 <td>
                                     <Link :href="route('users.edit', user.id)">
                                     <SecondaryButton>Edit</SecondaryButton>

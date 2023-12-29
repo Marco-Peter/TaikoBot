@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Laravel\Jetstream\Jetstream;
 
 class DashboardController extends Controller
 {
@@ -25,13 +28,20 @@ class DashboardController extends Controller
             'lessons.teachers:id,first_name,last_name',
         ]);
 
-        $coursesNotSignedUp = $user->team->courses->diff($user->courses)
-            ->where('firstLesson.start', '>', Carbon::now()->toDateString())
-            ->values()
-            ->load([
-                'firstLesson:course_id,start',
-                'lastLesson:course_id,finish',
-            ]);
+        if ($user->team) {
+            $coursesNotSignedUp = $user->team->courses->diff($user->courses)
+                ->where('firstLesson.start', '>', Carbon::now()->toDateString())
+                ->values()
+                ->load([
+                    'firstLesson:course_id,start',
+                    'lastLesson:course_id,finish',
+                ]);
+            $greeting = '';
+        } else {
+            $coursesNotSignedUp = new Collection();
+            $greeting = Str::markdown(file_get_contents(Jetstream::localizedMarkdownPath('dashboard_greeting.md')));
+        }
+
         $coursesSignedUp = $user->courses
             ->where('lastLesson.finish', '>', Carbon::now()->toDateString())
             ->values()
@@ -47,6 +57,7 @@ class DashboardController extends Controller
             'user' => $user->only('id', 'first_name', 'lessons'),
             'coursesSignedUp' => $coursesSignedUp,
             'coursesNotSignedUp' => $coursesNotSignedUp,
+            'dashboardGreeting' => $greeting,
         ]);
     }
 }
