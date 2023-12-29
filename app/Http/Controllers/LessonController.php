@@ -54,6 +54,7 @@ class LessonController extends Controller
 
         $course = Course::find($validated['id']);
         $lesson = $course->lessons()->save(new Lesson($validated));
+        $lesson->participants()->attach($course->participants);
 
         return redirect(route('lessons.edit', $lesson));
     }
