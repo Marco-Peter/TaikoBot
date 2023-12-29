@@ -22,6 +22,7 @@ class DashboardController extends Controller
                     ->oldest('start');
             },
             'lessons.course:id,name',
+            'lessons.teachers:id,first_name,last_name',
         ]);
 
         $coursesNotSignedUp = $user->team->courses->diff($user->courses)

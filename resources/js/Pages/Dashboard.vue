@@ -43,43 +43,39 @@ function sendMessage(lesson) {
                 </div>
             </div>
         </div>
-
         <div class="py-3">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                         Your next Lessons
                     </h2>
-                    <table v-if="user.lessons.length">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Title</th>
-                                <th>Course</th>
-                                <th colspan="2">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="lesson in user.lessons">
-                                <td>{{ lesson.start }}</td>
-                                <td>{{ lesson.title }}</td>
-                                <td>{{ lesson.course.name }}</td>
-                                <td>
-                                    <Link v-if="lesson.pivot.participation == 'teacher'"
-                                        :href="route('lessons.edit', [lesson.id])">
-                                    <SecondaryButton>Edit Lesson</SecondaryButton>
-                                    </Link>
-                                    <DangerButton v-else-if="lesson.pivot.participation == 'signed_in'"
-                                        @click="signOut(lesson)">Sign Out</DangerButton>
-                                    <SecondaryButton v-else-if="lesson.pivot.participation == 'signed_out'"
-                                        @click="signIn(lesson)">Sign In</SecondaryButton>
-                                </td>
-                                <td>
-                                    <SecondaryButton @click="sendMessage(lesson)">Send Message</SecondaryButton>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div v-if="user.lessons.length">
+                        <div v-for="lesson in user.lessons" class="my-3 py-1 bg-white dark:bg-gray-800"
+                            :class="lesson.pivot.participation == 'signed_out' ? 'text-gray-500' : ''">
+                            <div class="pb-2">
+                                <h3 class="font-bold text-lg"
+                                    :class="lesson.pivot.participation == 'signed_out' ? 'line-through' : ''">{{ new
+                                        Date(lesson.start).toLocaleString(undefined, {
+                                            weekday: "short",
+                                            month: "short",
+                                            day: "2-digit",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }) }}</h3>
+                                <p class="pb-2">{{ lesson.title }} of {{ lesson.course.name }}</p>
+                                <p v-for="teacher in lesson.teachers" :key="teacher.id" class="italic">{{ teacher.first_name
+                                }} {{ teacher.last_name }}</p>
+                            </div>
+                            <Link v-if="lesson.pivot.participation == 'teacher'" :href="route('lessons.edit', [lesson.id])">
+                            <SecondaryButton>Edit Lesson</SecondaryButton>
+                            </Link>
+                            <DangerButton v-else-if="lesson.pivot.participation == 'signed_in'" @click="signOut(lesson)">
+                                Sign Out</DangerButton>
+                            <SecondaryButton v-else-if="lesson.pivot.participation == 'signed_out'" @click="signIn(lesson)">
+                                Sign In</SecondaryButton>
+                            <SecondaryButton @click="sendMessage(lesson)">Send Message</SecondaryButton>
+                        </div>
+                    </div>
                     <p v-else>Nothing to play</p>
                 </div>
             </div>
@@ -87,33 +83,32 @@ function sendMessage(lesson) {
 
         <div class="py-3">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                         Your Signed Up Courses and Workshops
                     </h2>
                     <p>Those are the courses and workshops you are signed up for. Looking forward to see you!</p>
-                    <table v-if="coursesSignedUp.length">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Begin</th>
-                                <th>End</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="course in coursesSignedUp">
-                                <td>{{ course.name }}</td>
-                                <td>{{ course.first_lesson.start }}</td>
-                                <td>{{ course.last_lesson.finish }}</td>
-                                <td>
-                                    <Link :href="route('courses.show', [course.id])">
-                                    <SecondaryButton>Details</SecondaryButton>
-                                    </Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div v-if="coursesSignedUp.length">
+                        <div v-for="course in coursesSignedUp" class="my-3 py-1 bg-white dark:bg-gray-800">
+                            <h3 class="font-bold text-lg">{{ course.name }}</h3>
+                            <p class="pb-2">From
+                                {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
+                                    weekday: "long",
+                                    month: "long",
+                                    day: "2-digit",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                }) }} to
+                                {{ new Date(course.last_lesson.finish).toLocaleString(undefined, {
+                                    weekday: "long",
+                                    month: "long", day: "2-digit"
+                                }) }}</p>
+                            <Link :href="route('courses.show', [course.id])">
+                            <SecondaryButton>Details</SecondaryButton>
+                            </Link>
+                        </div>
+                    </div>
                     <p v-else>Not signed up to any courses</p>
                 </div>
             </div>
@@ -121,33 +116,32 @@ function sendMessage(lesson) {
 
         <div class="py-3">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="overflow-hidden shadow-xl sm:rounded-lg">
                     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                         Your Available Courses and Workshops
                     </h2>
                     <p>Looking for new challenges? Here you can sign up to new courses and workshops.</p>
-                    <table v-if="coursesNotSignedUp.length">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Begin</th>
-                                <th>End</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="course in coursesNotSignedUp">
-                                <td>{{ course.name }}</td>
-                                <td>{{ course.first_lesson.start }}</td>
-                                <td>{{ course.last_lesson.finish }}</td>
-                                <td>
-                                    <Link :href="route('courses.show', [course.id])">
-                                    <SecondaryButton>Details</SecondaryButton>
-                                    </Link>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div v-if="coursesNotSignedUp.length">
+                        <div v-for="course in coursesNotSignedUp" class="my-3 py-1 bg-white dark:bg-gray-800">
+                            <h3 class="font-bold text-lg">{{ course.name }}</h3>
+                            <p class="pb-2">From {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
+                                weekday: "long",
+                                month: "long",
+                                day: "2-digit",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            }) }} to {{ new Date(course.last_lesson.finish).toLocaleString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "2-digit",
+})
+}}</p>
+                            <Link :href="route('courses.show', [course.id])">
+                            <SecondaryButton>Details</SecondaryButton>
+                            </Link>
+                        </div>
+                    </div>
                     <p v-else>No courses available</p>
                 </div>
             </div>
