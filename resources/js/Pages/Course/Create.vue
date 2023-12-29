@@ -6,8 +6,15 @@ import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const props = defineProps({ teams: Object });
+
+const editor = ClassicEditor;
+//const ckeditor = CKEditor.component;
+const editorconfig = {
+    uiColor: 'Black',
+};
 
 const form = useForm({
     name: '',
@@ -39,10 +46,14 @@ const submit = () => {
 
                         <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="description" value="Description" />
+                            <!--
                             <textarea id="description" v-model="form.description" cols="30" rows="10"
                                 placeholder="Public course description - make it catchy"
                                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
+                            -->
+                            <ckeditor :editor="editor" tag-name="textarea" v-model="form.description" :config="editorconfig"></ckeditor>
                             <InputError :message="form.errors.description" class="mt-2" />
+
                         </div>
 
                         <InputLabel for="capacity" value="Capacity" />
