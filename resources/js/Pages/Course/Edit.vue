@@ -10,6 +10,7 @@ import { Link, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const props = defineProps({ course: Object, teams: Object });
+router.reload();
 
 const form = useForm({
     name: props.course.name,
@@ -86,7 +87,7 @@ function updatePaid(user, paid) {
 
                         <PrimaryButton type="submit" class="mt-3">Submit</PrimaryButton>
                         <Link :href="route('courses.index')">
-                        <SecondaryButton>Cancel</SecondaryButton>
+                        <SecondaryButton>Back</SecondaryButton>
                         </Link>
                     </form>
                 </div>

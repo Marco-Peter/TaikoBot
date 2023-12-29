@@ -56,7 +56,7 @@ const submit = () => {
                             <label :for="team.name" class="ml-3">{{ team.name }}</label>
                         </div>
 
-                        <PrimaryButton type="submit" class="mt-3">Submit</PrimaryButton>
+                        <PrimaryButton type="submit" class="mt-3">Create</PrimaryButton>
                         <Link :href="route('courses.index')">
                         <SecondaryButton>Cancel</SecondaryButton>
                         </Link>

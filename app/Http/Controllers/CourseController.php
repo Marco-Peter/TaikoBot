@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
 use App\Models\Team;
 use App\Models\User;
@@ -72,7 +73,7 @@ class CourseController extends Controller
 
         $course = Course::create($validated);
         $course->teams()->sync($validated['teams'] ?? []);
-        return redirect(route('courses.index'));
+        return redirect(route('courses.edit', $course));
     }
 
     /**
@@ -151,7 +152,7 @@ class CourseController extends Controller
         $user = User::find($request->user);
         if (!$user->hasSignedUpToCourse($course)) {
             $user->courses()->attach($course->id);
-            $user->lessons()->attach($course->lessons);
+            $user->lessons()->syncWithoutDetaching($course->lessons);
         }
 
         return back();
@@ -160,7 +161,11 @@ class CourseController extends Controller
     public function removeParticipant(Request $request, Course $course): RedirectResponse
     {
         $user = User::find($request->user);
-        $user->lessons()->detach($course->lessons);
+        $user->lessons()->wherePivot(
+            'participation',
+            '<>',
+            LessonParticipationEnum::TEACHER->value
+        )->detach($course->lessons);
         $user->courses()->detach($course->id);
 
         return back();
@@ -170,7 +175,7 @@ class CourseController extends Controller
     {
         $user = Auth::user();
         $user->courses()->attach($course->id);
-        $user->lessons()->attach($course->lessons);
+        $user->lessons()->syncWithoutDetaching($course->lessons);
 
         return redirect(route('dashboard'))->with('message', 'Signed up successfully');
     }

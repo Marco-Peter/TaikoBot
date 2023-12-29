@@ -81,7 +81,7 @@ function setNoShow(participant) {
 
                         <PrimaryButton type="submit" class="mt-3">Submit</PrimaryButton>
                         <Link :href="route('courses.edit', props.lesson.course_id)">
-                        <SecondaryButton>Cancel</SecondaryButton>
+                        <SecondaryButton>Back</SecondaryButton>
                         </Link>
                     </form>
                 </div>
