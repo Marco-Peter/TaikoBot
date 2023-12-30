@@ -67,8 +67,8 @@ function updatePaid(user, paid) {
                         <InputError :message="form.errors.name" class="mt-2" />
 
                         <div class="col-span-6 sm:col-span-4">
-                            <InputLabel for="description" value="Description" />
-                            <textarea id="description" v-model="form.description" cols="30" rows="10"
+                            <InputLabel for="description" value="Description (Markdown Tags possible)" />
+                            <textarea title="This text will be formatted using GitHub style Markdown format.&#013;Check Google about what is possible!&#013;Double line breaks for paragraph&#013;#, ##, ### for hierarchic titles&#013;'-' for unorderet lists&#013;'1)', '2)', '3)' for ordered lists, ..." id="description" v-model="form.description" cols="30" rows="10"
                                 placeholder="Public course description - make it catchy"
                                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
                             <InputError :message="form.errors.description" class="mt-2" />

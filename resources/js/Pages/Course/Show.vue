@@ -24,7 +24,8 @@ function signUp(id) {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <p>{{ course.description }}</p>
+                    <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert"
+                        v-html="course.description" />
                     <p>Capacity: {{ course.capacity }}</p>
                 </div>
             </div>
@@ -37,15 +38,23 @@ function signUp(id) {
                     <table v-if="course.lessons.length">
                         <thead>
                             <tr>
-                                <th>Start</th>
-                                <th>Finish</th>
+                                <th>Date</th>
                                 <th>Title</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="lesson in course.lessons">
-                                <td>{{ lesson.start }}</td>
-                                <td>{{ lesson.finish }}</td>
+                                <td>{{ new Date(lesson.start).toLocaleString(undefined, {
+                                    weekday: "short",
+                                    month: "short",
+                                    day: "2-digit",
+                                    year: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                }) }} to {{ new Date(lesson.finish).toLocaleString(undefined, {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                }) }}</td>
                                 <td>{{ lesson.title }}</td>
                             </tr>
                         </tbody>

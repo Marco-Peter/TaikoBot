@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -81,6 +82,7 @@ class CourseController extends Controller
      */
     public function show(Course $course): Response
     {
+        $course->description = Str::markdown($course->description);
         return Inertia::render('Course/Show', [
             'course' => $course->load([
                 'teams:id',
