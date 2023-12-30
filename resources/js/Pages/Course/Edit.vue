@@ -104,19 +104,19 @@ function updatePaid(user, paid) {
                     <table v-if="course.lessons.length">
                         <thead>
                             <tr>
-                                <th>Start</th>
-                                <th>Finish</th>
-                                <th>Title</th>
-                                <th>Teachers</th>
+                                <th class="pr-5">Start</th>
+                                <th class="pr-5">Finish</th>
+                                <th class="pr-5">Title</th>
+                                <th class="pr-5">Teachers</th>
                                 <th colspan="2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="lesson in course.lessons">
-                                <td>{{ lesson.start }}</td>
-                                <td>{{ lesson.finish }}</td>
-                                <td>{{ lesson.title }}</td>
-                                <td>
+                                <td class="pr-5">{{ lesson.start }}</td>
+                                <td class="pr-5">{{ lesson.finish }}</td>
+                                <td class="pr-5">{{ lesson.title }}</td>
+                                <td class="pr-5">
                                     <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name }}
                                     </p>
                                 </td>
@@ -157,17 +157,17 @@ function updatePaid(user, paid) {
                     <table v-if="course.participants.length">
                         <thead>
                             <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Paid</th>
+                                <th class="pr-5">First Name</th>
+                                <th class="pr-5">Last Name</th>
+                                <th class="pr-5">Paid</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="participant in props.course.participants" :key="participant.id">
-                                <td>{{ participant.first_name }}</td>
-                                <td>{{ participant.last_name }}</td>
-                                <td>
+                                <td class="pr-5">{{ participant.first_name }}</td>
+                                <td class="pr-5">{{ participant.last_name }}</td>
+                                <td class="pr-5">
                                     <input type="checkbox" v-model="participant.pivot.paid" true-value="1" false-value="0"
                                         @change="updatePaid(participant.id, participant.pivot.paid)"
                                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />

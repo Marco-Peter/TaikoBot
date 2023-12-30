@@ -38,13 +38,13 @@ function signUp(id) {
                     <table v-if="course.lessons.length">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Title</th>
+                                <th class="pr-5">Date</th>
+                                <th class="pr-5">Title</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="lesson in course.lessons">
-                                <td>{{ new Date(lesson.start).toLocaleString(undefined, {
+                                <td class="pr-5">{{ new Date(lesson.start).toLocaleString(undefined, {
                                     weekday: "short",
                                     month: "short",
                                     day: "2-digit",
@@ -60,10 +60,11 @@ function signUp(id) {
                         </tbody>
                     </table>
                     <p v-else>No Lessons available</p>
-                    <PrimaryButton v-if="!signedIn && (course.participants_count < course.capacity)" @click="signUp(course)">Sign Up</PrimaryButton>
+                    <PrimaryButton v-if="!signedIn && (course.participants_count < course.capacity)"
+                    @click="signUp(course)" class="mt-3">Sign Up</PrimaryButton>
 
                     <Link :href="route('dashboard')">
-                    <SecondaryButton>Back</SecondaryButton>
+                    <SecondaryButton class="mt-3">Back</SecondaryButton>
                     </Link>
                 </div>
             </div>

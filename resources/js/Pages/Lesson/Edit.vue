@@ -99,20 +99,20 @@ function setNoShow(participant) {
                             teacher.last_name }}</option>
                     </select>
                     <PrimaryButton :disabled="newTeacher === ''" @click="addTeacher(newTeacher)">Add Teacher</PrimaryButton>
-                    <table v-if="lessonteachers.length">
+                    <table v-if="lessonteachers.length" class="mt-3">
                         <thead>
                             <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th></th>
+                                <th class="pr-5">First Name</th>
+                                <th class="pr-5">Last Name</th>
+                                <th class="pr-5"></th>
                                 <th>Message</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="lessonteacher in lessonteachers" :key="lessonteacher.id">
-                                <td>{{ lessonteacher.first_name }}</td>
-                                <td>{{ lessonteacher.last_name }}</td>
-                                <td>
+                                <td class="pr-5">{{ lessonteacher.first_name }}</td>
+                                <td class="pr-5">{{ lessonteacher.last_name }}</td>
+                                <td class="pr-5">
                                     <DangerButton @click="removeTeacher(lessonteacher)">Remove</DangerButton>
                                 </td>
                                 <td>{{ lessonteacher.message }}</td>
@@ -131,23 +131,26 @@ function setNoShow(participant) {
                     <table>
                         <thead>
                             <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th colspan="3">Status</th>
+                                <th class="pr-5">First Name</th>
+                                <th class="pr-5">Last Name</th>
+                                <th class="pr-5">Status</th>
+                                <th colspan="2"  class="pr-5"></th>
                                 <th>Message from Student</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="participant in participants">
-                                <td>{{ participant.first_name }}</td>
-                                <td>{{ participant.last_name }}</td>
-                                <td>{{ participant.pivot.participation }}</td>
+                                <td class="pr-5">{{ participant.first_name }}</td>
+                                <td class="pr-5">{{ participant.last_name }}</td>
+                                <td class="pr-5">{{ participant.pivot.participation }}</td>
                                 <td v-if="participant.pivot.participation == 'signed_in'">
                                     <SecondaryButton @click="setLate(participant)">Late</SecondaryButton>
                                 </td>
-                                <td v-if="participant.pivot.participation == 'signed_in'">
+                                <td v-else></td>
+                                <td v-if="participant.pivot.participation == 'signed_in'" class="pr-5">
                                     <SecondaryButton @click="setNoShow(participant)">No Show</SecondaryButton>
                                 </td>
+                                <td v-else class="pr-5"></td>
                                 <td>{{ participant.message }}</td>
                             </tr>
                         </tbody>

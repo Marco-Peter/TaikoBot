@@ -55,7 +55,7 @@ const submit = () => {
                         </div>
 
                         <PrimaryButton type="submit" class="mt-3">Create</PrimaryButton>
-                        <Link :href="route('courses.index')">
+                        <Link :href="route('courses.edit', course_id)">
                         <SecondaryButton>Cancel</SecondaryButton>
                         </Link>
                     </form>

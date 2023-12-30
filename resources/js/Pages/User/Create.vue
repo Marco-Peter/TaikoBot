@@ -34,19 +34,19 @@ const submit = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <form @submit.prevent="submit">
-                        <InputLabel for="firstName" value="First Name" />
+                        <InputLabel for="firstName" value="First Name" class="mt-3" />
                         <TextInput id="firstName" v-model="form.first_name" type="text" class="mt-1 block w-full" />
                         <InputError :message="form.errors.first_name" class="mt-2" />
 
-                        <InputLabel for="lastName" value="Last Name" />
+                        <InputLabel for="lastName" value="Last Name" class="mt-3" />
                         <TextInput id="lastName" v-model="form.last_name" type="text" class="mt-1 block w-full" />
                         <InputError :message="form.errors.last_name" class="mt-2" />
 
-                        <InputLabel for="email" value="Email" />
+                        <InputLabel for="email" value="Email" class="mt-3" />
                         <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full" />
                         <InputError :message="form.errors.email" class="mt-2" />
 
-                        <InputLabel for="role" value="Role" />
+                        <InputLabel for="role" value="Role" class="mt-3" />
                         <select v-model="form.role" id="role"
                             class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             <option disabled value="">Please select one</option>
@@ -54,7 +54,7 @@ const submit = () => {
                         </select>
                         <InputError :message="form.errors.role" class="mt-2" />
 
-                        <InputLabel for="team" value="Team" />
+                        <InputLabel for="team" value="Team" class="mt-3" />
                         <p>
                             <select v-model="form.team_id" id="team"
                                 class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
@@ -64,9 +64,9 @@ const submit = () => {
                         </p>
                         <InputError :message="form.errors.team_id" class="mt-2" />
 
-                        <PrimaryButton type="submit">Submit</PrimaryButton>
+                        <PrimaryButton type="submit" class="mt-5">Submit</PrimaryButton>
                         <Link :href="route('users.index')">
-                        <SecondaryButton>Cancel</SecondaryButton>
+                        <SecondaryButton class="mt-5">Cancel</SecondaryButton>
                         </Link>
                     </form>
                 </div>

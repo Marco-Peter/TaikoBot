@@ -25,21 +25,21 @@ function destroy(id) {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <Link :href="route('courses.create')">
-                <PrimaryButton>Add Course</PrimaryButton>
+                <PrimaryButton class="mb-2">Add Course</PrimaryButton>
                 </Link>
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <table v-if="courses.length">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Participants</th>
-                                <th colspan="2"></th>
+                                <th class="pr-5">Name</th>
+                                <th class="pr-5">Participants</th>
+                                <th class="pr-5" colspan="2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="course in courses">
-                                <td>{{ course.name }}</td>
-                                <td>{{ course.participants_count }} / {{ course.capacity }}</td>
+                                <td class="pr-5">{{ course.name }}</td>
+                                <td class="pr-5">{{ course.participants_count }} / {{ course.capacity }}</td>
                                 <td>
                                     <Link :href="route('courses.edit', course.id)">
                                     <SecondaryButton>Edit</SecondaryButton>

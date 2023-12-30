@@ -25,27 +25,27 @@ function destroy(id) {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <Link :href="route('users.create')">
-                <PrimaryButton>Add User</PrimaryButton>
+                <PrimaryButton class="mb-2">Add User</PrimaryButton>
                 </Link>
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <table v-if="users.length">
                         <thead>
                             <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Teams</th>
-                                <th colspan="2"></th>
+                                <th class="pr-5">First Name</th>
+                                <th class="pr-5">Last Name</th>
+                                <th class="pr-5">Email</th>
+                                <th class="pr-5">Role</th>
+                                <th class="pr-5">Teams</th>
+                                <th colspan="2" class="pr-5"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="user in users">
-                                <td>{{ user.first_name }}</td>
-                                <td>{{ user.last_name }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.role }}</td>
-                                <td>{{ user.team ? user.team.name : 'NO GROUP' }}</td>
+                                <td class="pr-5">{{ user.first_name }}</td>
+                                <td class="pr-5">{{ user.last_name }}</td>
+                                <td class="pr-5">{{ user.email }}</td>
+                                <td class="pr-5">{{ user.role }}</td>
+                                <td class="pr-5">{{ user.team ? user.team.name : 'NO GROUP' }}</td>
                                 <td>
                                     <Link :href="route('users.edit', user.id)">
                                     <SecondaryButton>Edit</SecondaryButton>
