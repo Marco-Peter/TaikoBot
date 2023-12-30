@@ -32,14 +32,14 @@ function destroy(id) {
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Capacity</th>
+                                <th>Participants</th>
                                 <th colspan="2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="course in courses">
                                 <td>{{ course.name }}</td>
-                                <td>{{ course.capacity }}</td>
+                                <td>{{ course.participants_count }} / {{ course.capacity }}</td>
                                 <td>
                                     <Link :href="route('courses.edit', course.id)">
                                     <SecondaryButton>Edit</SecondaryButton>

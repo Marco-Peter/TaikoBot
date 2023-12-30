@@ -26,7 +26,7 @@ function signUp(id) {
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert"
                         v-html="course.description" />
-                    <p>Capacity: {{ course.capacity }}</p>
+                    <p>{{ course.capacity - course.participants_count }} places available.</p>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@ function signUp(id) {
                         </tbody>
                     </table>
                     <p v-else>No Lessons available</p>
-                    <PrimaryButton v-if="!signedIn" @click="signUp(course)">Sign Up</PrimaryButton>
+                    <PrimaryButton v-if="!signedIn && (course.participants_count < course.capacity)" @click="signUp(course)">Sign Up</PrimaryButton>
 
                     <Link :href="route('dashboard')">
                     <SecondaryButton>Back</SecondaryButton>

@@ -35,7 +35,7 @@ class DashboardController extends Controller
                 ->load([
                     'firstLesson:course_id,start',
                     'lastLesson:course_id,finish',
-                ]);
+                ])->loadCount('participants');
             $greeting = '';
         } else {
             $coursesNotSignedUp = new Collection();

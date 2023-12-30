@@ -97,7 +97,7 @@ class LessonController extends Controller
             'title' => 'required|string|max:255',
             'start' => 'required|date',
             'finish' => 'required|date',
-            'notes' => 'required|string',
+            'notes' => 'string',
         ]);
 
         $lesson->update($validated);

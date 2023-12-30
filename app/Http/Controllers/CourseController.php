@@ -42,7 +42,7 @@ class CourseController extends Controller
         Gate::authorize('edit-courses');
 
         return Inertia::render('Course/Index', [
-            'courses' => Course::all(),
+            'courses' => Course::withCount('participants')->get(),
         ]);
     }
 
@@ -90,7 +90,7 @@ class CourseController extends Controller
                     $query->orderBy('start', 'asc')
                         ->select('id', 'course_id', 'title', 'start', 'finish');
                 },
-            ]),
+            ])->loadCount('participants'),
             'signedIn' => $course->participants->contains(Auth::user()),
         ]);
     }

@@ -139,7 +139,7 @@ function sendMessage(lesson) {
                         <p>Looking for new challenges? Here you can sign up to new courses and workshops.</p>
                         <div v-if="coursesNotSignedUp.length">
                             <div v-for="course in coursesNotSignedUp" class="my-3 py-1 bg-white dark:bg-gray-800">
-                                <h3 class="font-bold text-lg">{{ course.name }}</h3>
+                                <h3 class="font-bold text-lg">{{ course.name }} ({{ course.capacity - course.participants_count }} places available)</h3>
                                 <p class="pb-2">From {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
                                     weekday: "long",
                                     month: "long",
