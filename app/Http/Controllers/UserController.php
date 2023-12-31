@@ -105,6 +105,7 @@ class UserController extends Controller
             'team_id' => 'required|exists:teams,id',
         ]);
 
+        $user->update($validated);
         return to_route('users.index')->with('message', 'User updated successfully');
     }
 

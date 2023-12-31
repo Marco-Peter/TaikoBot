@@ -132,7 +132,6 @@ class CourseController extends Controller
             'teams.*' => 'integer',
         ]);
 
-
         $course->update($validated);
         $course->teams()->sync($validated['teams'] ?? []);
         return redirect(route('courses.index'));
