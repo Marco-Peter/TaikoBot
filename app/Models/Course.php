@@ -82,6 +82,11 @@ class Course extends Model
         return $this->participants()->wherePivot('paid', 1)->withTimestamps();
     }
 
+    public function material(): HasMany
+    {
+        return $this->hasMany(CourseMaterial::class);
+    }
+
     public function messageChannel(): BelongsTo
     {
         return $this->belongsTo(MessageChannel::class);
