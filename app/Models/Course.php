@@ -74,12 +74,12 @@ class Course extends Model
 
     public function participants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('paid');
+        return $this->belongsToMany(User::class)->withPivot('paid')->withTimestamps();
     }
 
     public function participants_paid(): BelongsToMany
     {
-        return $this->participants()->wherePivot('paid', 1);
+        return $this->participants()->wherePivot('paid', 1)->withTimestamps();
     }
 
     public function messageChannel(): BelongsTo

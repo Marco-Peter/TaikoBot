@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignIdFor(Course::class, 'original_id')->constrained('courses')->cascadeOnDelete();
             $table->foreignIdFor(Course::class, 'compensation_id')->constrained('courses')->cascadeOnDelete();
             $table->primary(['original_id', 'compensation_id']);
-            $table->timestamps();
         });
     }
 

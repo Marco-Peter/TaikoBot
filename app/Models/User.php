@@ -79,7 +79,8 @@ class User extends Authenticatable
 
         static::updated(function (User $user) {
             $ch = $user->messageChannels()
-            ->where('name', $user->getOriginal('first_name') . "_" . $user->getOriginal('last_name'))->first();
+                ->where('name', $user->getOriginal('first_name') . "_" . $user
+                    ->getOriginal('last_name'))->first();
             $ch->name = $user->first_name . "_" . $user->last_name;
             $ch->save();
         });
@@ -98,12 +99,12 @@ class User extends Authenticatable
 
     public function lessons(): BelongsToMany
     {
-        return $this->belongsToMany(Lesson::class)->withPivot('participation');
+        return $this->belongsToMany(Lesson::class)->withPivot('participation')->withTimestamps();
     }
 
     public function courses(): BelongsToMany
     {
-        return $this->belongsToMany(Course::class)->withPivot('paid');
+        return $this->belongsToMany(Course::class)->withPivot('paid')->withTimestamps();
     }
 
     public function hasSignedUpToCourse(Course $course): bool
@@ -125,6 +126,6 @@ class User extends Authenticatable
      */
     public function messageChannels(): BelongsToMany
     {
-        return $this->belongsToMany(MessageChannel::class);
+        return $this->belongsToMany(MessageChannel::class)->withPivot(['read_until']);
     }
 }

@@ -19,6 +19,6 @@ class MessageChannel extends Model
      */
     public function recipients(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->withPivot(['read_until']);
     }
 }
