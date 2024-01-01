@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserRoleEnum;
+use App\Models\MessageChannel;
 use App\Models\Team;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->enum('role', UserRoleEnum::values())->default(UserRoleEnum::STUDENT->value);
             $table->integer('karma')->nullable();
             $table->foreignIdFor(Team::class)->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(MessageChannel::class)->constrained()->restrictOnDelete();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();

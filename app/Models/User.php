@@ -71,24 +71,25 @@ class User extends Authenticatable
 
     public static function booted()
     {
-        static::created(function (User $user) {
-            $user->messageChannels()->create([
+        static::creating(function (User $user) {
+            // Create the message channel before creating the user
+            $user->message_channel_id = $user->messageChannel()->create([
                 'name' => $user->first_name . "_" . $user->last_name,
-            ]);
+            ])->id;
+        });
+
+        static::created(function (User $user) {
+            // Attach the message channel as recipients after both models are on the database
+            $user->subscribedMessageChannels()->attach($user->messageChannel);
         });
 
         static::updated(function (User $user) {
-            $ch = $user->messageChannels()
-                ->where('name', $user->getOriginal('first_name') . "_" . $user
-                    ->getOriginal('last_name'))->first();
-            $ch->name = $user->first_name . "_" . $user->last_name;
-            $ch->save();
+            $user->messageChannel->name = $user->first_name . "_" . $user->last_name;
+            $user->messageChannel->save();
         });
 
-        static::deleting(function (User $user) {
-            $user->messageChannels()
-                ->where('name', $user->first_name . "_" . $user->last_name)
-                ->delete();
+        static::deleted(function (User $user) {
+            $user->messageChannel()->delete();
         });
     }
 
@@ -124,8 +125,16 @@ class User extends Authenticatable
     /**
      * Return all message channels, the user has subscribed to.
      */
-    public function messageChannels(): BelongsToMany
+    public function subscribedMessageChannels(): BelongsToMany
     {
         return $this->belongsToMany(MessageChannel::class)->withPivot(['read_until']);
+    }
+
+    /**
+     * Return the own, dedicated message channel of the user.
+     */
+    public function messageChannel(): BelongsTo
+    {
+        return $this->belongsTo(MessageChannel::class);
     }
 }
