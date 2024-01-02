@@ -3,6 +3,8 @@
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\MessageChannelController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
@@ -50,4 +52,7 @@ Route::middleware([
     Route::post('lessons/{lesson}/set-late', [LessonController::class, 'setLate'])->name('lessons.setLate');
     Route::post('lessons/{lesson}/set-noshow', [LessonController::class, 'setNoShow'])->name('lessons.setNoShow');
     Route::resource('lessons', LessonController::class);
+
+    Route::resource('channels', MessageChannelController::class);
+    Route::resource('channels.messages', MessageController::class)->shallow();
 });

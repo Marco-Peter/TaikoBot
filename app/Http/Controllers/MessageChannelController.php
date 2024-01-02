@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\MessageChannel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class MessageChannelController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of all subscribed message channels.
      */
     public function index()
     {
-        //
+        return Inertia::render('Message/Channel/Index', [
+            'channels' => Auth::user()->subscribedMessageChannels,
+        ]);
     }
 
     /**
