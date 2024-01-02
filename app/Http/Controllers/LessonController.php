@@ -107,7 +107,7 @@ class LessonController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Lesson $lesson)
+    public function destroy(Lesson $lesson): RedirectResponse
     {
         Gate::authorize('edit-courses');
 

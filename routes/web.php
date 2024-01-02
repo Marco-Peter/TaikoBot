@@ -53,6 +53,8 @@ Route::middleware([
     Route::post('lessons/{lesson}/set-noshow', [LessonController::class, 'setNoShow'])->name('lessons.setNoShow');
     Route::resource('lessons', LessonController::class);
 
+    Route::post('channels/{channel}/add-recipient', [MessageChannelController::class, 'addRecipient'])->name('channels.addRecipient');
+    Route::post('channels/{channel}/remove-recipient', [MessageChannelController::class, 'removeRecipient'])->name('channels.removeRecipient');
     Route::resource('channels', MessageChannelController::class);
     Route::resource('channels.messages', MessageController::class)->shallow();
 });

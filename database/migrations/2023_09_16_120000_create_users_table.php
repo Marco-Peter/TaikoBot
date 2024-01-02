@@ -24,7 +24,7 @@ return new class extends Migration
             $table->enum('role', UserRoleEnum::values())->default(UserRoleEnum::STUDENT->value);
             $table->integer('karma')->nullable();
             $table->foreignIdFor(Team::class)->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(MessageChannel::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(MessageChannel::class)->nullable()->constrained()->restrictOnDelete();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
