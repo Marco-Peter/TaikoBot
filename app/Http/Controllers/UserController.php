@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\UserRoleEnum;
+use App\Models\MessageChannel;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -77,9 +78,10 @@ class UserController extends Controller
         Gate::authorize('edit-users');
 
         return Inertia::render('User/Edit', [
-            'user' => $user,
+            'user' => $user->load('subscribedMessageChannels:id,name'),
             'roles' => UserRoleEnum::values(),
             'teams' => Team::all(['id', 'name']),
+            'messageChannels' => MessageChannel::all(['id', 'name']),
         ]);
     }
 

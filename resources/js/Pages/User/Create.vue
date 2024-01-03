@@ -10,6 +10,7 @@ import { Link, useForm } from '@inertiajs/vue3';
 defineProps({ roles: Object, teams: Object })
 
 const form = useForm({
+    nickname: '',
     first_name: '',
     last_name: '',
     email: '',
@@ -34,6 +35,10 @@ const submit = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <form @submit.prevent="submit">
+                        <InputLabel for="nickname" value="Nickname" class="mt-3" />
+                        <TextInput id="nickname" v-model="form.nickname" type="text" class="mt-1 block w-full" />
+                        <InputError :message="form.errors.nickname" class="mt-2" />
+
                         <InputLabel for="firstName" value="First Name" class="mt-3" />
                         <TextInput id="firstName" v-model="form.first_name" type="text" class="mt-1 block w-full" />
                         <InputError :message="form.errors.first_name" class="mt-2" />

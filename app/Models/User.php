@@ -30,6 +30,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'nickname',
         'first_name',
         'last_name',
         'email',
@@ -69,30 +70,6 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public static function booted()
-    {
-        static::creating(function (User $user) {
-            // Create the message channel before creating the user
-            $user->message_channel_id = $user->messageChannel()->create([
-                'name' => $user->first_name . "_" . $user->last_name,
-            ])->id;
-        });
-
-        static::created(function (User $user) {
-            // Attach the message channel as recipients after both models are on the database
-            $user->subscribedMessageChannels()->attach($user->messageChannel);
-        });
-
-        static::updated(function (User $user) {
-            $user->messageChannel->name = $user->first_name . "_" . $user->last_name;
-            $user->messageChannel->save();
-        });
-
-        static::deleted(function (User $user) {
-            $user->messageChannel()->delete();
-        });
-    }
-
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
@@ -127,7 +104,10 @@ class User extends Authenticatable
      */
     public function subscribedMessageChannels(): BelongsToMany
     {
-        return $this->belongsToMany(MessageChannel::class)->withPivot(['read_until']);
+        return $this->belongsToMany(MessageChannel::class)->withPivot([
+            'read_until',
+            'can_post',
+        ]);
     }
 
     /**

@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -104,8 +105,14 @@ class MessageChannelController extends Controller
 
     public function addRecipient(Request $request, MessageChannel $channel): RedirectResponse
     {
+        $validated = $request->validate([
+            'can_post' => 'boolean',
+        ]);
+
         $recipient = User::find($request->recipient);
-        $channel->recipients()->attach($recipient);
+        $channel->recipients()->attach($recipient, [
+            'can_post' => $validated['can_post'],
+        ]);
 
         return back();
     }
@@ -118,4 +125,13 @@ class MessageChannelController extends Controller
         return back();
     }
 
+    public function setCanPost(Request $request, MessageChannel $channel): RedirectResponse
+    {
+        $recipient = User::find($request->recipient);
+        $channel->recipients()->updateExistingPivot($recipient, [
+            'can_post' => $request->can_post,
+        ]);
+
+        return back();
+    }
 }

@@ -5,6 +5,8 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
 use App\Models\Course;
+use App\Models\MessageChannel;
+use App\Models\Team;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -15,14 +17,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('teams')->insert([
+        Team::factory()->create([
             'name' => 'Basic Group',
             'description' => 'Basic group, which meets every Thursday',
         ]);
 
-        DB::table('teams')->insert([
+        Team::factory()->create([
             'name' => 'Intensive Group',
             'description' => 'Intensive group, which meets every Tuesday',
+        ]);
+
+        MessageChannel::factory()->create([
+            'name' => 'Announcements',
+        ]);
+
+        MessageChannel::factory()->create([
+            'name' => 'Random',
         ]);
 
         User::factory(10)->create();
@@ -32,6 +42,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
+            'nickname' => 'starter',
             'first_name' => 'Student',
             'last_name' => 'Taikostarter',
             'email' => 'student@example.com',
@@ -40,6 +51,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
+            'nickname' => 'otaku',
             'first_name' => 'Teacher',
             'last_name' => 'Taikootaku',
             'email' => 'teacher@example.com',
@@ -48,6 +60,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
+            'nickname' => 'baka',
             'first_name' => 'Admin',
             'last_name' => 'Taikobaka',
             'email' => 'admin@example.com',

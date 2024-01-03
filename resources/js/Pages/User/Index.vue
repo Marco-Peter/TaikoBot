@@ -31,6 +31,7 @@ function destroy(id) {
                     <table v-if="users.length">
                         <thead>
                             <tr>
+                                <th class="pr-5">Nickname</th>
                                 <th class="pr-5">First Name</th>
                                 <th class="pr-5">Last Name</th>
                                 <th class="pr-5">Email</th>
@@ -41,6 +42,7 @@ function destroy(id) {
                         </thead>
                         <tbody>
                             <tr v-for="user in users">
+                                <td class="pr-5">{{ user.nickname }}</td>
                                 <td class="pr-5">{{ user.first_name }}</td>
                                 <td class="pr-5">{{ user.last_name }}</td>
                                 <td class="pr-5">{{ user.email }}</td>

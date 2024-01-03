@@ -6,6 +6,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MessageChannelController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
+use App\Models\MessageChannel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -55,6 +56,7 @@ Route::middleware([
 
     Route::post('channels/{channel}/add-recipient', [MessageChannelController::class, 'addRecipient'])->name('channels.addRecipient');
     Route::post('channels/{channel}/remove-recipient', [MessageChannelController::class, 'removeRecipient'])->name('channels.removeRecipient');
+    Route::post('channels/{channel}/set-can-post', [MessageChannelController::class, 'setCanPost'])->name('channels.setCanPost');
     Route::resource('channels', MessageChannelController::class);
     Route::resource('channels.messages', MessageController::class)->shallow();
 });

@@ -16,6 +16,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('nickname')->unique();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
@@ -24,7 +25,6 @@ return new class extends Migration
             $table->enum('role', UserRoleEnum::values())->default(UserRoleEnum::STUDENT->value);
             $table->integer('karma')->nullable();
             $table->foreignIdFor(Team::class)->nullable()->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(MessageChannel::class)->nullable()->constrained()->restrictOnDelete();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();

@@ -153,6 +153,7 @@ class LessonController extends Controller
                 'participation' => LessonParticipationEnum::TEACHER->value,
             ]);
         }
+        $teacher->subscribedMessageChannels()->syncWithoutDetaching($lesson->course->messageChannel);
         return back();
     }
 
@@ -166,6 +167,7 @@ class LessonController extends Controller
         } else {
             $lesson->participants()->detach($teacher);
         }
+        // TODO: Remove teacher from course message group, if not engaged otherwise.
 
         return back();
     }

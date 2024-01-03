@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->primary(['message_channel_id', 'user_id']);
             $table->timestamp('read_until')->useCurrent();
+            $table->boolean('can_post')->default(false);
         });
     }
 
