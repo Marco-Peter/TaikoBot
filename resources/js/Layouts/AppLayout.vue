@@ -140,14 +140,18 @@ const logout = () => {
                 <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
+                            Home
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('users.index')" :active="route().current('users.*')">
+                        <ResponsiveNavLink :href="route('channels.index')" :active="route().current('channels.*')">
+                            Messages
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink v-if="page.props.auth.canEditUsers" :href="route('users.index')" :active="route().current('users.*')">
                             User Management
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink :href="route('courses.index')" :active="route().current('courses.*')">
+                        <ResponsiveNavLink v-if="page.props.auth.canEditCourses" :href="route('courses.index')" :active="route().current('courses.*')">
                             Course Management
                         </ResponsiveNavLink>
                     </div>
