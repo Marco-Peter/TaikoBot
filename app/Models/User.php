@@ -109,12 +109,4 @@ class User extends Authenticatable
             'can_post',
         ]);
     }
-
-    /**
-     * Return the own, dedicated message channel of the user.
-     */
-    public function messageChannel(): BelongsTo
-    {
-        return $this->belongsTo(MessageChannel::class);
-    }
 }

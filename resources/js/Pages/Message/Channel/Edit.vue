@@ -81,7 +81,7 @@ function updateCanPost(recipient) {
                         <option v-for="recipient in users" :key="recipient.id" :value="recipient">{{ recipient.first_name }}
                             {{ recipient.last_name }}</option>
                     </select>
-                    <input type="checkbox" id="canPost" v-model="canPost"
+                    <input type="checkbox" :id="canPost" v-model="canPost"
                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
                     <label :for="canPost" class="ml-3">Can post messages</label>
                     <PrimaryButton :disabled="newRecipient === ''" @click="addRecipient(newRecipient)">Add</PrimaryButton>

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\MessageChannel;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,10 +19,10 @@ class MessageController extends Controller
     public function index(MessageChannel $channel): Response
     {
         return Inertia::render('Message/Index', [
-            'channel' => $channel->load([
-                'messages',
-                'messages.user:id,first_name,last_name',
-            ]),
+            'channel' => $channel,
+            'messages' => Message::with('user:id,first_name,last_name')
+                ->where('message_channel_id', $channel->id)->latest()->paginate(10),
+            'post_message' => Gate::allows('post-message', $channel),
         ]);
     }
 
@@ -29,6 +31,8 @@ class MessageController extends Controller
      */
     public function create(MessageChannel $channel): Response
     {
+        Gate::authorize('post-message', [$channel]);
+
         return Inertia::render('Message/Create', [
             'channel' => $channel,
         ]);
@@ -39,12 +43,13 @@ class MessageController extends Controller
      */
     public function store(Request $request, MessageChannel $channel)
     {
+        Gate::authorize('post-message', [$channel]);
+
         $validated = $request->validate([
             'content' => 'required|string',
         ]);
         $validated['user_id'] = Auth::user()->id;
 
-        //dd($validated);
         $channel->messages()->create($validated);
         return redirect(route('channels.messages.index', $channel->id));
     }
