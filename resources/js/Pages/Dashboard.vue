@@ -4,7 +4,13 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { Link, router } from '@inertiajs/vue3';
 
-const props = defineProps({ user: Object, coursesSignedUp: Object, coursesNotSignedUp: Object, dashboardGreeting: String });
+const props = defineProps({
+    user: Object,
+    unreadMessages: Array,
+    coursesSignedUp: Object,
+    coursesNotSignedUp: Object,
+    dashboardGreeting: String,
+});
 
 function signOut(lesson) {
     let message = prompt("Message to teachers", "");
@@ -51,7 +57,10 @@ function sendMessage(lesson) {
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                             News and Messages
                         </h2>
-                        <p>Hi, the most recent messages will be presented here.</p>
+                        <p v-for="um in unreadMessages">
+                            <Link :href="route('channels.messages.index', um.id)">{{ um.count }} unread messages in {{
+                                um.name }}</Link>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -139,7 +148,8 @@ function sendMessage(lesson) {
                         <p>Looking for new challenges? Here you can sign up to new courses and workshops.</p>
                         <div v-if="coursesNotSignedUp.length">
                             <div v-for="course in coursesNotSignedUp" class="my-3 py-1 bg-white dark:bg-gray-800">
-                                <h3 class="font-bold text-lg">{{ course.name }} ({{ course.capacity - course.participants_count }} places available)</h3>
+                                <h3 class="font-bold text-lg">{{ course.name }} ({{ course.capacity -
+                                    course.participants_count }} places available)</h3>
                                 <p class="pb-2">From {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
                                     weekday: "long",
                                     month: "long",
@@ -163,5 +173,4 @@ function sendMessage(lesson) {
                 </div>
             </div>
         </div>
-    </AppLayout>
-</template>
+</AppLayout></template>

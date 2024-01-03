@@ -18,6 +18,13 @@ class MessageController extends Controller
      */
     public function index(MessageChannel $channel): Response
     {
+        Gate::allowIf(Auth::user()->subscribedMessageChannels()
+            ->where('id', $channel->id)->exists());
+
+        Auth::user()->subscribedMessageChannels()->updateExistingPivot($channel, [
+            'read_until' => $channel->messages()->latest()->first()->created_at,
+        ]);
+
         return Inertia::render('Message/Index', [
             'channel' => $channel,
             'messages' => Message::with('user:id,first_name,last_name')

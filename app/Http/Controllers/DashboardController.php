@@ -28,6 +28,19 @@ class DashboardController extends Controller
             'lessons.teachers:id,first_name,last_name',
         ]);
 
+        $unreadMessages = [];
+        foreach ($user->subscribedMessageChannels as $mc) {
+            $count = $mc->messages()->where('created_at', '>', $mc->pivot->read_until)->count();
+
+            if ($count > 0) {
+                $unreadMessages[] = [
+                    'id' => $mc->id,
+                    'name' => $mc->name,
+                    'count' => $count,
+                ];
+            }
+        }
+
         if ($user->team) {
             $coursesNotSignedUp = $user->team->courses->diff($user->courses)
                 ->where('firstLesson.start', '>', Carbon::now()->toDateString())
@@ -55,6 +68,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Dashboard', [
             'user' => $user->only('id', 'first_name', 'lessons'),
+            'unreadMessages' => $unreadMessages,
             'coursesSignedUp' => $coursesSignedUp,
             'coursesNotSignedUp' => $coursesNotSignedUp,
             'dashboardGreeting' => $greeting,

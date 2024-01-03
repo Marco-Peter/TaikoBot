@@ -1,10 +1,11 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-const props = defineProps({ channel: Object, messages: Array, post_message: Boolean })
+const props = defineProps({ channel: Object, messages: Object, post_message: Boolean });
+const page = usePage();
 const allMessages = ref(props.messages.data);
 
 function loadMorePosts() {
@@ -22,16 +23,12 @@ function loadMorePosts() {
                 Messages in {{ channel.name }}
             </h2>
         </template>
-        <h1>Channel</h1>
-        <p>{{ channel }}</p>
-        <h1>Messages</h1>
-        <p>{{ messages }}</p>
-        <h1>All Messages</h1>
-        <p>{{ allMessages }}</p>
+
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <p v-if="allMessages.length" v-for="message in allMessages" :key="message.id">
-                <div class="my-3 py-1 bg-white dark:bg-gray-800">
+                <div class="my-3 py-1"
+                    :class="message.user.id === page.props.auth.user.id ? 'bg-blue-300 dark:bg-blue-900': 'bg-white dark:bg-gray-800'">
                     <p class="font-bold">{{ message.user.first_name }} {{ message.user.last_name }}</p>
                     <p>{{ message.content }}</p>
                     <p class="font-light italic">{{ new Date(message.created_at).toLocaleString() }}</p>
