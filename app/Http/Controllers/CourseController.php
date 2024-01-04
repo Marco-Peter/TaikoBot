@@ -184,12 +184,11 @@ class CourseController extends Controller
         return back();
     }
 
-    public function downloadMaterial(CourseMaterial $courseMaterial)
+    public function downloadMaterial(CourseMaterial $courseMaterial): BinaryFileResponse
     {
         Gate::allowIf(Auth::user()->courses()->where('id', $courseMaterial->course->id)->exists());
 
         $path = Storage::path($courseMaterial->path);
-        //dd($path);
         return response()->download($path, $courseMaterial->name);
     }
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Enums\UserRoleEnum;
 use App\Models\Message;
 use App\Models\MessageChannel;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
