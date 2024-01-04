@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRoleEnum;
 use App\Models\Message;
 use App\Models\MessageChannel;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -19,11 +20,14 @@ class MessageController extends Controller
     public function index(MessageChannel $channel): Response
     {
         Gate::allowIf(Auth::user()->subscribedMessageChannels()
-            ->where('id', $channel->id)->exists());
+            ->where('id', $channel->id)->exists() ||
+            Auth::user()->role === UserRoleEnum::ADMIN);
 
-        Auth::user()->subscribedMessageChannels()->updateExistingPivot($channel, [
-            'read_until' => $channel->messages()->latest()->first()->created_at,
-        ]);
+        if ($channel->messages()->exists()) {
+            Auth::user()->subscribedMessageChannels()->updateExistingPivot($channel, [
+                'read_until' => $channel->messages()->latest()->first()->created_at,
+            ]);
+        }
 
         return Inertia::render('Message/Index', [
             'channel' => $channel,
