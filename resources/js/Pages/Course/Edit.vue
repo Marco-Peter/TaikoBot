@@ -19,11 +19,33 @@ const form = useForm({
     teams: props.course.teams.map(({ id }) => id),
 });
 
+const uploadForm = useForm({
+    path: null,
+    notes: null,
+    external: false,
+});
+
 const newParticipantTeam = ref("");
 const newParticipant = ref("");
 
 const submit = () => {
     form.put(route("courses.update", props.course.id));
+}
+
+function uploadMaterial() {
+    uploadForm.post(route("courses.uploadMaterial", props.course.id),
+        { preserveScroll: true });
+
+    uploadForm.path = null;
+    uploadForm.notes = null;
+    uploadForm.external = false;
+}
+
+function deleteMaterial(material) {
+    if (confirm("Are you sure you wnat to delete this material?")) {
+        router.post(route('courses.deleteMaterial', props.course.id),
+            { 'material': material.id }, { preserveScroll: true });
+    }
 }
 
 function destroyLesson(id) {
@@ -68,7 +90,9 @@ function updatePaid(user, paid) {
 
                         <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="description" value="Description (Markdown Tags possible)" />
-                            <textarea title="This text will be formatted using GitHub style Markdown format.&#013;Check Google about what is possible!&#013;Double line breaks for paragraph&#013;#, ##, ### for hierarchic titles&#013;'-' for unorderet lists&#013;'1)', '2)', '3)' for ordered lists, ..." id="description" v-model="form.description" cols="30" rows="10"
+                            <textarea
+                                title="This text will be formatted using GitHub style Markdown format.&#013;Check Google about what is possible!&#013;Double line breaks for paragraph&#013;#, ##, ### for hierarchic titles&#013;'-' for unorderet lists&#013;'1)', '2)', '3)' for ordered lists, ..."
+                                id="description" v-model="form.description" cols="30" rows="10"
                                 placeholder="Public course description - make it catchy"
                                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
                             <InputError :message="form.errors.description" class="mt-2" />
@@ -90,6 +114,44 @@ function updatePaid(user, paid) {
                         <SecondaryButton>Back</SecondaryButton>
                         </Link>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <h1 class="font-semibold text-xl mb-2 mt-3">Material</h1>
+                    <form name="uploadForm" @submit.prevent="uploadMaterial">
+                        <input type="checkbox" id="external" v-model="uploadForm.external" @click="uploadForm.path = null"
+                            class="ml-1 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
+                        <label for="external" class="mx-3">external link</label>
+
+                        <TextInput v-if="uploadForm.external" type="text" v-model="uploadForm.path"
+                            placeholder="external url"></TextInput>
+                        <TextInput v-else type="file" @input="uploadForm.path = $event.target.files[0]"></TextInput>
+                        <InputError :message="uploadForm.errors.path" class="mt-2" />
+                        <progress v-if="uploadForm.progress" :value="uploadForm.progress.percentage" max="100">
+                            {{ uploadForm.progress.percentage }}%
+                        </progress>
+
+                        <textarea id="notes" v-model="uploadForm.notes" cols="30" rows="10"
+                            placeholder="Material description"
+                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
+                        <InputError :message="uploadForm.errors.notes" class="mt-2" />
+                        <PrimaryButton type="submit" class="mt-3">Upload</PrimaryButton>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div v-for="mat in course.material" class="py-5">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <p>File name: {{ mat.name }}</p>
+                    <h1 class="mt-3 text-xl">Notes</h1>
+                    <p>{{ mat.notes }}</p>
+                    <DangerButton class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
                 </div>
             </div>
         </div>

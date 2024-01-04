@@ -43,6 +43,9 @@ Route::middleware([
     Route::post('courses/{course}/set-paid', [CourseController::class, 'setPaid'])->name('courses.setPaid');
     Route::post('courses/{course}/removeParticipant', [CourseController::class, 'removeParticipant'])->name('courses.removeParticipant');
     Route::post('courses/{course}/addParticipant', [CourseController::class, 'addParticipant'])->name('courses.addParticipant');
+    Route::post('courses/{course}/upload-material', [CourseController::class, 'uploadMaterial'])->name('courses.uploadMaterial');
+    Route::get('courses/download-material/{courseMaterial}', [CourseController::class, 'downloadMaterial'])->name('courses.downloadMaterial');
+    Route::post('courses/{course}/delete-material', [CourseController::class, 'deleteMaterial'])->name('courses.deleteMaterial');
     Route::resource('courses', CourseController::class);
 
     Route::post('lessons/{lesson}/signout', [LessonController::class, 'signOut'])->name('lessons.signout');

@@ -13,6 +13,8 @@ class CourseMaterial extends Model
     protected $fillable = [
         'path',
         'name',
+        'notes',
+        'external',
     ];
 
     public function course(): BelongsTo

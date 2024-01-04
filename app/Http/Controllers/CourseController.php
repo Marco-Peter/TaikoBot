@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
+use App\Models\CourseMaterial;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -12,8 +13,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CourseController extends Controller
 {
@@ -90,6 +93,7 @@ class CourseController extends Controller
                     $query->orderBy('start', 'asc')
                         ->select('id', 'course_id', 'title', 'start', 'finish');
                 },
+                'material:id,course_id,path,name,external,notes',
             ])->loadCount('participants'),
             'signedIn' => $course->participants->contains(Auth::user()),
         ]);
@@ -111,6 +115,7 @@ class CourseController extends Controller
                 },
                 'lessons.teachers:id,first_name,last_name',
                 'participants:id,first_name,last_name',
+                'material:id,course_id,path,name,external,notes',
             ]),
             'teams' => Team::with([
                 'users:id,first_name,last_name,team_id',
@@ -146,6 +151,61 @@ class CourseController extends Controller
 
         $course->delete();
         return redirect(route('courses.index'));
+    }
+
+    public function uploadMaterial(Request $request, Course $course): RedirectResponse
+    {
+        $validated = $request->validate([
+            'external' => "required|boolean",
+        ]);
+
+        if ($validated['external'] === true) {
+            $validated = $request->validate([
+                'notes' => "string|nullable",
+                'external' => "required|boolean",
+                'path' => "required|string",
+            ]);
+        } else {
+            $validated = $request->validate([
+                'notes' => "string|nullable",
+                'external' => "required|boolean",
+                'path' => "required|file",
+            ]);
+        }
+
+        if ($validated["external"] !== true) {
+            $validated['path'] = $request->file('path')->store('coursematerial');
+            $validated['name'] = $request->file('path')->getClientOriginalName();
+        } else {
+            $validated['name'] = '';
+        }
+
+        $course->material()->create($validated);
+        return back();
+    }
+
+    public function downloadMaterial(CourseMaterial $courseMaterial)
+    {
+        Gate::allowIf(Auth::user()->courses()->where('id', $courseMaterial->course->id)->exists());
+
+        $path = Storage::path($courseMaterial->path);
+        //dd($path);
+        return response()->download($path, $courseMaterial->name);
+    }
+
+    public function deleteMaterial(Request $request, Course $course): RedirectResponse
+    {
+        Gate::authorize('edit-courses');
+
+        $validated = $request->validate([
+            'material' => "required|integer",
+        ]);
+
+        $material = $course->material()->where('id', $validated['material']);
+        Storage::delete($material->first()->path);
+        $material->delete();
+
+        return back();
     }
 
     public function addParticipant(Request $request, Course $course): RedirectResponse

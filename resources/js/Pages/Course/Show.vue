@@ -21,7 +21,7 @@ function signUp(id) {
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert"
@@ -31,7 +31,27 @@ function signUp(id) {
             </div>
         </div>
 
-        <div class="py-1">
+        <div v-for="mat in course.material" class="pt-10">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <h1 class="font-semibold text-xl">Course Material</h1>
+                </div>
+            </div>
+        </div>
+
+        <div v-for="mat in course.material" class="pt-3">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <p>{{ mat.name }}</p>
+                    <p class="mt-5">{{ mat.notes }}</p>
+                    <a :href="route('courses.downloadMaterial', mat.id)" download>
+                        <SecondaryButton class="mt-3">Download</SecondaryButton>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-10">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h2 class="font-semibold text-xl mb-2 mt-3">Lessons</h2>
@@ -52,16 +72,16 @@ function signUp(id) {
                                     hour: "2-digit",
                                     minute: "2-digit",
                                 }) }} to {{ new Date(lesson.finish).toLocaleString(undefined, {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                }) }}</td>
+    hour: "2-digit",
+    minute: "2-digit",
+}) }}</td>
                                 <td>{{ lesson.title }}</td>
                             </tr>
                         </tbody>
                     </table>
                     <p v-else>No Lessons available</p>
-                    <PrimaryButton v-if="!signedIn && (course.participants_count < course.capacity)"
-                    @click="signUp(course)" class="mt-3">Sign Up</PrimaryButton>
+                    <PrimaryButton v-if="!signedIn && (course.participants_count < course.capacity)" @click="signUp(course)"
+                        class="mt-3">Sign Up</PrimaryButton>
 
                     <Link :href="route('dashboard')">
                     <SecondaryButton class="mt-3">Back</SecondaryButton>
