@@ -31,7 +31,7 @@ function signUp(id) {
             </div>
         </div>
 
-        <div v-for="mat in course.material" class="pt-10">
+        <div v-if="course.material && course.material.length" class="pt-10">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="font-semibold text-xl">Course Material</h1>
@@ -42,9 +42,13 @@ function signUp(id) {
         <div v-for="mat in course.material" class="pt-3">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <p>{{ mat.name }}</p>
+                    <p v-if="mat.external">{{ mat.path }}</p>
+                    <p v-else>{{ mat.name }}</p>
                     <p class="mt-5">{{ mat.notes }}</p>
-                    <a :href="route('courses.downloadMaterial', mat.id)" download>
+                    <a v-if="mat.external" :href="mat.path" target="_blank">
+                        <SecondaryButton class="mt-3">Open</SecondaryButton>
+                    </a>
+                    <a v-else :href="route('courses.downloadMaterial', mat.id)" download>
                         <SecondaryButton class="mt-3">Download</SecondaryButton>
                     </a>
                 </div>

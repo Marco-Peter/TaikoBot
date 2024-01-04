@@ -85,17 +85,25 @@ class CourseController extends Controller
      */
     public function show(Course $course): Response
     {
+        $signedIn = $course->participants->contains(Auth::user());
         $course->description = Str::markdown($course->description);
-        return Inertia::render('Course/Show', [
-            'course' => $course->load([
-                'teams:id',
-                'lessons' => function (Builder $query) {
-                    $query->orderBy('start', 'asc')
-                        ->select('id', 'course_id', 'title', 'start', 'finish');
-                },
+        $course->load([
+            'teams:id',
+            'lessons' => function (Builder $query) {
+                $query->orderBy('start', 'asc')
+                    ->select('id', 'course_id', 'title', 'start', 'finish');
+            },
+        ]);
+
+        if ($signedIn) {
+            $course->load([
                 'material:id,course_id,path,name,external,notes',
-            ])->loadCount('participants'),
-            'signedIn' => $course->participants->contains(Auth::user()),
+            ]);
+        }
+
+        return Inertia::render('Course/Show', [
+            'course' => $course->loadCount('participants'),
+            'signedIn' => $signedIn,
         ]);
     }
 

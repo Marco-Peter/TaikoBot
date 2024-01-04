@@ -148,10 +148,11 @@ function updatePaid(user, paid) {
         <div v-for="mat in course.material" class="py-5">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <p>File name: {{ mat.name }}</p>
+                    <p v-if="mat.external">Link: {{ mat.path }}</p>
+                    <p v-else>File name: {{ mat.name }}</p>
                     <h1 class="mt-3 text-xl">Notes</h1>
                     <p>{{ mat.notes }}</p>
-                    <DangerButton class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
+                    <DangerButton v-if="!mat.external" class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
                 </div>
             </div>
         </div>
