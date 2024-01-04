@@ -208,8 +208,10 @@ class CourseController extends Controller
             'material' => "required|integer",
         ]);
 
-        $material = $course->material()->where('id', $validated['material']);
-        Storage::delete($material->first()->path);
+        $material = $course->material()->where('id', $validated['material'])->first();
+        if (!$material->external) {
+            Storage::delete($material->path);
+        }
         $material->delete();
 
         return back();

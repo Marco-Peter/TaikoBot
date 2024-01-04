@@ -152,7 +152,13 @@ function updatePaid(user, paid) {
                     <p v-else>File name: {{ mat.name }}</p>
                     <h1 class="mt-3 text-xl">Notes</h1>
                     <p>{{ mat.notes }}</p>
-                    <DangerButton v-if="!mat.external" class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
+                    <a v-if="mat.external" :href="mat.path" target="_blank">
+                        <SecondaryButton class="mt-3">Open</SecondaryButton>
+                    </a>
+                    <a v-else :href="route('courses.downloadMaterial', mat.id)" download>
+                        <SecondaryButton class="mt-3">Download</SecondaryButton>
+                    </a>
+                    <DangerButton class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
                 </div>
             </div>
         </div>
