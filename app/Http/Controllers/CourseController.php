@@ -33,7 +33,8 @@ class CourseController extends Controller
     protected function teams_not_selected(Course $course)
     {
         return Team::whereNotIn('id', function ($query) use ($course) {
-            $query->select('team_id')->from('course_team')->where('course_id', '=', $course->id);
+            $query->select('team_id')->from('course_team')
+                ->where('course_id', '=', $course->id);
         })->get();
     }
 
@@ -77,6 +78,7 @@ class CourseController extends Controller
 
         $course = Course::create($validated);
         $course->teams()->sync($validated['teams'] ?? []);
+
         return redirect(route('courses.edit', $course));
     }
 
@@ -85,7 +87,6 @@ class CourseController extends Controller
      */
     public function show(Course $course): Response
     {
-        $signedIn = $course->participants->contains(Auth::user());
         $course->description = Str::markdown($course->description);
         $course->load([
             'teams:id',
@@ -93,8 +94,9 @@ class CourseController extends Controller
                 $query->orderBy('start', 'asc')
                     ->select('id', 'course_id', 'title', 'start', 'finish');
             },
-        ]);
+        ])->loadCount('participants');
 
+        $signedIn = $course->participants->contains(Auth::user());
         if ($signedIn) {
             $course->load([
                 'material:id,course_id,path,name,external,notes',
@@ -102,7 +104,7 @@ class CourseController extends Controller
         }
 
         return Inertia::render('Course/Show', [
-            'course' => $course->loadCount('participants'),
+            'course' => $course,
             'signedIn' => $signedIn,
         ]);
     }
@@ -114,20 +116,24 @@ class CourseController extends Controller
     {
         Gate::authorize('edit-courses');
 
+        $course->load([
+            'teams:id',
+            'lessons' => function (Builder $query) {
+                $query->orderBy('start', 'asc')
+                    ->select('id', 'course_id', 'title', 'start', 'finish');
+            },
+            'lessons.teachers:id,first_name,last_name',
+            'participants:id,first_name,last_name',
+            'material:id,course_id,path,name,external,notes',
+        ]);
+
+        $team = Team::with([
+            'users:id,first_name,last_name,team_id',
+        ])->get(['id', 'name']);
+
         return Inertia::render('Course/Edit', [
-            'course' => $course->load([
-                'teams:id',
-                'lessons' => function (Builder $query) {
-                    $query->orderBy('start', 'asc')
-                        ->select('id', 'course_id', 'title', 'start', 'finish');
-                },
-                'lessons.teachers:id,first_name,last_name',
-                'participants:id,first_name,last_name',
-                'material:id,course_id,path,name,external,notes',
-            ]),
-            'teams' => Team::with([
-                'users:id,first_name,last_name,team_id',
-            ])->get(['id', 'name']),
+            'course' => $course,
+            'teams' => $team,
         ]);
     }
 
@@ -147,6 +153,7 @@ class CourseController extends Controller
 
         $course->update($validated);
         $course->teams()->sync($validated['teams'] ?? []);
+
         return redirect(route('courses.index'));
     }
 
@@ -158,6 +165,7 @@ class CourseController extends Controller
         Gate::authorize('edit-courses');
 
         $course->delete();
+
         return redirect(route('courses.index'));
     }
 
@@ -189,14 +197,17 @@ class CourseController extends Controller
         }
 
         $course->material()->create($validated);
+
         return back();
     }
 
     public function downloadMaterial(CourseMaterial $courseMaterial): BinaryFileResponse
     {
-        Gate::allowIf(Auth::user()->courses()->where('id', $courseMaterial->course->id)->exists());
+        Gate::allowIf(Auth::user()->courses()
+            ->where('id', $courseMaterial->course->id)->exists());
 
         $path = Storage::path($courseMaterial->path);
+
         return response()->download($path, $courseMaterial->name);
     }
 
@@ -220,13 +231,11 @@ class CourseController extends Controller
     public function addParticipant(Request $request, Course $course): RedirectResponse
     {
         $user = User::find($request->user);
-        if (!$user->hasSignedUpToCourse($course)) {
-            $user->courses()->attach($course->id);
-            $user->lessons()->syncWithoutDetaching($course->lessons);
-            $user->subscribedMessageChannels()->syncWithoutDetaching($course->messageChannel, [
-                'can_post' => true,
-            ]);
-        }
+        $user->courses()->syncWithoutDetaching($course->id);
+        $user->lessons()->syncWithoutDetaching($course->lessons);
+        $user->subscribedMessageChannels()->syncWithoutDetaching($course->messageChannel, [
+            'can_post' => true,
+        ]);
 
         return back();
     }
@@ -249,7 +258,7 @@ class CourseController extends Controller
     public function signUp(Course $course): RedirectResponse
     {
         $user = Auth::user();
-        $user->courses()->attach($course->id);
+        $user->courses()->syncWithoutDetaching($course->id);
         $user->lessons()->syncWithoutDetaching($course->lessons);
         $user->subscribedMessageChannels()->syncWithoutDetaching($course->messageChannel, [
             'can_post' => true,
@@ -264,6 +273,7 @@ class CourseController extends Controller
         $course->participants()->updateExistingPivot($user, [
             'paid' => $request->paid,
         ]);
+
         return back();
     }
 }
