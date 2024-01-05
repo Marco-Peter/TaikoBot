@@ -24,6 +24,7 @@ const uploadForm = useForm({
     notes: null,
     external: false,
 });
+const uploadFileInput = ref("");
 
 const newParticipantTeam = ref("");
 const newParticipant = ref("");
@@ -80,14 +81,18 @@ function updatePaid(user, paid) {
             </h2>
         </template>
 
+        <!-- Basic Properties -->
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <form @submit.prevent="submit">
+
+                        <!-- Course Name -->
                         <InputLabel for="name" value="Name" />
-                        <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full" />
+                        <TextInput id="name" v-model="form.name" type="text" autocomplete="off" class="mt-1 block w-full" />
                         <InputError :message="form.errors.name" class="mt-2" />
 
+                        <!-- Course Description -->
                         <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="description" value="Description (Markdown Tags possible)" />
                             <textarea
@@ -98,10 +103,12 @@ function updatePaid(user, paid) {
                             <InputError :message="form.errors.description" class="mt-2" />
                         </div>
 
+                        <!-- Course Capacity (max number of participants) -->
                         <InputLabel for="capacity" value="Capacity" />
                         <TextInput id="capacity" v-model="form.capacity" type="number" class="mt-1 block w-full" />
                         <InputError :message="form.errors.capacity" class="mt-2" />
 
+                        <!-- Groups to which the Course is Published -->
                         <h1 class="font-semibold text-xl mb-2 mt-3">Publish to Groups</h1>
                         <div v-for="team in props.teams" :key="team.id">
                             <input type="checkbox" :id="team.name" v-model="form.teams" :value="String(team.id)"
@@ -109,8 +116,11 @@ function updatePaid(user, paid) {
                             <label :for="team.name" class="ml-3">{{ team.name }}</label>
                         </div>
 
+                        <!-- Form Submission -->
                         <PrimaryButton type="submit" class="mt-3">Submit</PrimaryButton>
                         <Link :href="route('courses.index')">
+
+                        <!-- Return without Changing Data-->
                         <SecondaryButton>Back</SecondaryButton>
                         </Link>
                     </form>
@@ -118,58 +128,86 @@ function updatePaid(user, paid) {
             </div>
         </div>
 
+        <!-- Course Material -->
         <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="font-semibold text-xl mb-2 mt-3">Material</h1>
                     <form name="uploadForm" @submit.prevent="uploadMaterial">
+
+                        <!-- Material is accessed via external Link -->
                         <input type="checkbox" id="external" v-model="uploadForm.external" @click="uploadForm.path = null"
                             class="ml-1 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
                         <label for="external" class="mx-3">external link</label>
 
-                        <TextInput v-if="uploadForm.external" type="text" v-model="uploadForm.path"
-                            placeholder="external url"></TextInput>
-                        <TextInput v-else type="file" @input="uploadForm.path = $event.target.files[0]"></TextInput>
+                        <!-- Material Source -->
+                        <TextInput v-if="uploadForm.external" id="extUrl" type="text" v-model="uploadForm.path"
+                            placeholder="external url" autocomplete="off" size="80"></TextInput>
+                        <span v-else>
+                            <input id="uploadFile" class="hidden" ref="uploadFileInput" type="file"
+                                @input="uploadForm.path = $event.target.files[0]">
+                            <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="uploadFileInput.click()">
+                                Select File
+                            </SecondaryButton>
+                            <span v-if="uploadForm.path">{{ uploadForm.path.name }}</span>
+                            <progress v-if="uploadForm.progress" :value="uploadForm.progress.percentage" max="100">
+                                {{ uploadForm.progress.percentage }}%
+                            </progress>
+                        </span>
                         <InputError :message="uploadForm.errors.path" class="mt-2" />
-                        <progress v-if="uploadForm.progress" :value="uploadForm.progress.percentage" max="100">
-                            {{ uploadForm.progress.percentage }}%
-                        </progress>
 
+                        <!-- Notes (Description of the Material) -->
                         <textarea id="notes" v-model="uploadForm.notes" cols="30" rows="10"
                             placeholder="Material description"
                             class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
                         <InputError :message="uploadForm.errors.notes" class="mt-2" />
+
+                        <!-- Form Submission -->
                         <PrimaryButton type="submit" class="mt-3">Upload</PrimaryButton>
                     </form>
                 </div>
             </div>
         </div>
 
+        <!-- Course Material Listing -->
         <div v-for="mat in course.material" class="py-5">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <!-- Link or File Name -->
                     <p v-if="mat.external">Link: {{ mat.path }}</p>
                     <p v-else>File name: {{ mat.name }}</p>
+
+                    <!-- Material Notes -->
                     <h1 class="mt-3 text-xl">Notes</h1>
                     <p>{{ mat.notes }}</p>
+
+                    <!-- Open or Download Button -->
                     <a v-if="mat.external" :href="mat.path" target="_blank">
                         <SecondaryButton class="mt-3">Open</SecondaryButton>
                     </a>
                     <a v-else :href="route('courses.downloadMaterial', mat.id)" download>
                         <SecondaryButton class="mt-3">Download</SecondaryButton>
                     </a>
+
+                    <!-- Delete Button -->
                     <DangerButton class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
                 </div>
             </div>
         </div>
 
+        <!-- Lesson Listing -->
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+                <!-- Add Lesson Button -->
                 <Link :href="route('lessons.create', { course_id: props.course.id })">
                 <PrimaryButton>Add Lesson</PrimaryButton>
                 </Link>
+
+                <!-- Lesson Listing -->
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="font-semibold text-xl mb-2 mt-3">Lessons</h1>
+                    <!-- Lesson Table -->
                     <table v-if="course.lessons.length">
                         <thead>
                             <tr>
@@ -190,37 +228,47 @@ function updatePaid(user, paid) {
                                     </p>
                                 </td>
                                 <td>
+                                    <!-- Edit Button -->
                                     <Link :href="route('lessons.edit', lesson.id)">
                                     <SecondaryButton>Edit</SecondaryButton>
                                     </Link>
                                 </td>
                                 <td>
+                                    <!-- Delete Button -->
                                     <DangerButton @click="destroyLesson(lesson.id)">Delete</DangerButton>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <!-- Alternate Text, when no Lessons are defined -->
                     <p v-else>No Lessons available</p>
                 </div>
             </div>
         </div>
 
+        <!-- Participants Listing -->
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="font-semibold text-xl mb-2 mt-3">Participants</h1>
-                    <select v-model="newParticipantTeam"
+
+                    <!-- Add Participant Selection -->
+                    <!-- Team Select Box -->
+                    <select id="TeamSelect" v-model="newParticipantTeam"
                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                         <option value="" disabled>--- Select a Group ---</option>
                         <option v-for="(team, index) in teams" :value="index">{{ team.name }}</option>
                     </select>
 
-                    <select v-model="newParticipant" :disabled="newParticipantTeam === ''"
+                    <!-- Participant Select Box -->
+                    <select id="ParticipantSelect" v-model="newParticipant" :disabled="newParticipantTeam === ''"
                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                         <option value="" disabled>--- Select a Participant ---</option>
                         <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users"
                             :value="user">{{ user.first_name }} {{ user.last_name }}</option>
                     </select>
+
+                    <!-- Add Participant Button -->
                     <PrimaryButton @click="addUser(newParticipant)">Add Participant</PrimaryButton>
 
                     <table v-if="course.participants.length">
@@ -237,7 +285,8 @@ function updatePaid(user, paid) {
                                 <td class="pr-5">{{ participant.first_name }}</td>
                                 <td class="pr-5">{{ participant.last_name }}</td>
                                 <td class="pr-5">
-                                    <input type="checkbox" v-model="participant.pivot.paid" true-value="1" false-value="0"
+                                    <input :id="'paid_' + participant.id" type="checkbox" v-model="participant.pivot.paid"
+                                        true-value="1" false-value="0"
                                         @change="updatePaid(participant.id, participant.pivot.paid)"
                                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
                                 </td>
