@@ -231,13 +231,11 @@ class CourseController extends Controller
     public function addParticipant(Request $request, Course $course): RedirectResponse
     {
         $user = User::find($request->user);
-        if (!$user->hasSignedUpToCourse($course)) {
-            $user->courses()->attach($course->id);
-            $user->lessons()->syncWithoutDetaching($course->lessons);
-            $user->subscribedMessageChannels()->syncWithoutDetaching($course->messageChannel, [
-                'can_post' => true,
-            ]);
-        }
+        $user->courses()->syncWithoutDetaching($course->id);
+        $user->lessons()->syncWithoutDetaching($course->lessons);
+        $user->subscribedMessageChannels()->syncWithoutDetaching($course->messageChannel, [
+            'can_post' => true,
+        ]);
 
         return back();
     }
@@ -260,7 +258,7 @@ class CourseController extends Controller
     public function signUp(Course $course): RedirectResponse
     {
         $user = Auth::user();
-        $user->courses()->attach($course->id);
+        $user->courses()->syncWithoutDetaching($course->id);
         $user->lessons()->syncWithoutDetaching($course->lessons);
         $user->subscribedMessageChannels()->syncWithoutDetaching($course->messageChannel, [
             'can_post' => true,
