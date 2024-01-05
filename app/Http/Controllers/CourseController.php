@@ -190,7 +190,7 @@ class CourseController extends Controller
         }
 
         if ($validated["external"] !== true) {
-            $validated['path'] = $request->file('path')->store('coursematerial');
+            $validated['path'] = $request->file('path')->store('coursematerial', 'public');
             $validated['name'] = $request->file('path')->getClientOriginalName();
         } else {
             $validated['name'] = '';
@@ -203,10 +203,13 @@ class CourseController extends Controller
 
     public function downloadMaterial(CourseMaterial $courseMaterial): BinaryFileResponse
     {
-        Gate::allowIf(Auth::user()->courses()
-            ->where('id', $courseMaterial->course->id)->exists());
+        Gate::allowIf(
+            Auth::user()->courses()
+                ->where('id', $courseMaterial->course->id)->exists() ||
+                Gate::check('edit-courses')
+        );
 
-        $path = Storage::path($courseMaterial->path);
+        $path = Storage::disk('public')->path($courseMaterial->path);
 
         return response()->download($path, $courseMaterial->name);
     }
@@ -221,7 +224,7 @@ class CourseController extends Controller
 
         $material = $course->material()->where('id', $validated['material'])->first();
         if (!$material->external) {
-            Storage::delete($material->path);
+            Storage::disk('public')->delete($material->path);
         }
         $material->delete();
 
