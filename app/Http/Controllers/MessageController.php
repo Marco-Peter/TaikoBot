@@ -69,7 +69,10 @@ class MessageController extends Controller
         $validated['user_id'] = Auth::user()->id;
 
         $message = $channel->messages()->create($validated);
-        Notification::send($channel->recipients, new MessagePosted($message));
+        Notification::send(
+            $channel->recipients->except([Auth::user()->id]),
+            new MessagePosted($message)
+        );
 
         return redirect(route('channels.messages.index', $channel->id));
     }
