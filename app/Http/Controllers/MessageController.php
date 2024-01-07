@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Enums\UserRoleEnum;
 use App\Models\Message;
 use App\Models\MessageChannel;
+use App\Notifications\MessagePosted;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -13,6 +15,12 @@ use Inertia\Response;
 
 class MessageController extends Controller
 {
+    protected $only = [
+        'index',
+        'create',
+        'store',
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -60,7 +68,9 @@ class MessageController extends Controller
         ]);
         $validated['user_id'] = Auth::user()->id;
 
-        $channel->messages()->create($validated);
+        $message = $channel->messages()->create($validated);
+        Notification::send($channel->recipients, new MessagePosted($message));
+
         return redirect(route('channels.messages.index', $channel->id));
     }
 

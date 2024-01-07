@@ -28,7 +28,7 @@ function loadMorePosts() {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <p v-if="allMessages.length" v-for="message in allMessages" :key="message.id">
                 <div class="my-3 py-1"
-                    :class="message.user.id === page.props.auth.user.id ? 'bg-blue-300 dark:bg-blue-900': 'bg-white dark:bg-gray-800'">
+                    :class="message.user.id === page.props.auth.user.id ? 'bg-blue-300 dark:bg-blue-900' : 'bg-white dark:bg-gray-800'">
                     <p class="font-bold">{{ message.user.first_name }} {{ message.user.last_name }}</p>
                     <p>{{ message.content }}</p>
                     <p class="font-light italic">{{ new Date(message.created_at).toLocaleString() }}</p>

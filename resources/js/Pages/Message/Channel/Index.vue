@@ -5,8 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
-defineProps({ channels: Object })
-
+const props = defineProps({ channels: Object, pushServerPublicKey: String })
 const page = usePage();
 
 function removeChannel(channel) {
@@ -14,6 +13,75 @@ function removeChannel(channel) {
         router.delete(route('channels.destroy', channel.id), { preserveScroll: true });
     }
 }
+
+function updatePushSubscription() {
+    requestConsentForPushNotification().then(function (consent) {
+        if (consent === "granted") {
+            createNotificationSubscription().then(function (subscription) {
+                console.log("Subscription created!");
+                router.post(route('users.updatePushSubscription', page.props.auth.user.id), subscription.toJSON());
+            });
+        }
+    });
+}
+
+async function deletePushSubscription() {
+    const subscription = await getUserSubscription();
+    router.post(route('users.deletePushSubscription', page.props.auth.user.id),
+        {
+            endpoint: subscription.endpoint,
+        });
+    subscription.unsubscribe();
+}
+
+function isPushNotificationSupported() {
+    return "serviceWorker" in navigator && "PushManager" in window;
+}
+
+async function requestConsentForPushNotification() {
+    return Notification.requestPermission(function (result) {
+        return result;
+    })
+}
+
+async function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register("sw.js", { scope: "/", });
+            if (registration.installing) {
+                console.log("Service worker installing");
+            } else if (registration.waiting) {
+                console.log("Service worker installed");
+            } else if (registration.active) {
+                console.log("Service worker active");
+            }
+        } catch (errror) {
+            console.error(`Registration failed with ${error}`);
+        }
+    }
+}
+
+async function createNotificationSubscription() {
+    return navigator.serviceWorker.ready.then(function (serviceWorker) {
+        return serviceWorker.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: props.pushServerPublicKey,
+        }).then(function (subscription) {
+            console.log(`${page.props.auth.user.first_name} is subscribed.`, subscription);
+            return subscription;
+        });
+    });
+}
+
+async function getUserSubscription() {
+    return navigator.serviceWorker.ready.then(function (serviceWorker) {
+        return serviceWorker.pushManager.getSubscription();
+    }).then(function (pushSubscription) {
+        return pushSubscription;
+    });
+}
+
+registerServiceWorker();
 </script>
 
 <template>
@@ -48,6 +116,11 @@ function removeChannel(channel) {
                 <Link v-if="page.props.auth.canEditMessageChannels" :href="route('channels.create')">
                 <PrimaryButton class="mt-5">Create Channel</PrimaryButton>
                 </Link>
+
+                <SecondaryButton v-if="isPushNotificationSupported" class="mt-5" @click="updatePushSubscription">Subscribe
+                    WebPush</SecondaryButton>
+                <SecondaryButton v-if="isPushNotificationSupported" class="mt-5" @click="deletePushSubscription">Unsubscribe
+                    WebPush</SecondaryButton>
             </div>
         </div>
     </AppLayout>

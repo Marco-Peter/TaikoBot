@@ -121,4 +121,34 @@ class UserController extends Controller
         $user->delete();
         return to_route('users.index')->with('message', 'User deleted successfully');
     }
+
+    /**
+     * Save/Update subscriptions for push notifications
+     */
+    public function updatePushSubscription(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'endpoint' => 'required|url:https',
+            'keys.auth' => 'required|string',
+            'keys.p256dh' => 'required|string',
+        ]);
+
+        $user->updatePushSubscription(
+            $validated["endpoint"],
+            $validated["keys"]["p256dh"],
+            $validated["keys"]["auth"]
+        );
+    }
+
+    /**
+     * Delete an existing subscription for push notifications
+     */
+    public function deletePushSubscription(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'endpoint' => 'required|url:https',
+        ]);
+
+        $user->deletePushSubscription($validated["endpoint"]);
+    }
 }
