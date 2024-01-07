@@ -27,7 +27,6 @@ class MessageChannelController extends Controller
 
         return Inertia::render('Message/Channel/Index', [
             'channels' => $channels,
-            'pushServerPublicKey' => Env('VAPID_PUBLIC_KEY'),
         ]);
     }
 

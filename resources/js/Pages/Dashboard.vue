@@ -11,6 +11,7 @@ const props = defineProps({
     coursesSignedUp: Object,
     coursesNotSignedUp: Object,
     dashboardGreeting: String,
+    pushServerPublicKey: String,
 });
 
 const showSubscribeToPushNotificationsPropt = ref(false);
@@ -20,11 +21,17 @@ function isPushNotificationSupported() {
 }
 
 function updatePushSubscription() {
-    Notification.requestPermission().then(function (consent) {
+    Notification.requestPermission().then((consent) => {
         if (consent === "granted") {
-            createNotificationSubscription().then(function (subscription) {
+            createNotificationSubscription().then((subscription) => {
                 console.log("Subscription created!");
                 router.post(route('users.updatePushSubscription', props.user.id), subscription.toJSON());
+            })
+            .catch((error) => {
+                console.error(`Create subscription error (${error})`);
+            })
+            .catch((error) => {
+                console.error(`Request permission error (${error})`);
             });
             showSubscribeToPushNotificationsPropt.value = false;
         }

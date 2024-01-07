@@ -72,6 +72,7 @@ class DashboardController extends Controller
             'coursesSignedUp' => $coursesSignedUp,
             'coursesNotSignedUp' => $coursesNotSignedUp,
             'dashboardGreeting' => $greeting,
+            'pushServerPublicKey' => env('VAPID_PUBLIC_KEY'),
         ]);
     }
 }

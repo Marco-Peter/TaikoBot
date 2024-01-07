@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 
-const props = defineProps({ channels: Object, pushServerPublicKey: String })
+const props = defineProps({ channels: Object })
 const page = usePage();
 
 function removeChannel(channel) {
