@@ -3,6 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { Link, router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const props = defineProps({
     user: Object,
@@ -11,6 +12,59 @@ const props = defineProps({
     coursesNotSignedUp: Object,
     dashboardGreeting: String,
 });
+
+const showSubscribeToPushNotificationsPropt = ref(false);
+
+function isPushNotificationSupported() {
+    return "serviceWorker" in navigator && "PushManager" in window;
+}
+
+function updatePushSubscription() {
+    Notification.requestPermission().then(function (consent) {
+        if (consent === "granted") {
+            createNotificationSubscription().then(function (subscription) {
+                console.log("Subscription created!");
+                router.post(route('users.updatePushSubscription', props.user.id), subscription.toJSON());
+            });
+            showSubscribeToPushNotificationsPropt.value = false;
+        }
+    });
+}
+
+async function deletePushSubscription() {
+    const subscription = await getUserSubscription();
+    router.post(route('users.deletePushSubscription', props.user.id),
+        {
+            endpoint: subscription.endpoint,
+        });
+    subscription.unsubscribe()
+        .then(() => {
+            console.log('Unsubscribed from push notifications successfully');
+        })
+        .catch((error) => {
+            console.error(`Unsubscription failed (${error})`);
+        });
+}
+
+async function createNotificationSubscription() {
+    return navigator.serviceWorker.ready.then(function (serviceWorker) {
+        return serviceWorker.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: props.pushServerPublicKey,
+        }).then(function (subscription) {
+            console.log(`${props.user.first_name} is subscribed.`, subscription);
+            return subscription;
+        });
+    });
+}
+
+async function getUserSubscription() {
+    return navigator.serviceWorker.ready.then(function (serviceWorker) {
+        return serviceWorker.pushManager.getSubscription();
+    }).then(function (pushSubscription) {
+        return pushSubscription;
+    });
+}
 
 function signOut(lesson) {
     let message = prompt("Message to teachers", "");
@@ -28,6 +82,14 @@ function sendMessage(lesson) {
     if (message != null) {
         router.post(route('lessons.sendMessage', lesson.id), { 'message': message });
     }
+}
+
+if (isPushNotificationSupported()) {
+    getUserSubscription().then((subscription) => {
+        if (subscription == null) {
+            showSubscribeToPushNotificationsPropt.value = true;
+        }
+    });
 }
 </script>
 
@@ -51,6 +113,11 @@ function sendMessage(lesson) {
         </div>
 
         <div v-else>
+            <div class="py-3 max-w-7xl mx-auto sm:px-6 lg:px-8" v-if="showSubscribeToPushNotificationsPropt">
+                <p>Please subscribe for Push Notifications, so that you will be updated automatically, when somebody get's in
+                touch with you.</p>
+                <SecondaryButton class="mt-5" @click="updatePushSubscription">Subscribe</SecondaryButton>
+            </div>
             <div class="py-3">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
@@ -173,4 +240,5 @@ function sendMessage(lesson) {
                 </div>
             </div>
         </div>
-</AppLayout></template>
+    </AppLayout>
+</template>
