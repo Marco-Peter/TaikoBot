@@ -28,7 +28,6 @@ function addRecipient(recipient) {
         'recipient': recipient.id,
         'can_post': canPost.value
     }, { preserveScroll: true });
-    canPost.value = false;
 }
 
 function removeRecipient(recipient) {
@@ -82,8 +81,8 @@ function updateCanPost(recipient) {
                             {{ recipient.last_name }}</option>
                     </select>
                     <input type="checkbox" :id="canPost" v-model="canPost"
-                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
-                    <label :for="canPost" class="ml-3">Can post messages</label>
+                        class="mx-2 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
+                    <label :for="canPost" class="mr-2">Can post messages</label>
                     <PrimaryButton :disabled="newRecipient === ''" @click="addRecipient(newRecipient)">Add</PrimaryButton>
                     <table v-if="messageChannel.recipients.length" class="mt-3">
                         <thead>

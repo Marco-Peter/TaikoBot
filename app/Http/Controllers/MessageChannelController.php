@@ -109,17 +109,12 @@ class MessageChannelController extends Controller
         $validated = $request->validate([
             'can_post' => 'boolean',
         ]);
-
         $recipient = User::find($request->recipient);
-        $rc = $channel->recipients()->syncWithoutDetaching($recipient, [
-            'can_post' => $validated['can_post'],
-        ]);
-
-        if (!$rc["attached"]) {
-            $channel->recipients()->updateExistingPivot($recipient, [
+        $channel->recipients()->syncWithoutDetaching([
+            $recipient->id => [
                 'can_post' => $validated['can_post'],
-            ]);
-        }
+            ],
+        ]);
 
         return back();
     }
