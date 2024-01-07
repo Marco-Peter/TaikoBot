@@ -6,6 +6,7 @@ use App\Models\MessageChannel;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -26,6 +27,7 @@ class MessageChannelController extends Controller
 
         return Inertia::render('Message/Channel/Index', [
             'channels' => $channels,
+            'pushServerPublicKey' => Env('VAPID_PUBLIC_KEY'),
         ]);
     }
 

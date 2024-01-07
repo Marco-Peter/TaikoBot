@@ -37,6 +37,9 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
+    Route::post('users/{user}/updatePushSubscription', [UserController::class, 'updatePushSubscription'])->name('users.updatePushSubscription');
+    Route::post('users/{user}/deletePushSubscription', [UserController::class, 'deletePushSubscription'])->name('users.deletePushSubscription');
     Route::resource('users', UserController::class);
 
     Route::post('courses/{course}/signup', [CourseController::class, 'signUp'])->name('courses.signup');
