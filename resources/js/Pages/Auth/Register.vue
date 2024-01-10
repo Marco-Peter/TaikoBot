@@ -34,20 +34,6 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="nickname" value="Nickname" />
-                <TextInput
-                    id="nickname"
-                    v-model="form.nickname"
-                    type="text"
-                    class="mt-1 block w-full"
-                    required
-                    autofocus
-                    autocomplete="nickname"
-                />
-                <InputError class="mt-2" :message="form.errors.nickname" />
-            </div>
-
-            <div>
                 <InputLabel for="first_name" value="First Name" />
                 <TextInput
                     id="first_name"

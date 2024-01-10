@@ -12,7 +12,6 @@ import { ref } from 'vue';
 const props = defineProps({ user: Object, roles: Array, teams: Array, messageChannels: Array });
 
 const form = useForm({
-    nickname: props.user.nickname,
     first_name: props.user.first_name,
     last_name: props.user.last_name,
     email: props.user.email,
@@ -62,10 +61,6 @@ function updateCanPost(channel) {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <form @submit.prevent="submit">
-                        <InputLabel for="nickname" value="Nickname" class="mt-3" />
-                        <TextInput id="nickname" v-model="form.nickname" type="text" class="mt-1 block w-full" />
-                        <InputError :message="form.errors.nickname" class="mt-2" />
-
                         <InputLabel for="first_name" value="First Name" class="mt-3" />
                         <TextInput id="first_name" v-model="form.first_name" type="text" class="mt-1 block w-full" />
                         <InputError :message="form.errors.first_name" class="mt-2" />

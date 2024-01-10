@@ -42,7 +42,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'nickname' => 'starter',
             'first_name' => 'Student',
             'last_name' => 'Taikostarter',
             'email' => 'student@example.com',
@@ -51,7 +50,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'nickname' => 'otaku',
             'first_name' => 'Teacher',
             'last_name' => 'Taikootaku',
             'email' => 'teacher@example.com',
@@ -60,7 +58,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'nickname' => 'baka',
             'first_name' => 'Admin',
             'last_name' => 'Taikobaka',
             'email' => 'admin@example.com',

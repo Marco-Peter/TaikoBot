@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\UserRoleEnum;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -31,7 +32,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'nickname',
         'first_name',
         'last_name',
         'email',
@@ -69,7 +69,26 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'nickname',
     ];
+
+    public function nickname(): Attribute
+    {
+        return Attribute::get(function (): string {
+            if (User::where('first_name', $this->first_name)->count() > 1) {
+                if (
+                    User::where('first_name', $this->first_name)
+                    ->where('last_name', 'like', $this->last_name[0] . '%')->count() > 1
+                ) {
+                    return ucfirst($this->first_name . ucfirst($this->last_name));
+                } else {
+                    return ucfirst($this->first_name . strtoupper($this->last_name[0]));
+                }
+            } else {
+                return ucfirst($this->first_name);
+            }
+        });
+    }
 
     public function team(): BelongsTo
     {
