@@ -236,9 +236,6 @@ class CourseController extends Controller
         $user = User::find($request->user);
         $user->courses()->syncWithoutDetaching($course->id);
         $user->lessons()->syncWithoutDetaching($course->lessons);
-        $user->subscribedMessageChannels()->syncWithoutDetaching($course->messageChannel, [
-            'can_post' => true,
-        ]);
 
         return back();
     }
@@ -252,8 +249,6 @@ class CourseController extends Controller
             LessonParticipationEnum::TEACHER->value
         )->detach($course->lessons);
         $user->courses()->detach($course->id);
-        // TODO: ensure that user is not engaged as teacher to one of the lessons.
-        $user->subscribedMessageChannels()->detach($course->messageChannel);
 
         return back();
     }
@@ -263,9 +258,6 @@ class CourseController extends Controller
         $user = Auth::user();
         $user->courses()->syncWithoutDetaching($course->id);
         $user->lessons()->syncWithoutDetaching($course->lessons);
-        $user->subscribedMessageChannels()->syncWithoutDetaching($course->messageChannel, [
-            'can_post' => true,
-        ]);
 
         return redirect(route('dashboard'))->with('message', 'Signed up successfully');
     }

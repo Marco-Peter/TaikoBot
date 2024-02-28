@@ -5,7 +5,6 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
 use App\Models\Course;
-use App\Models\MessageChannel;
 use App\Models\Team;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -25,14 +24,6 @@ class DatabaseSeeder extends Seeder
         Team::factory()->create([
             'name' => 'Intensive Group',
             'description' => 'Intensive group, which meets every Tuesday',
-        ]);
-
-        MessageChannel::factory()->create([
-            'name' => 'Announcements',
-        ]);
-
-        MessageChannel::factory()->create([
-            'name' => 'Random',
         ]);
 
         User::factory(10)->create();

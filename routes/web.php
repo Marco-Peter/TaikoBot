@@ -59,10 +59,4 @@ Route::middleware([
     Route::post('lessons/{lesson}/set-late', [LessonController::class, 'setLate'])->name('lessons.setLate');
     Route::post('lessons/{lesson}/set-noshow', [LessonController::class, 'setNoShow'])->name('lessons.setNoShow');
     Route::resource('lessons', LessonController::class);
-
-    Route::post('channels/{channel}/add-recipient', [MessageChannelController::class, 'addRecipient'])->name('channels.addRecipient');
-    Route::post('channels/{channel}/remove-recipient', [MessageChannelController::class, 'removeRecipient'])->name('channels.removeRecipient');
-    Route::post('channels/{channel}/set-can-post', [MessageChannelController::class, 'setCanPost'])->name('channels.setCanPost');
-    Route::resource('channels', MessageChannelController::class);
-    Route::resource('channels.messages', MessageController::class)->shallow();
 });

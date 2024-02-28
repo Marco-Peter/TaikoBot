@@ -47,10 +47,6 @@ const logout = () => {
                                     Home
                                 </NavLink>
 
-                                <NavLink :href="route('channels.index')" :active="route().current('channels.*')">
-                                    Messages
-                                </NavLink>
-
                                 <NavLink v-if="page.props.auth.canEditUsers" :href="route('users.index')" :active="route().current('users.*')">
                                     User Management
                                 </NavLink>
@@ -141,10 +137,6 @@ const logout = () => {
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Home
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink :href="route('channels.index')" :active="route().current('channels.*')">
-                            Messages
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink v-if="page.props.auth.canEditUsers" :href="route('users.index')" :active="route().current('users.*')">

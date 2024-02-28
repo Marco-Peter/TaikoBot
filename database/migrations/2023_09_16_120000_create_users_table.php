@@ -1,7 +1,6 @@
 <?php
 
 use App\Enums\UserRoleEnum;
-use App\Models\MessageChannel;
 use App\Models\Team;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

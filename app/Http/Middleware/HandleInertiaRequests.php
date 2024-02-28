@@ -40,7 +40,6 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth.canEditUsers' => Gate::allows('edit-users'),
             'auth.canEditCourses' => Gate::allows('edit-courses'),
-            'auth.canEditMessageChannels' => Gate::allows('edit-messageChannels'),
         ]);
     }
 }

@@ -78,10 +78,9 @@ class UserController extends Controller
         Gate::authorize('edit-users');
 
         return Inertia::render('User/Edit', [
-            'user' => $user->load('subscribedMessageChannels:id,name'),
+            'user' => $user,
             'roles' => UserRoleEnum::values(),
             'teams' => Team::all(['id', 'name']),
-            'messageChannels' => MessageChannel::all(['id', 'name']),
         ]);
     }
 

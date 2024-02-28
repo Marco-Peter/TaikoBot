@@ -7,7 +7,6 @@ import { ref } from 'vue';
 
 const props = defineProps({
     user: Object,
-    unreadMessages: Array,
     coursesSignedUp: Object,
     coursesNotSignedUp: Object,
     dashboardGreeting: String,
@@ -121,22 +120,8 @@ if (isPushNotificationSupported()) {
 
         <div v-else>
             <div class="py-3 max-w-7xl mx-auto sm:px-6 lg:px-8" v-if="showSubscribeToPushNotificationsPropt">
-                <p>Please subscribe for Push Notifications, so that you will be updated automatically, when somebody get's in
-                touch with you.</p>
+                <p>Please subscribe for Push Notifications, so that you will be updated automatically.</p>
                 <SecondaryButton class="mt-5" @click="updatePushSubscription">Subscribe</SecondaryButton>
-            </div>
-            <div class="py-3">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            News and Messages
-                        </h2>
-                        <p v-for="um in unreadMessages">
-                            <Link :href="route('channels.messages.index', um.id)">{{ um.count }} unread messages in {{
-                                um.name }}</Link>
-                        </p>
-                    </div>
-                </div>
             </div>
             <div class="py-3">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">

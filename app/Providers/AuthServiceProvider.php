@@ -30,19 +30,8 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role === UserRoleEnum::ADMIN;
         });
 
-        Gate::define('edit-messageChannels', function (User $user) {
-            return $user->role === UserRoleEnum::ADMIN;
-        });
-
         Gate::define('edit-courses', function (User $user) {
             return $user->role === UserRoleEnum::ADMIN || $user->role === UserRoleEnum::TEACHER;
-        });
-
-        Gate::define('post-message', function (User $user, MessageChannel $messageChannel) {
-            return $user->subscribedMessageChannels()
-                ->wherePivot('can_post', true)
-                ->where('id', $messageChannel->id)
-                ->exists();
         });
     }
 }

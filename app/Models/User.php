@@ -118,15 +118,4 @@ class User extends Authenticatable
             $query->where('id', $lesson->id);
         }])->lessons_exists;
     }
-
-    /**
-     * Return all message channels, the user has subscribed to.
-     */
-    public function subscribedMessageChannels(): BelongsToMany
-    {
-        return $this->belongsToMany(MessageChannel::class)->withPivot([
-            'read_until',
-            'can_post',
-        ]);
-    }
 }
