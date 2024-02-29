@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -24,24 +23,6 @@ class Course extends Model
         'description' => '',
         'capacity' => 0,
     ];
-
-    public static function booted()
-    {
-        static::creating(function (Course $course) {
-            $course->message_channel_id = $course->messageChannel()->create([
-                'name' => $course->name,
-            ])->id;
-        });
-
-        static::updated(function (Course $course) {
-            $course->messageChannel->name = $course->name;
-            $course->messageChannel->save();
-        });
-
-        static::deleted(function (Course $course) {
-            $course->messageChannel()->delete();
-        });
-    }
 
     /**
      * Return all teams to which this course is available
