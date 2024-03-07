@@ -5,7 +5,9 @@ import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+import ExtLink from '@/Components/ExtLink.vue';
 import NavLink from '@/Components/NavLink.vue';
+import ResponsiveExtLink from '@/Components/ResponsiveExtLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 defineProps({
@@ -54,6 +56,10 @@ const logout = () => {
                                 <NavLink v-if="page.props.auth.canEditCourses" :href="route('courses.index')" :active="route().current('courses.*')">
                                     Course Management
                                 </NavLink>
+
+                                <ExtLink href="https://forum.taikozuerich.ch">
+                                    Forum
+                                </ExtLink>
                             </div>
                         </div>
 
@@ -146,6 +152,10 @@ const logout = () => {
                         <ResponsiveNavLink v-if="page.props.auth.canEditCourses" :href="route('courses.index')" :active="route().current('courses.*')">
                             Course Management
                         </ResponsiveNavLink>
+
+                        <ResponsiveExtLink href="https://forum.taikozuerich.ch">
+                            Forum
+                        </ResponsiveExtLink>
                     </div>
 
                     <!-- Responsive Settings Options -->
