@@ -74,12 +74,16 @@ async function getUserSubscription() {
 
 function signOut(lesson) {
     let message = prompt("Message to teachers", "");
-    router.post(route('lessons.signout', lesson.id), { 'message': message });
+    if (message != null) {
+        router.post(route('lessons.signout', lesson.id), { 'message': message });
+    }
 }
 
 function signIn(lesson) {
     let message = prompt("Message to teachers", "");
-    router.post(route('lessons.signin', lesson.id), { 'message': message });
+    if (message != null) {
+        router.post(route('lessons.signin', lesson.id), { 'message': message });
+    }
 }
 
 function sendMessage(lesson) {
