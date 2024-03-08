@@ -13,6 +13,7 @@
         "laravel/jetstream": "^4.1",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "monicahq/laravel-sabre": "^1.8",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
