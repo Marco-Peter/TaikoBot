@@ -31,6 +31,7 @@ function signUp(id) {
             </div>
         </div>
 
+        <!-- Show course material -->
         <div v-if="course.material && course.material.length" class="pt-10">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
@@ -42,9 +43,8 @@ function signUp(id) {
         <div v-for="mat in course.material" class="pt-3">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <p v-if="mat.external">{{ mat.path }}</p>
-                    <p v-else>{{ mat.name }}</p>
-                    <p class="mt-5">{{ mat.notes }}</p>
+                    <h1 class="mt-3 text-xl">{{ mat.name }}</h1>
+                    <p v-if="mat.notes" class="mt-5">{{ mat.notes }}</p>
                     <a v-if="mat.external" :href="mat.path" target="_blank">
                         <SecondaryButton class="mt-3">Open</SecondaryButton>
                     </a>
@@ -55,6 +55,7 @@ function signUp(id) {
             </div>
         </div>
 
+        <!-- Show lessons-->
         <div class="py-10">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
@@ -69,23 +70,23 @@ function signUp(id) {
                         <tbody>
                             <tr v-for="lesson in course.lessons">
                                 <td class="pr-5">{{ new Date(lesson.start).toLocaleString(undefined, {
-                                    weekday: "short",
-                                    month: "short",
-                                    day: "2-digit",
-                                    year: "2-digit",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                }) }} to {{ new Date(lesson.finish).toLocaleString(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-}) }}</td>
+                    weekday: "short",
+                    month: "short",
+                    day: "2-digit",
+                    year: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }) }} to {{ new Date(lesson.finish).toLocaleString(undefined, {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                                    }) }}</td>
                                 <td>{{ lesson.title }}</td>
                             </tr>
                         </tbody>
                     </table>
                     <p v-else>No Lessons available</p>
-                    <PrimaryButton v-if="!signedIn && (course.participants_count < course.capacity)" @click="signUp(course)"
-                        class="mt-3">Sign Up</PrimaryButton>
+                    <PrimaryButton v-if="!signedIn && (course.participants_count < course.capacity)"
+                        @click="signUp(course)" class="mt-3">Sign Up</PrimaryButton>
 
                     <Link :href="route('dashboard')">
                     <SecondaryButton class="mt-3">Back</SecondaryButton>

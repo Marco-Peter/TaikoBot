@@ -180,6 +180,7 @@ class CourseController extends Controller
                 'notes' => "string|nullable",
                 'external' => "required|boolean",
                 'path' => "required|string",
+                'name' => "required|string",
             ]);
         } else {
             $validated = $request->validate([
@@ -192,8 +193,6 @@ class CourseController extends Controller
         if ($validated["external"] !== true) {
             $validated['path'] = $request->file('path')->store('coursematerial', 'public');
             $validated['name'] = $request->file('path')->getClientOriginalName();
-        } else {
-            $validated['name'] = '';
         }
 
         $course->material()->create($validated);

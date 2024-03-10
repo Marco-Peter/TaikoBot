@@ -21,6 +21,7 @@ const form = useForm({
 
 const uploadForm = useForm({
     path: null,
+    name: null,
     notes: null,
     external: false,
 });
@@ -38,6 +39,7 @@ function uploadMaterial() {
         { preserveScroll: true });
 
     uploadForm.path = null;
+    uploadForm.name = null;
     uploadForm.notes = null;
     uploadForm.external = false;
 }
@@ -89,7 +91,8 @@ function updatePaid(user, paid) {
 
                         <!-- Course Name -->
                         <InputLabel for="name" value="Name" />
-                        <TextInput id="name" v-model="form.name" type="text" autocomplete="off" class="mt-1 block w-full" />
+                        <TextInput id="name" v-model="form.name" type="text" autocomplete="off"
+                            class="mt-1 block w-full" />
                         <InputError :message="form.errors.name" class="mt-2" />
 
                         <!-- Course Description -->
@@ -136,11 +139,14 @@ function updatePaid(user, paid) {
                     <form name="uploadForm" @submit.prevent="uploadMaterial">
 
                         <!-- Material is accessed via external Link -->
-                        <input type="checkbox" id="external" v-model="uploadForm.external" @click="uploadForm.path = null"
+                        <input type="checkbox" id="external" v-model="uploadForm.external"
+                            @click="uploadForm.path = null"
                             class="ml-1 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
                         <label for="external" class="mx-3">external link</label>
 
                         <!-- Material Source -->
+                        <TextInput v-if="uploadForm.external" id="name" type="text" v-model="uploadForm.name"
+                            placeholder="displayed name" autocomplete="off" size="40"></TextInput>
                         <TextInput v-if="uploadForm.external" id="extUrl" type="text" v-model="uploadForm.path"
                             placeholder="external url" autocomplete="off" size="80"></TextInput>
                         <span v-else>
@@ -174,12 +180,8 @@ function updatePaid(user, paid) {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <!-- Link or File Name -->
-                    <p v-if="mat.external">Link: {{ mat.path }}</p>
-                    <p v-else>File name: {{ mat.name }}</p>
-
-                    <!-- Material Notes -->
-                    <h1 class="mt-3 text-xl">Notes</h1>
-                    <p>{{ mat.notes }}</p>
+                    <h1 class="mt-3 text-xl">{{ mat.name }}</h1>
+                    <p v-if="mat.notes">{{ mat.notes }}</p>
 
                     <!-- Open or Download Button -->
                     <a v-if="mat.external" :href="mat.path" target="_blank">
@@ -224,7 +226,8 @@ function updatePaid(user, paid) {
                                 <td class="pr-5">{{ lesson.finish }}</td>
                                 <td class="pr-5">{{ lesson.title }}</td>
                                 <td class="pr-5">
-                                    <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name }}
+                                    <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name
+                                        }}
                                     </p>
                                 </td>
                                 <td>
@@ -265,7 +268,8 @@ function updatePaid(user, paid) {
                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                         <option value="" disabled>--- Select a Participant ---</option>
                         <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users"
-                            :value="user">{{ user.first_name }} {{ user.last_name }}</option>
+                            :value="user">
+                            {{ user.first_name }} {{ user.last_name }}</option>
                     </select>
 
                     <!-- Add Participant Button -->
@@ -285,8 +289,8 @@ function updatePaid(user, paid) {
                                 <td class="pr-5">{{ participant.first_name }}</td>
                                 <td class="pr-5">{{ participant.last_name }}</td>
                                 <td class="pr-5">
-                                    <input :id="'paid_' + participant.id" type="checkbox" v-model="participant.pivot.paid"
-                                        true-value="1" false-value="0"
+                                    <input :id="'paid_' + participant.id" type="checkbox"
+                                        v-model="participant.pivot.paid" true-value="1" false-value="0"
                                         @change="updatePaid(participant.id, participant.pivot.paid)"
                                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
                                 </td>
