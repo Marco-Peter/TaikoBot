@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(Course::class)->constrained()->cascadeOnDelete();
             $table->string('path');
             $table->string('name');
-            $table->string('notes');
+            $table->string('notes')->nullable();
             $table->boolean('external')->default(false);
             $table->timestamps();
         });
