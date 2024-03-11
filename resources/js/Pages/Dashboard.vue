@@ -114,7 +114,7 @@ if (isPushNotificationSupported()) {
         <div v-if="dashboardGreeting">
             <div class="py-3">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden sm:rounded-lg">
                         <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert"
                             v-html="dashboardGreeting" />
                     </div>
@@ -137,7 +137,7 @@ if (isPushNotificationSupported()) {
                             Your Available Courses and Workshops
                         </h2>
                         <p>Looking for new challenges? Here you can sign up to new courses and workshops.</p>
-                        <div v-for="course in coursesNotSignedUp" class="my-3 py-1 bg-white dark:bg-gray-800">
+                        <div v-for="course in coursesNotSignedUp" class="my-3 px-4 py-2 bg-white dark:bg-gray-800">
                             <h3 class="font-bold text-lg">{{ course.name }} ({{ course.capacity -
                     course.participants_count }} places available)</h3>
                             <p class="pb-2">From {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
@@ -164,12 +164,12 @@ if (isPushNotificationSupported()) {
             <!-- List of the signed up courses and workshops -->
             <div v-if="coursesSignedUp.length" class="py-3">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="overflow-hidden sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                             Your Signed Up Courses and Workshops
                         </h2>
                         <p>Those are the courses and workshops you are signed up for. Looking forward to see you!</p>
-                        <div v-for="course in coursesSignedUp" class="my-3 py-1 bg-white dark:bg-gray-800">
+                        <div v-for="course in coursesSignedUp" class="my-3 px-4 py-2 bg-white dark:bg-gray-800">
                             <h3 class="font-bold text-lg">{{ course.name }}</h3>
                             <p class="pb-2">From
                                 {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
@@ -195,11 +195,11 @@ if (isPushNotificationSupported()) {
             <!-- List of the upcoming taiko lessons -->
             <div v-if="user.lessons.length" class="py-3">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="overflow-hidden sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                             Your next Lessons
                         </h2>
-                        <div v-for="lesson in user.lessons" class="my-3 py-1 bg-white dark:bg-gray-800"
+                        <div v-for="lesson in user.lessons" class="my-3 px-4 py-2 bg-white dark:bg-gray-800"
                             :class="lesson.pivot.participation == 'signed_out' ? 'text-gray-500' : ''">
                             <div class="pb-2">
                                 <h3 class="font-bold text-lg"
@@ -218,15 +218,15 @@ if (isPushNotificationSupported()) {
                             </div>
                             <Link v-if="lesson.pivot.participation == 'teacher'"
                                 :href="route('lessons.edit', [lesson.id])">
-                            <SecondaryButton>Edit Lesson</SecondaryButton>
+                            <SecondaryButton class="mr-2">Edit Lesson</SecondaryButton>
                             </Link>
-                            <DangerButton v-else-if="lesson.pivot.participation == 'signed_in'"
+                            <DangerButton class="mr-2" v-else-if="lesson.pivot.participation == 'signed_in'"
                                 @click="signOut(lesson)">
                                 Sign Out</DangerButton>
-                            <SecondaryButton v-else-if="lesson.pivot.participation == 'signed_out'"
+                            <SecondaryButton class="mr-2" v-else-if="lesson.pivot.participation == 'signed_out'"
                                 @click="signIn(lesson)">
                                 Sign In</SecondaryButton>
-                            <SecondaryButton @click="sendMessage(lesson)">Send Message</SecondaryButton>
+                            <SecondaryButton class="mr-2" @click="sendMessage(lesson)">Send Message</SecondaryButton>
                         </div>
                     </div>
                 </div>
