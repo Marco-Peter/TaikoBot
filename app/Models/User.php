@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Enums\LessonParticipationEnum;
 use App\Enums\UserRoleEnum;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -95,9 +96,36 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class);
     }
 
+    /**
+     * Return all lessons
+     *
+     * Returns all lessons independent of the participation state.
+     */
     public function lessons(): BelongsToMany
     {
         return $this->belongsToMany(Lesson::class)->withPivot('participation')->withTimestamps();
+    }
+
+    /**
+     * Return all lessons as a student
+     *
+     * Returns all lessons where a user is a student (signed in or signed out doesn't matter).
+     */
+    public function studentLessons(): BelongsToMany
+    {
+        return $this->belongsToMany(Lesson::class)->withPivot('participation')
+            ->withTimestamps()->wherePivot('participation', '<>', LessonParticipationEnum::TEACHER->value);
+    }
+
+    /**
+     * Return all lessons as a teacher
+     *
+     * Returns all lessons where a user is a teacher.
+     */
+    public function teacherLessons(): BelongsToMany
+    {
+        return $this->belongsToMany(Lesson::class)->withPivot('participation')
+            ->withTimestamps()->wherePivot('participation', '=', LessonParticipationEnum::TEACHER->value);
     }
 
     public function courses(): BelongsToMany

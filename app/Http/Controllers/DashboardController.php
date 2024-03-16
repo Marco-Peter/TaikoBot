@@ -28,6 +28,22 @@ class DashboardController extends Controller
             'lessons.teachers:id,first_name,last_name',
         ]);
 
+        $studentLessons = $user->studentLessons()
+            ->with([
+                'course:id,name',
+                'teachers:id,first_name,last_name',
+            ])
+            ->where('start', '>', Carbon::now()->toDateString())
+            ->oldest('start')->get();
+
+        $teacherLessons = $user->teacherLessons()
+            ->with([
+                'course:id,name',
+                'teachers:id,first_name,last_name',
+            ])
+            ->where('start', '>', Carbon::now()->subDays(3)->toDateString())
+            ->oldest('start')->get();
+
         if ($user->team) {
             $coursesNotSignedUp = $user->team->courses->diff($user->courses)
                 ->where('firstLesson.start', '>', Carbon::now()->toDateString())
@@ -54,7 +70,9 @@ class DashboardController extends Controller
         $coursesNotSignedUp->setHidden(['description', 'created_at', 'updated_at', 'pivot']);
 
         return Inertia::render('Dashboard', [
-            'user' => $user->only('id', 'first_name', 'lessons'),
+            'user' => $user->only('id', 'first_name'),
+            'studentLessons' => $studentLessons,
+            'teacherLessons' => $teacherLessons,
             'coursesSignedUp' => $coursesSignedUp,
             'coursesNotSignedUp' => $coursesNotSignedUp,
             'dashboardGreeting' => $greeting,
