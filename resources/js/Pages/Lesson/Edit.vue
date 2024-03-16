@@ -55,7 +55,8 @@ function setNoShow(participant) {
             </h2>
         </template>
 
-        <div class="py-12">
+        <!-- General Lesson Information -->
+        <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <form @submit.prevent="submit">
@@ -88,6 +89,35 @@ function setNoShow(participant) {
             </div>
         </div>
 
+        <!-- Participants List -->
+        <div class="pt-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Participants</h2>
+                <div v-for="participant in participants"
+                    class="my-3 px-4 py-2 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg"
+                    :class="participant.pivot.participation == 'signed_out' ? 'text-gray-500' : ''">
+                    <div class="font-bold text-lg"
+                        :class="participant.pivot.participation == 'signed_out' ? 'line-through' : ''">
+                        <h3>{{ participant.first_name }} {{ participant.last_name }}</h3>
+                    </div>
+                    <div>
+                        {{ participant.message }}
+                    </div>
+                    <div v-if="participant.pivot.participation === 'signed_in'" class="mt-2">
+                        <SecondaryButton @click="setLate(participant)">Late</SecondaryButton>
+                        <SecondaryButton class="ml-3" @click="setNoShow(participant)">No Show</SecondaryButton>
+                    </div>
+                    <div v-else-if="participant.pivot.participation === 'late'">
+                        Was late
+                    </div>
+                    <div v-else-if="participant.pivot.participation === 'no_show'">
+                        Did not show up
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teachers List -->
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
@@ -95,17 +125,19 @@ function setNoShow(participant) {
                     <select v-model="newTeacher"
                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                         <option value="" disabled>--- Select a Teacher ---</option>
-                        <option v-for="teacher in teachers" :key="teacher.id" :value="teacher">{{ teacher.first_name }} {{
-                            teacher.last_name }}</option>
+                        <option v-for="teacher in teachers" :key="teacher.id" :value="teacher">{{ teacher.first_name }}
+                            {{
+                        teacher.last_name }}</option>
                     </select>
-                    <PrimaryButton :disabled="newTeacher === ''" @click="addTeacher(newTeacher)">Add Teacher</PrimaryButton>
+                    <PrimaryButton :disabled="newTeacher === ''" @click="addTeacher(newTeacher)">Add Teacher
+                    </PrimaryButton>
                     <table v-if="lessonteachers.length" class="mt-3">
                         <thead>
                             <tr>
                                 <th class="pr-5">First Name</th>
                                 <th class="pr-5">Last Name</th>
                                 <th class="pr-5"></th>
-                                <th>Message</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -120,41 +152,6 @@ function setNoShow(participant) {
                         </tbody>
                     </table>
                     <p v-else>No Teachers added</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <h2 class="font-semibold text-xl leading-tight">Participants</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th class="pr-5">First Name</th>
-                                <th class="pr-5">Last Name</th>
-                                <th class="pr-5">Status</th>
-                                <th colspan="2"  class="pr-5"></th>
-                                <th>Message from Student</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="participant in participants">
-                                <td class="pr-5">{{ participant.first_name }}</td>
-                                <td class="pr-5">{{ participant.last_name }}</td>
-                                <td class="pr-5">{{ participant.pivot.participation }}</td>
-                                <td v-if="participant.pivot.participation == 'signed_in'">
-                                    <SecondaryButton @click="setLate(participant)">Late</SecondaryButton>
-                                </td>
-                                <td v-else></td>
-                                <td v-if="participant.pivot.participation == 'signed_in'" class="pr-5">
-                                    <SecondaryButton @click="setNoShow(participant)">No Show</SecondaryButton>
-                                </td>
-                                <td v-else class="pr-5"></td>
-                                <td>{{ participant.message }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
