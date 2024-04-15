@@ -12,6 +12,12 @@ function destroy(id) {
         router.delete(route('users.destroy', id), { preserveScroll: true });
     }
 }
+
+function migrate() {
+    if (confirm("Are you sure to run the migrations?")) {
+        router.post(route('users.doMigrations'));
+    }
+}
 </script>
 
 <template>
@@ -67,5 +73,14 @@ function destroy(id) {
                 </div>
             </div>
         </div>
-    </AppLayout>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-xl mb-2">Danger Zone</h2>
+                <PrimaryButton class="mb-2" @click="migrate()">Run Migrations</PrimaryButton>
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                </div>
+            </div>
+        </div>
+</AppLayout>
 </template>

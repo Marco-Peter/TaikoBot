@@ -39,6 +39,7 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
+    Route::post('users/do-migrations', [UserController::class, 'doMigrations'])->name('users.doMigrations');
     Route::post('users/{user}/updatePushSubscription', [UserController::class, 'updatePushSubscription'])->name('users.updatePushSubscription');
     Route::post('users/{user}/deletePushSubscription', [UserController::class, 'deletePushSubscription'])->name('users.deletePushSubscription');
     Route::resource('users', UserController::class);

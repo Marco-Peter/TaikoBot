@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -124,7 +125,7 @@ class UserController extends Controller
     /**
      * Save/Update subscriptions for push notifications
      */
-    public function updatePushSubscription(Request $request, User $user)
+    public function updatePushSubscription(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validate([
             'endpoint' => 'required|url:https',
@@ -137,17 +138,26 @@ class UserController extends Controller
             $validated["keys"]["p256dh"],
             $validated["keys"]["auth"]
         );
+
+        return back()->with('message', 'Push subscription updated successfully');
     }
 
     /**
      * Delete an existing subscription for push notifications
      */
-    public function deletePushSubscription(Request $request, User $user)
+    public function deletePushSubscription(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validate([
             'endpoint' => 'required|url:https',
         ]);
 
         $user->deletePushSubscription($validated["endpoint"]);
+        return back()->with('message', 'Push Subscription deleted successfully');
+    }
+
+    public function doMigrations(Request $request): RedirectResponse
+    {
+        Artisan::call('migrate');
+        return to_route('dashboard')->with('message', 'Migration successful');
     }
 }
