@@ -2,7 +2,8 @@
 
 namespace App\Notifications;
 
-use App\Models\Message;
+use App\Models\Lesson;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -10,16 +11,16 @@ use Illuminate\Support\Facades\URL;
 use NotificationChannels\WebPush\WebPushChannel;
 use NotificationChannels\WebPush\WebPushMessage;
 
-class MessagePosted extends Notification
+class RemindLesson extends Notification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Message $message)
+    public function __construct(Lesson $lesson)
     {
-        $this->message = $message;
+        $this->lesson = $lesson;
     }
 
     /**
@@ -29,28 +30,7 @@ class MessagePosted extends Notification
      */
     public function via(object $notifiable): array
     {
-        //return ['mail'];
-        return [WebPushChannel::class];
-    }
-
-    public function toWebPush($notifiable, $notification): WebPushMessage
-    {
-        return (new WebPushMessage)
-        /* No actions for now...
-        ->action([])
-        */
-        ->badge(URL::to('/images/favicon_black_64.png'))
-        ->body($this->message->content)
-        ->data([
-            'url' => route('channels.messages.index', ['channel' => $this->message->messageChannel->id]),
-        ])
-        ->icon(URL::to('/images/favicon_black_64.png'))
-        ->options([
-            'TTL' => 24 * 3600,
-            'urgency' => 'normal',
-            'batchSize' => 100,
-        ])
-        ->title("{$this->message->user->nickname} wrote in {$this->message->messageChannel->name}");
+        return ['mail', WebPushChannel::class];
     }
 
     /**
@@ -58,10 +38,38 @@ class MessagePosted extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $url = url(route('dashboard'));
+        $ds = Carbon::parse($this->lesson->start)->format('l, j. M y, G:i');
+
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject("Upcoming Lesson")
+            ->greeting("Hello $notifiable->first_name!")
+            ->line('This is just a quick reminder, that you will have your next lesson soon.')
+            ->line("The lesson starts at: $ds")
+            ->action('Update my attendance', $url);
+    }
+
+    public function toWebPush(object $notifiable): WebPushMessage
+    {
+        $url = url(route('dashboard'));
+        $ds = Carbon::parse($this->lesson->start)->format('l, j. M y, G:i');
+
+        return (new WebPushMessage)
+        /* No actions for now...
+        ->action([])
+        */
+        ->badge(URL::to('/images/favicon_black_64.png'))
+        ->title("Upcoming Taiko lesson!")
+        ->body("Your next lesson will be at: $ds")
+        ->data([
+            'url' => $url,
+        ])
+        ->icon(URL::to('/images/favicon_black_64.png'))
+        ->options([
+            'TTL' => 24 * 3600,
+            'urgency' => 'normal',
+            'batchSize' => 100,
+        ]);
     }
 
     /**

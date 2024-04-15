@@ -61,6 +61,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'role' => UserRoleEnum::class,
+        'settings' => 'array',
     ];
 
     /**
@@ -103,7 +104,8 @@ class User extends Authenticatable
      */
     public function lessons(): BelongsToMany
     {
-        return $this->belongsToMany(Lesson::class)->withPivot('participation')->withTimestamps();
+        return $this->belongsToMany(Lesson::class)->withPivot('participation')
+            ->withTimestamps()->using(LessonUser::class);
     }
 
     /**
@@ -145,5 +147,11 @@ class User extends Authenticatable
         return $this->loadExists(['lessons' => function (Builder $query) use ($lesson) {
             $query->where('id', $lesson->id);
         }])->lessons_exists;
+    }
+
+    public function accepts_mail_notifications(): bool
+    {
+        dd($this->settings);
+        return false;
     }
 }

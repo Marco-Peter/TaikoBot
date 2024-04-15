@@ -33,17 +33,27 @@ class Lesson extends Model
 
     public function participants(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('participation')->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('participation')
+            ->withTimestamps()->using(LessonUser::class);
     }
 
     public function teachers(): BelongsToMany
     {
         return $this->belongsToMany(User::class)
-            ->wherePivot('participation', LessonParticipationEnum::TEACHER->value);
+            ->wherePivot('participation', LessonParticipationEnum::TEACHER->value)
+            ->using(LessonUser::class);
     }
 
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'start' => 'datetime',
+            'finish' => 'datetime',
+        ];
     }
 }
