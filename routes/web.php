@@ -6,6 +6,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MessageChannelController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserSettingsController;
 use App\Models\MessageChannel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
@@ -59,4 +60,7 @@ Route::middleware([
     Route::post('lessons/{lesson}/set-late', [LessonController::class, 'setLate'])->name('lessons.setLate');
     Route::post('lessons/{lesson}/set-noshow', [LessonController::class, 'setNoShow'])->name('lessons.setNoShow');
     Route::resource('lessons', LessonController::class);
+
+    Route::put('/user/settings', [UserSettingsController::class, 'update'])
+    ->name('user-settings.update');
 });
