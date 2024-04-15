@@ -13,7 +13,7 @@ use App\Models\LessonUser;
 use App\Notifications\RemindLesson;
 use Illuminate\Console\Command;
 use App\Notifications\RemindTeachingLesson;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Log;
 
 class RemindUsers extends Command
 {
@@ -36,6 +36,7 @@ class RemindUsers extends Command
      */
     public function handle()
     {
+        Log::info("Reminding teachers and students");
         $reminders = LessonUser::where('participation', LessonParticipationEnum::TEACHER)
             ->where('remind_at', '<', now(config('timezone')))->get();
         foreach ($reminders as $reminder) {
