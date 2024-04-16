@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Artisan Cronjob helper script
+|--------------------------------------------------------------------------
+|
+| This script can help, if the working directory of the cron job can not be
+| selected.
+| It just changes the current working directory to the Laravel installation and
+| calls up the artisan console.
+|
+*/
+
+chdir(__DIR__);
+include 'artisan';
+?>
