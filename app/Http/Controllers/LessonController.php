@@ -101,6 +101,9 @@ class LessonController extends Controller
         ]);
 
         $lesson->update($validated);
+        foreach($lesson->participants as $participant) {
+            $participant->pivot->setReminder();
+        }
         return redirect(route('courses.edit', $lesson->course));
     }
 

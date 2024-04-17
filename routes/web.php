@@ -36,6 +36,12 @@ Route::get('/scheduler', function () {
     return response("Calling Scheduler: $res");
 });
 
+Route::get('/remindUsers', function() {
+    $rc = Artisan::call('app:remind-users');
+    $res = $rc == 0 ? "Success" : "Failed";
+    return response("Reminding users: $res");
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

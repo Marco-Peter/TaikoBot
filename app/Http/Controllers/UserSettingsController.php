@@ -29,7 +29,7 @@ class UserSettingsController extends Controller
         $user->save();
 
         foreach ($user->lessons as $lesson) {
-            $lesson->pivot->setReminder($settings['lessonNotificationTime']);
+            $lesson->pivot->setReminder();
         }
 
         return back();
