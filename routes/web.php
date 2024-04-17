@@ -3,11 +3,9 @@
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LessonController;
-use App\Http\Controllers\MessageChannelController;
-use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserSettingsController;
-use App\Models\MessageChannel;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,6 +28,12 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'welcometext' => Str::markdown(file_get_contents(Jetstream::localizedMarkdownPath('welcome.md'))),
     ]);
+});
+
+Route::get('/scheduler', function () {
+    $rc = Artisan::call('schedule:run');
+    $res = $rc == 0 ? "Success" : "Failed";
+    return response("Calling Scheduler: $res");
 });
 
 Route::middleware([
