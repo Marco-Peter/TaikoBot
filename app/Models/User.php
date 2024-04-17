@@ -137,16 +137,12 @@ class User extends Authenticatable
 
     public function hasSignedUpToCourse(Course $course): bool
     {
-        return $this->loadExists(['courses' => function (Builder $query) use ($course) {
-            $query->where('id', $course->id);
-        }])->courses_exists;
+        return $this->courses()->where('id', $course->id)->exists();
     }
 
     public function hasSignedInToLesson(Lesson $lesson): bool
     {
-        return $this->loadExists(['lessons' => function (Builder $query) use ($lesson) {
-            $query->where('id', $lesson->id);
-        }])->lessons_exists;
+        return $this->lessons()->where('id', $lesson->id)->exists();
     }
 
     public function accepts_mail_notifications(): bool

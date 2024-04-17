@@ -32,5 +32,7 @@ class LessonUser extends Pivot
 
     protected $fillable = [
         'remind_at',
+        'participation',
+        'message',
     ];
 }
