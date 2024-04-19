@@ -212,10 +212,11 @@ if (isPushNotificationSupported()) {
                         hour: "2-digit",
                         minute: "2-digit",
                     }) }}</h3>
-                                <p class="pb-2">{{ lesson.title }} of {{ lesson.course.name }}</p>
+                                <p>{{ lesson.title }} of {{ lesson.course.name }}</p>
+                                <p>{{ lesson.participants_count }} students signed in.</p>
                             </div>
                             <Link :href="route('lessons.edit', [lesson.id])">
-                            <SecondaryButton class="mr-2">Edit Lesson</SecondaryButton>
+                            <SecondaryButton class="my-2 mr-2">Edit Lesson</SecondaryButton>
                             </Link>
                         </div>
                     </div>
@@ -241,15 +242,16 @@ if (isPushNotificationSupported()) {
                         hour: "2-digit",
                         minute: "2-digit",
                                     }) }}</h3>
-                                <p class="pb-2">{{ lesson.title }} of {{ lesson.course.name }}</p>
+                                <p>{{ lesson.title }} of {{ lesson.course.name }}</p>
                                 <p v-for="teacher in lesson.teachers" :key="teacher.id" class="italic">{{
                                     teacher.first_name
                                     }} {{ teacher.last_name }}</p>
+                                <p>{{ lesson.participants_count }} students signed in.</p>
                             </div>
-                            <DangerButton class="mr-2" v-if="lesson.pivot.participation == 'signed_in'"
+                            <DangerButton class="my-2 mr-2" v-if="lesson.pivot.participation == 'signed_in'"
                                 @click="signOut(lesson)">
                                 Sign Out</DangerButton>
-                            <SecondaryButton class="mr-2" v-else-if="lesson.pivot.participation == 'signed_out'"
+                            <SecondaryButton class="my-2 mr-2" v-else-if="lesson.pivot.participation == 'signed_out'"
                                 @click="signIn(lesson)">
                                 Sign In</SecondaryButton>
                             <SecondaryButton class="mr-2" @click="sendMessage(lesson)">Send Message</SecondaryButton>
