@@ -22,9 +22,8 @@ class UserSettingsController extends Controller
             'lessonNotificationTime' => 'required|numeric',
         ]);
 
-        $settings = $user->settings ? $user->settings : [ 'lessonNotificationTime' => 0 ];
+        $settings = $user->settings;
         $settings['lessonNotificationTime'] = $validated['lessonNotificationTime'];
-
         $user->settings = $settings;
         $user->save();
 

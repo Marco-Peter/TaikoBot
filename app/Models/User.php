@@ -6,7 +6,7 @@ namespace App\Models;
 
 use App\Enums\LessonParticipationEnum;
 use App\Enums\UserRoleEnum;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -61,7 +61,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'role' => UserRoleEnum::class,
-        'settings' => 'array',
+        'settings' => AsArrayObject::class,
     ];
 
     /**
