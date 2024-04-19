@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\LessonParticipationEnum;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -32,15 +33,20 @@ class DashboardController extends Controller
             ->with([
                 'course:id,name',
                 'teachers:id,first_name,last_name',
-            ])
+            ])->withCount(['participants' => function (Builder $query) {
+                $query->where('participation', LessonParticipationEnum::SIGNED_IN)
+                    ->orWhere('participation', LessonParticipationEnum::LATE);
+            }])
             ->where('start', '>', Carbon::now()->toDateString())
             ->oldest('start')->get();
 
         $teacherLessons = $user->teacherLessons()
             ->with([
                 'course:id,name',
-                'teachers:id,first_name,last_name',
-            ])
+            ])->withCount(['participants' => function (Builder $query) {
+                $query->where('participation', LessonParticipationEnum::SIGNED_IN)
+                    ->orWhere('participation', LessonParticipationEnum::LATE);
+            }])
             ->where('start', '>', Carbon::now()->subDays(3)->toDateString())
             ->oldest('start')->get();
 
