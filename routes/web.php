@@ -23,12 +23,8 @@ use Laravel\Jetstream\Jetstream;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'welcometext' => Str::markdown(file_get_contents(Jetstream::localizedMarkdownPath('welcome.md'))),
-    ]);
-});
+    return view('app');
+})->name('application');
 
 Route::get('/scheduler', function () {
     $rc = Artisan::call('schedule:run');
