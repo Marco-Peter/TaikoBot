@@ -27,7 +27,6 @@ services:
             - meilisearch
             - mailpit
             - selenium
-            - phpmyadmin
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -101,14 +100,6 @@ services:
             - '/dev/shm:/dev/shm'
         networks:
             - sail
-    phpmyadmin:
-        image: 'phpmyadmin:latest'
-        ports:
-            - '8080:80'
-        networks:
-            - sail
-        environment:
-            - PMA_ARBITRARY=1
 networks:
     sail:
         driver: bridge

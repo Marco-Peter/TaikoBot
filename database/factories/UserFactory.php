@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Enums\UserRoleEnum;
-use App\Models\Team;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -14,6 +12,11 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     /**
+     * The current password being used by the factory.
+     */
+    protected static ?string $password;
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -21,17 +24,11 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
-            'role' => $this->faker->randomElement(UserRoleEnum::values()),
-            'team_id' => Team::find(1),
-            'two_factor_secret' => null,
-            'two_factor_recovery_codes' => null,
+            'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'profile_photo_path' => null,
         ];
     }
 
@@ -40,10 +37,8 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'email_verified_at' => null,
-            ];
-        });
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
     }
 }
