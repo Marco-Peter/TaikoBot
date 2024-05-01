@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LessonController;
@@ -74,4 +75,6 @@ Route::middleware([
 
     Route::put('/user/settings', [UserSettingsController::class, 'update'])
     ->name('user-settings.update');
+
+    Route::get('admin', [AdminController::class, 'showAdminPage'])->name('admin.show');
 });

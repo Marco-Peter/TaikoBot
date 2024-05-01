@@ -57,6 +57,10 @@ const logout = () => {
                                     Course Management
                                 </NavLink>
 
+                                <NavLink v-if="page.props.auth.canEditUsers" :href="route('admin.show')" :active="route().current('admin.*')">
+                                    Admin
+                                </NavLink>
+
                                 <ExtLink href="https://forum.taikozuerich.ch">
                                     Forum
                                 </ExtLink>
@@ -151,6 +155,10 @@ const logout = () => {
 
                         <ResponsiveNavLink v-if="page.props.auth.canEditCourses" :href="route('courses.index')" :active="route().current('courses.*')">
                             Course Management
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink v-if="page.props.auth.canEditUsers" :href="route('admin.show')" :active="route().current('admin.*')">
+                            Admin
                         </ResponsiveNavLink>
 
                         <ResponsiveExtLink href="https://forum.taikozuerich.ch">
