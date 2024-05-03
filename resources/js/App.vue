@@ -1,6 +1,13 @@
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 
+const router = useRouter();
+
+function logout () {
+    axios.post('/logout').then(response => {
+        router.go()
+});
+}
 </script>
 
 <template>
@@ -9,6 +16,7 @@ import { RouterLink } from 'vue-router';
         <RouterLink :to="{ name: 'courses.index' }">Courses</RouterLink>
         <RouterLink :to="{ name: 'users.index' }">Users</RouterLink>
         <RouterLink :to="{ name: 'profile' }">Profile</RouterLink>
+        <button @click="logout">Logout</button>
     </nav>
 
     <main>
