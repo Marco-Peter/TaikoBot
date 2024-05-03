@@ -1,6 +1,7 @@
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import TitleBar from '@/Components/TitleBar.vue';
 
 const response = ref();
 
@@ -14,10 +15,13 @@ const getValue = async () => {
 </script>
 
 <template>
+    <TitleBar>Home</TitleBar>
     <div>
-        <h1>HOME</h1>
         <p>Welcome home!</p>
         <button @click.prevent="getValue">Trigger Endpoint</button>
         <p v-if="response">{{ response.data }}</p>
     </div>
 </template>
+
+<style>
+</style>
