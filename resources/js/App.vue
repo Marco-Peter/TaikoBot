@@ -1,13 +1,39 @@
 <script setup>
+import { onMounted, ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
+import Modal from './Components/Modal.vue';
+import axios from 'axios';
 
 const router = useRouter();
+const modalText = ref('');
+const modalShow = ref(false);
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = window.location + 'local-api';
+axios.defaults.responseType = 'json';
 
-function logout () {
-    axios.post('/logout').then(response => {
+const userdata = ref();
+
+function logout() {
+    axios.post(window.location + 'logout').then(response => {
         router.go()
-});
+    });
 }
+
+const closeModal = () => {
+    modalShow.value = false;
+}
+
+onMounted(async () => {
+    userdata.value = await axios.get('/user')
+    .then(function(response) {
+        return response.data;
+    })
+    .catch(function(error) {
+        modalText.value = error.response.data;
+        modalShow.value = true;
+    });
+
+})
 </script>
 
 <template>
@@ -22,6 +48,12 @@ function logout () {
     <main>
         <RouterView />
     </main>
+
+    <Modal :show="modalShow" @close="closeModal">
+        <template #default>
+            <div v-html="modalText"></div>
+        </template>
+    </Modal>
 </template>
 
 <style>

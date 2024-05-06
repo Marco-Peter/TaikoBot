@@ -31,6 +31,6 @@
             <a href="/login">Log in</a>
         </div>
 
-        <button type="submit">Log in</button>
+        <button type="submit">Register</button>
     </form>
 </x-layout>
