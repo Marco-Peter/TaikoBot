@@ -7,11 +7,12 @@ import axios from 'axios';
 const router = useRouter();
 const modalText = ref('');
 const modalShow = ref(false);
+
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = window.location + 'local-api';
 axios.defaults.responseType = 'json';
 
-const userdata = ref();
+const userdata = ref({});
 
 function logout() {
     axios.post(window.location + 'logout').then(response => {

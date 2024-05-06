@@ -12,7 +12,8 @@ Route::middleware('auth')->group(function () {
     */
     Route::prefix('local-api')->group(function () {
         Route::get('/user', function(Request $request) {
-            return $request->user();
+            $user = $request->user();
+            return $user;
         });
     });
 
