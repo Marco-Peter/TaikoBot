@@ -6,9 +6,13 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <meta name="description" content="Manage your Taiko experience">
+        <meta name="theme-color" content="#94ab67">
+
         <!-- Favicon -->
-        <link rel="icon" href="/images/favicon_black_64.png" media="(prefers-color-scheme: light)" />
-        <link rel="icon" href="/images/favicon_white_64.png" media="(prefers-color-scheme: dark)" />
+        <link rel="icon" href="/images/favicon_black.png" media="(prefers-color-scheme: light)" />
+        <link rel="icon" href="/images/favicon_white.png" media="(prefers-color-scheme: dark)" />
+        <link rel="apple-touch-icon" href="/images/favicon_black.png" sizes="180x180">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

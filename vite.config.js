@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
     plugins: [
@@ -14,6 +15,36 @@ export default defineConfig({
                     base: null,
                     includeAbsolute: false,
                 },
+            },
+        }),
+        VitePWA({
+            registerType: 'autoUpdate',
+            injectRegister: 'auto',
+            workbox: {
+                globPatterns: ['**/*.{js,css,html,png}'],
+            },
+            strategies: 'generateSW',
+            includeAssets: ['/images/favicon_black.png', '/images/favicon_white.png'],
+            manifest: {
+                name: 'TaikoBot',
+                short_name: 'TaikoBot',
+                description: 'Manage your Taiko experience',
+                theme_color: '#94ab67',
+                icons: [
+                    {
+                        src: '/images/favicon_black.png',
+                        sizes: '192x192',
+                        type: 'image/png',
+                    },
+                    {
+                        src: '/images/favicon_black.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                    },
+                ],
+            },
+            devOptions: {
+                enabled: true,
             },
         }),
     ],
