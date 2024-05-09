@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: ['resources/js/app.js'],
             refresh: true,
         }),
         vue({
@@ -24,7 +24,7 @@ export default defineConfig({
                 globPatterns: ['**/*.{js,css,html,png}'],
             },
             strategies: 'generateSW',
-            includeAssets: ['/images/favicon_black.png', '/images/favicon_white.png'],
+            includeAssets: ['favicon.ico', '/images/favicon_black.png', '/images/favicon_white.png'],
             manifest: {
                 name: 'TaikoBot',
                 short_name: 'TaikoBot',
@@ -32,14 +32,27 @@ export default defineConfig({
                 theme_color: '#94ab67',
                 icons: [
                     {
-                        src: '/images/favicon_black.png',
+                        src: '/images/favicon_white_192.png',
                         sizes: '192x192',
+                        type: 'image/png',
+                        purpose: 'any maskable',
+                    },
+                    {
+                        src: '/images/favicon_white_512.png',
+                        sizes: '512x512',
                         type: 'image/png',
                     },
                     {
-                        src: '/images/favicon_black.png',
+                        src: '/images/favicon_white_512.png',
                         sizes: '512x512',
                         type: 'image/png',
+                        purpose: 'any',
+                    },
+                    {
+                        src: '/images/favicon_white_512.png',
+                        sizes: '512x512',
+                        type: 'image/png',
+                        purpose: 'maskable',
                     },
                 ],
             },
