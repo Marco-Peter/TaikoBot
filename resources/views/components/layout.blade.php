@@ -19,6 +19,8 @@
         <link rel="apple-touch-icon" href="/images/favicon_white_180.png" sizes="180x180">
         <link rel="mask-icon" href="/images/favicon_white_192.png" color="#FFFFFF">
 
+        <link rel="stylesheet" href="app.css">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />

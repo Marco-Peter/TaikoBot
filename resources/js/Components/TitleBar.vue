@@ -1,5 +1,6 @@
 <template>
-    <nav>
-        <h1><slot></slot></h1>
-    </nav>
+    <h1 class="navBar pageTitle"><slot></slot></h1>
 </template>
+
+<style>
+</style>

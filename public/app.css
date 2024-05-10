@@ -1,0 +1,51 @@
+* {
+    font-family: sans-serif;
+    color-scheme: light dark;
+}
+
+nav {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-left: 2em;
+
+    img {
+        display: block;
+    }
+
+    a {
+        display: inline;
+        padding-right: 2em;
+        color: inherit;
+        text-decoration: none;
+        font-weight: bold;
+        border: black;
+        border-bottom: 1em;
+    }
+}
+
+.navBar {
+    background-color: #94ab67;
+    color: white;
+}
+
+.pageTitle {
+    padding-bottom: 1em;
+}
+
+.table {
+    display: table;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-cell {
+    margin-bottom: 1em;
+    padding-right: 1em;
+    display: table-cell;
+}
+
+a {
+    padding-bottom: 10px;
+}

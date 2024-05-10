@@ -26,19 +26,20 @@ const closeModal = () => {
 
 onMounted(async () => {
     userdata.value = await axios.get('/user')
-    .then(function(response) {
-        return response.data;
-    })
-    .catch(function(error) {
-        modalText.value = error.response.data;
-        modalShow.value = true;
-    });
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(function (error) {
+            modalText.value = error.response.data;
+            modalShow.value = true;
+        });
 
 })
 </script>
 
 <template>
-    <nav>
+    <nav class="navBar">
+        <img src="/images/taikobot-logo-white.png" alt="TaikoBot" height="60px" id="tb-logo">
         <RouterLink :to="{ name: 'home' }">Home</RouterLink>
         <RouterLink :to="{ name: 'courses.index' }">Courses</RouterLink>
         <RouterLink :to="{ name: 'users.index' }">Users</RouterLink>
@@ -58,27 +59,4 @@ onMounted(async () => {
 </template>
 
 <style>
-:root {
-    font-family: sans-serif;
-    color-scheme: light dark;
-}
-
-a {
-    margin-right: 2em;
-    color: inherit;
-    text-decoration: none;
-    font-weight: bold;
-    border: black;
-    border-bottom: 1em;
-}
-
-
-
-nav {
-    padding-top: 1em;
-    padding-bottom: 1em;
-    padding-left: 2em;
-    background-color: #94ab67;
-    color: white;
-}
 </style>
