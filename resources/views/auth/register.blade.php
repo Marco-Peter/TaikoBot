@@ -3,8 +3,13 @@
         @csrf
 
         <div>
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required autofocus autocomplete="name" />
+            <label for="first_name">First Name</label>
+            <input type="text" id="first_name" name="first_name" required autofocus autocomplete="given-name" />
+        </div>
+
+        <div>
+            <label for="last_name">Last Name</label>
+            <input type="text" id="last_name" name="last_name" required autofocus autocomplete="family-name" />
         </div>
 
         <div>

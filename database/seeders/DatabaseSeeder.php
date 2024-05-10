@@ -32,21 +32,24 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'name' => 'Student Taikostarter',
+            'first_name' => 'Student',
+            'last_name' => 'Taikostarter',
             'email' => 'student@example.com',
             'role' => 'student',
             'profile_photo_path' => 'profile-photos/taiko-kun.png',
         ]);
 
         User::factory()->create([
-            'name' => 'Teacher Taikootaku',
+            'first_name' => 'Teacher',
+            'last_name' => 'Taikootaku',
             'email' => 'teacher@example.com',
             'role' => 'teacher',
             'profile_photo_path' => 'profile-photos/taiko-face.jpg',
         ]);
 
         User::factory()->create([
-            'name' => 'Admin Taikobaka',
+            'first_name' => 'Admin',
+            'last_name' => 'Taikobaka',
             'email' => 'admin@example.com',
             'role' => 'admin',
             'profile_photo_path' => 'profile-photos/Taiko1_1300-auto.jpg',
