@@ -56,6 +56,20 @@ export default defineConfig({
                     },
                 ],
             },
+            workbox: {
+                runtimeCaching: [{
+                    urlPattern: ({ url }) => {
+                        return url.pathname.startsWith("/local-api");
+                    },
+                    handler: "CacheFirst",
+                    options: {
+                        cacheName: "api-cache",
+                        cacheableResponse: {
+                            statuses: [0, 200],
+                        }
+                    }
+                }]
+            },
             devOptions: {
                 enabled: true,
             },

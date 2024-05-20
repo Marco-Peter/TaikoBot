@@ -5,7 +5,6 @@ import TitleBar from '@/Components/TitleBar.vue';
 <template>
     <TitleBar>Profile</TitleBar>
     <div>
-        <h1>Profile</h1>
         <p>This is your profile!</p>
     </div>
 </template>

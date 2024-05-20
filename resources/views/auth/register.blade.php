@@ -4,6 +4,10 @@
     </nav>
 
     <main>
+        <h1 class="navBar pageTitle">Register</h1>
+        <p>New to Taiko Zürich? Wonderful! Please register here and we will contact you when we
+            will host our "Schnupperlektionen" (usually in February and September).
+        </p>
         <form action="/register" method="post" class="register-form">
             @csrf
 
