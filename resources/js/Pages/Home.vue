@@ -1,25 +1,17 @@
 <script setup>
-import axios from 'axios';
 import { ref } from 'vue';
+import { useUserStore } from '@/stores/userStore';
 import TitleBar from '@/Components/TitleBar.vue';
 
+const userStore = useUserStore();
 const response = ref();
-
-const getValue = async () => {
-    try {
-        response.value = await axios.get("/api/test-me");
-    } catch (error) {
-        console.log(error);
-    }
-};
 </script>
 
 <template>
-    <TitleBar>Home</TitleBar>
+    <TitleBar>Hello {{ userStore.user.first_name }}, let's play some Taiko!</TitleBar>
     <div>
-        <p>Welcome home!</p>
-        <button @click.prevent="getValue">Trigger Endpoint</button>
-        <p v-if="response">{{ response.data }}</p>
+        <h2>Your Signed Up Courses and Workshops</h2>
+        {{ userStore.user }}
     </div>
 </template>
 

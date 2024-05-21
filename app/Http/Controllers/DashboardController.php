@@ -15,13 +15,15 @@ class DashboardController extends Controller
     public function __invoke(Request $request)
     {
         $user = Auth::user()->load([
-            'lessons' => function (Builder $query) {
+            'studentLessons' => function (Builder $query) {
                 $query->select('id', 'course_id', 'title', 'start')
                     ->where('start', '>', Carbon::now()->toDateString())
                     ->oldest('start');
             },
-            'lessons.course:id,name',
-            'lessons.teachers:id,name',
+            'studentLessons.course:id,name',
+            'studentLessons.teachers:id,name',
+            'courses',
         ]);
+        return $user;
     }
 }

@@ -22,6 +22,18 @@ export default defineConfig({
             injectRegister: 'auto',
             workbox: {
                 globPatterns: ['**/*.{js,css,html,png}'],
+                runtimeCaching: [{
+                    urlPattern: ({ url }) => {
+                        return url.pathname.startsWith("/local-api");
+                    },
+                    handler: "CacheFirst",
+                    options: {
+                        cacheName: "api-cache",
+                        cacheableResponse: {
+                            statuses: [0, 200],
+                        }
+                    }
+                }]
             },
             strategies: 'generateSW',
             includeAssets: ['favicon.ico', '/images/favicon_black.png', '/images/favicon_white.png'],
@@ -55,20 +67,6 @@ export default defineConfig({
                         purpose: 'maskable',
                     },
                 ],
-            },
-            workbox: {
-                runtimeCaching: [{
-                    urlPattern: ({ url }) => {
-                        return url.pathname.startsWith("/local-api");
-                    },
-                    handler: "CacheFirst",
-                    options: {
-                        cacheName: "api-cache",
-                        cacheableResponse: {
-                            statuses: [0, 200],
-                        }
-                    }
-                }]
             },
             devOptions: {
                 enabled: true,

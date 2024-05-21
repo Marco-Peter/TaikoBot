@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -9,12 +10,10 @@ Route::middleware('auth')->group(function () {
      *
      * All data exchange for the provided webapplication
      * happens through this group functions.
-    */
+     */
     Route::prefix('local-api')->group(function () {
-        Route::get('/user', function(Request $request) {
-            $user = $request->user();
-            return $user;
-        });
+        Route::get('/user', DashboardController::class);
+        Route::resource('/courses', CourseController::class);
     });
 
     /**

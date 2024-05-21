@@ -40,6 +40,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
     ];
 
     /**
@@ -95,6 +98,9 @@ class User extends Authenticatable
             ->withTimestamps()->wherePivot('participation', '=', LessonParticipationEnum::TEACHER->value);
     }
 
+    /**
+     * Returns all courses available for the user.
+     */
     public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class)->withPivot('paid')->withTimestamps();

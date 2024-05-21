@@ -13,6 +13,8 @@
         "vite-plugin-pwa": "^0.20.0"
     },
     "dependencies": {
+        "pinia": "^2.1.7",
+        "pinia-plugin-persistedstate": "^3.2.1",
         "vue": "^3.4.26",
         "vue-loader": "^17.4.2",
         "vue-router": "^4.3.2"
