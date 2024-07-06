@@ -24,9 +24,9 @@ function signUp(id) {
         <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert"
+                    <div class="w-full sm:max-w-2xl mt-6 bg-white dark:bg-gray-800 overflow-hidden sm:rounded-lg"
                         v-html="course.description" />
-                    <p>{{ course.capacity - course.participants_count }} places available.</p>
+                    <p class="mt-4">{{ course.capacity - course.participants_count }} places available.</p>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@ function signUp(id) {
         <!-- Show course material -->
         <div v-if="course.material && course.material.length" class="pt-10">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="px-4 py-3 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="font-semibold text-xl">Course Material</h1>
                 </div>
             </div>
@@ -42,7 +42,7 @@ function signUp(id) {
 
         <div v-for="mat in course.material" class="pt-3">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="px-4 py-3 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="mt-3 text-xl">{{ mat.name }}</h1>
                     <p v-if="mat.notes" class="mt-5">{{ mat.notes }}</p>
                     <a v-if="mat.external" :href="mat.path" target="_blank">
@@ -58,13 +58,13 @@ function signUp(id) {
         <!-- Show lessons-->
         <div class="py-10">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="px-4 py-3 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h2 class="font-semibold text-xl mb-2 mt-3">Lessons</h2>
                     <table v-if="course.lessons.length">
                         <thead>
                             <tr>
-                                <th class="pr-5">Date</th>
-                                <th class="pr-5">Title</th>
+                                <th class="pr-5 text-left">Date</th>
+                                <th class="pr-5 text-left">Title</th>
                             </tr>
                         </thead>
                         <tbody>
