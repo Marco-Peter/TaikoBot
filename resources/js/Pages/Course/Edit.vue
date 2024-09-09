@@ -213,22 +213,16 @@ function updatePaid(user, paid) {
                     <table v-if="course.lessons.length">
                         <thead>
                             <tr>
-                                <th class="pr-5">Start</th>
-                                <th class="pr-5">Finish</th>
-                                <th class="pr-5">Title</th>
-                                <th class="pr-5">Teachers</th>
+                                <th class="pr-5">Date</th>
+                                <th class="pr-5">Teacher(s)</th>
                                 <th colspan="2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="lesson in course.lessons">
-                                <td class="pr-5">{{ lesson.start }}</td>
-                                <td class="pr-5">{{ lesson.finish }}</td>
-                                <td class="pr-5">{{ lesson.title }}</td>
+                                <td class="pr-5">{{ lesson.start.slice(0, 10) }}</td>
                                 <td class="pr-5">
-                                    <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name
-                                        }}
-                                    </p>
+                                    <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name[0] }}. {{ teacher.first_name === "Mark" ? "😏" : ""}}</p>
                                 </td>
                                 <td>
                                     <!-- Edit Button -->
