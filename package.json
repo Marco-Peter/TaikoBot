@@ -9,6 +9,7 @@
         "@vitejs/plugin-vue": "^5.0.4",
         "axios": "^1.6.4",
         "laravel-vite-plugin": "^1.0",
+        "typescript": "^5.5.4",
         "vite": "^5.0",
         "vite-plugin-pwa": "^0.20.0"
     },
