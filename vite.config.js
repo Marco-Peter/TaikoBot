@@ -19,6 +19,9 @@ export default defineConfig({
         }),
         VitePWA({
             registerType: 'autoUpdate',
+            outDir: 'public',
+            scope: '/',
+            base: '/',
             injectRegister: 'auto',
             workbox: {
                 globPatterns: ['**/*.{js,css,html,png}'],
@@ -38,6 +41,8 @@ export default defineConfig({
             strategies: 'generateSW',
             includeAssets: ['favicon.ico', '/images/favicon_black.png', '/images/favicon_white.png'],
             manifest: {
+                id: '/',
+                scope: '/',
                 name: 'TaikoBot',
                 short_name: 'TaikoBot',
                 description: 'Manage your Taiko experience',

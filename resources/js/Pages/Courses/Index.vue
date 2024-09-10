@@ -13,7 +13,7 @@ const coursesStore = useCoursesStore();
 const closeModal = () => {
     modalShow.value = false;
 }
-onMounted(async () => {
+/*onMounted(async () => {
     coursesStore.pull()
         .catch(function (error) {
             console.error(error);
@@ -21,7 +21,7 @@ onMounted(async () => {
             modalShow.value = true;
         });
 
-})
+})*/
 </script>
 
 <template>
