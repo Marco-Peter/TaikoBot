@@ -62,6 +62,7 @@ class UserController extends Controller
                 'required',
                 Rule::enum(UserRoleEnum::class),
             ],
+            'karma' => 'nullable|integer|min:0',
             'team_id' => 'required',
         ]);
 
@@ -104,6 +105,7 @@ class UserController extends Controller
                 'required',
                 Rule::enum(UserRoleEnum::class),
             ],
+            'karma' => 'nullable|integer|min:0',
             'team_id' => 'required|exists:teams,id',
         ]);
 

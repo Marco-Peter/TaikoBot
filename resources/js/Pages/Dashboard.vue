@@ -75,16 +75,23 @@ async function getUserSubscription() {
 }
 
 function signOut(lesson) {
-    let message = prompt("Message to teachers", "");
+    let message = prompt("Optional message to teachers", "");
     if (message != null) {
         router.post(route('lessons.signout', lesson.id), { 'message': message });
     }
 }
 
 function signIn(lesson) {
-    let message = prompt("Message to teachers", "");
+    let message = prompt("Optional message to teachers", "");
     if (message != null) {
         router.post(route('lessons.signin', lesson.id), { 'message': message });
+    }
+}
+
+function compensate(lesson) {
+    let message = prompt("Optional message to teachers", "");
+    if (message != null) {
+        router.post(route('lessons.compensate', lesson.id), { 'message': message });
     }
 }
 
@@ -111,6 +118,7 @@ if (isPushNotificationSupported()) {
             <h2 class="font-semibold text-xl leading-tight">
                 Hello {{ user.first_name }}, let's play some Taiko!
             </h2>
+            Your TaikoKarma is {{ user.karma === null ? '\u{221E}' : user.karma }}
         </template>
 
         <div v-if="dashboardGreeting">
@@ -141,19 +149,19 @@ if (isPushNotificationSupported()) {
                         <p>Looking for new challenges? Here you can sign up to new courses and workshops.</p>
                         <div v-for="course in coursesNotSignedUp" class="my-3 px-4 py-2 bg-white dark:bg-gray-800">
                             <h3 class="font-bold text-lg">{{ course.name }} ({{ course.capacity -
-                    course.participants_count }} places available)</h3>
+                                course.participants_count }} places available)</h3>
                             <p class="pb-2">From {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
-                    weekday: "long",
-                    month: "long",
-                    day: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }) }} to {{ new Date(course.last_lesson.finish).toLocaleString(undefined, {
-                    weekday: "long",
-                    month: "long",
-                    day: "2-digit",
-                })
+                                weekday: "long",
+                                month: "long",
+                                day: "2-digit",
+                                year: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                            }) }} to {{ new Date(course.last_lesson.finish).toLocaleString(undefined, {
+                                    weekday: "long",
+                                    month: "long",
+                                    day: "2-digit",
+                                })
                                 }}</p>
                             <Link :href="route('courses.show', [course.id])">
                             <SecondaryButton>Details / Sign In</SecondaryButton>
@@ -175,17 +183,17 @@ if (isPushNotificationSupported()) {
                             <h3 class="font-bold text-lg">{{ course.name }}</h3>
                             <p class="pb-2">From
                                 {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
-                    weekday: "long",
-                    month: "long",
-                    day: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }) }} to
+                                    weekday: "long",
+                                    month: "long",
+                                    day: "2-digit",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                }) }} to
                                 {{ new Date(course.last_lesson.finish).toLocaleString(undefined, {
-                    weekday: "long",
-                    month: "long", day: "2-digit"
-                }) }}</p>
+                                    weekday: "long",
+                                    month: "long", day: "2-digit"
+                                }) }}</p>
                             <Link :href="route('courses.show', [course.id])">
                             <SecondaryButton>Details</SecondaryButton>
                             </Link>
@@ -205,13 +213,13 @@ if (isPushNotificationSupported()) {
                         <div v-for="lesson in teacherLessons" class="my-3 px-4 py-2 bg-white dark:bg-gray-800">
                             <div class="pb-2">
                                 <h3 class="font-bold text-lg">{{ new
-                    Date(lesson.start).toLocaleString(undefined, {
-                        weekday: "short",
-                        month: "short",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                    }) }}</h3>
+                                    Date(lesson.start).toLocaleString(undefined, {
+                                        weekday: "short",
+                                        month: "short",
+                                        day: "2-digit",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                    }) }}</h3>
                                 <p>{{ lesson.title }} of {{ lesson.course.name }}</p>
                                 <p>{{ lesson.participants_count }} students signed in.</p>
                             </div>
@@ -231,30 +239,38 @@ if (isPushNotificationSupported()) {
                             Your Next Lessons
                         </h2>
                         <div v-for="lesson in studentLessons" class="my-3 px-4 py-2 bg-white dark:bg-gray-800"
-                            :class="lesson.pivot.participation == 'signed_out' ? 'text-gray-500' : ''">
+                            :class="lesson.pivot === undefined || lesson.pivot.participation === 'signed_out' ? 'text-gray-500' : ''">
                             <div class="pb-2">
                                 <h3 class="font-bold text-lg"
-                                    :class="lesson.pivot.participation == 'signed_out' ? 'line-through' : ''">{{ new
-                    Date(lesson.start).toLocaleString(undefined, {
-                        weekday: "short",
-                        month: "short",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                                    }) }}</h3>
+                                    :class="lesson.pivot === undefined || lesson.pivot.participation === 'signed_out' ? 'line-through' : ''">
+                                    {{ new
+                                        Date(lesson.start).toLocaleString(undefined, {
+                                            weekday: "short",
+                                            month: "short",
+                                            day: "2-digit",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        }) }}</h3>
                                 <p>{{ lesson.title }} of {{ lesson.course.name }}</p>
                                 <p v-for="teacher in lesson.teachers" :key="teacher.id" class="italic">{{
                                     teacher.first_name
                                     }} {{ teacher.last_name }}</p>
-                                <p>{{ lesson.participants_count }} students signed in.</p>
+                                <p>{{ lesson.participants_count }} students signed in ({{ lesson.course.capacity -
+                                    lesson.participants_count }} spaces free).</p>
                             </div>
-                            <DangerButton class="my-2 mr-2" v-if="lesson.pivot.participation == 'signed_in'"
+                            <SecondaryButton class="my-2 mr-2" v-if="lesson.pivot === undefined"
+                                @click="compensate(lesson)"
+                                :disabled="lesson.course.capacity - lesson.participants_count <= 0">
+                                Compensate</SecondaryButton>
+                            <DangerButton class="my-2 mr-2" v-else-if="lesson.pivot.participation === 'signed_in'"
                                 @click="signOut(lesson)">
                                 Sign Out</DangerButton>
-                            <SecondaryButton class="my-2 mr-2" v-else-if="lesson.pivot.participation == 'signed_out'"
+                            <SecondaryButton class="my-2 mr-2" v-else-if="lesson.pivot.participation === 'signed_out'"
                                 @click="signIn(lesson)">
                                 Sign In</SecondaryButton>
-                            <SecondaryButton class="mr-2" @click="sendMessage(lesson)">Send Message</SecondaryButton>
+                            <SecondaryButton class="mr-2" v-if="lesson.pivot !== undefined"
+                                @click="sendMessage(lesson)">Send
+                                Message</SecondaryButton>
                         </div>
                     </div>
                 </div>

@@ -9,13 +9,14 @@ import DangerButton from '@/Components/DangerButton.vue';
 import { Link, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const props = defineProps({ course: Object, teams: Object });
+const props = defineProps({ course: Object, teams: Object, compCourses: Array, compCoursesSelected: Array });
 router.reload();
 
 const form = useForm({
     name: props.course.name,
     description: props.course.description,
     capacity: String(props.course.capacity),
+    signout_limit: String(props.course.signout_limit),
     teams: props.course.teams.map(({ id }) => id),
 });
 
@@ -29,6 +30,7 @@ const uploadFileInput = ref("");
 
 const newParticipantTeam = ref("");
 const newParticipant = ref("");
+const newCompensation = ref("");
 
 const submit = () => {
     form.put(route("courses.update", props.course.id));
@@ -48,6 +50,18 @@ function deleteMaterial(material) {
     if (confirm("Are you sure you wnat to delete this material?")) {
         router.post(route('courses.deleteMaterial', props.course.id),
             { 'material': material.id }, { preserveScroll: true });
+    }
+}
+
+function addCompCourse(course) {
+    router.post(route('courses.addCompCourse', props.course.id),
+        { 'compCourse': course.id }, { preserveScroll: true });
+}
+
+function removeCompCourse(course) {
+    if (confirm(`Are you sure you want to remove ${course.name} as a compensation course?`)) {
+        router.post(route('courses.removeCompCourse', props.course.id),
+            { 'compCourse': course.id }, { preserveScroll: true });
     }
 }
 
@@ -111,8 +125,18 @@ function updatePaid(user, paid) {
                             <!-- Course Capacity (max number of participants) -->
                             <div>
                                 <InputLabel for="capacity" value="Capacity" />
-                                <TextInput id="capacity" v-model="form.capacity" type="number" class="mt-1 block w-full" />
+                                <TextInput id="capacity" v-model="form.capacity" type="number"
+                                    class="mt-1 block w-full" />
                                 <InputError :message="form.errors.capacity" class="mt-2" />
+                            </div>
+
+                            <!-- Sign Out time limit to gain TaikoKarma -->
+                            <div>
+                                <InputLabel for="signoutLimit" value="Sign Out time limit (hours)" />
+                                <TextInput id="signoutLimit" v-model="form.signout_limit" type="number" min="0"
+                                    title="Minimum hours to sign out before lessons to gain TaikoKarma"
+                                    class="mt-1 block w-full" />
+                                <InputError :message="form.errors.signout_limit" class="mt-2" />
                             </div>
 
                             <!-- Groups to which the Course is Published -->
@@ -128,8 +152,8 @@ function updatePaid(user, paid) {
                             <!-- Form Submission -->
                             <div class="flex flex-col items-center gap-2">
                                 <Link :href="route('courses.index')">
-                                    <!-- Return without Changing Data-->
-                                    <SecondaryButton>Cancel</SecondaryButton>
+                                <!-- Return without Changing Data-->
+                                <SecondaryButton>Cancel</SecondaryButton>
                                 </Link>
                                 <PrimaryButton type="submit" class="mt-3">Save</PrimaryButton>
                             </div>
@@ -183,6 +207,40 @@ function updatePaid(user, paid) {
             </div>
         </div>
 
+        <!-- Compensations List -->
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <h1 class="font-semibold text-xl mb-2 mt-3">Compensation Possibilities</h1>
+                    <select v-model="newCompensation"
+                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                        <option value="" disabled>--- Select a Compensation Class ---</option>
+                        <option v-for="compCourse in compCourses" :key="compCourse.id" :value="compCourse">{{ compCourse.name }}</option>
+                    </select>
+                    <PrimaryButton :disabled="newCompensation === ''" @click="addCompCourse(newCompensation)">Add Compensation
+                    </PrimaryButton>
+                    <table v-if="compCoursesSelected.length" class="mt-3">
+                        <thead>
+                            <tr>
+                                <th class="pr-5">Name</th>
+                                <th class="pr-5"></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="compCourseSelected in compCoursesSelected" :key="compCourseSelected.id">
+                                <td class="pr-5">{{ compCourseSelected.name }}</td>
+                                <td class="pr-5">
+                                    <DangerButton @click="removeCompCourse(compCourseSelected)">Remove</DangerButton>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p v-else>No Compensations added</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Course Material Listing -->
         <div v-for="mat in course.material" class="py-5">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -230,7 +288,9 @@ function updatePaid(user, paid) {
                             <tr v-for="lesson in course.lessons">
                                 <td class="pr-5">{{ lesson.start.slice(0, 10) }}</td>
                                 <td class="pr-5">
-                                    <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{ teacher.last_name[0] }}. {{ teacher.first_name === "Mark" ? "😏" : ""}}</p>
+                                    <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{
+                                        teacher.last_name[0] }}.
+                                        {{ teacher.first_name === "Mark" ? "😏" : "" }}</p>
                                 </td>
                                 <td>
                                     <!-- Edit Button -->

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Enums\LessonParticipationEnum;
+use App\Models\Lesson;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as DbBuilder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -31,7 +33,7 @@ class DashboardController extends Controller
 
         $studentLessons = $user->studentLessons()
             ->with([
-                'course:id,name',
+                'course:id,name,capacity',
                 'teachers:id,first_name,last_name',
             ])->withCount(['participants' => function (Builder $query) {
                 $query->where('participation', LessonParticipationEnum::SIGNED_IN)
@@ -39,6 +41,29 @@ class DashboardController extends Controller
             }])
             ->where('start', '>', Carbon::now()->toDateString())
             ->oldest('start')->get();
+
+        if ($user->karma !== 0) {
+            $compensationLessons = Lesson::with([
+                'course:id,name,capacity',
+                'teachers:id,first_name,last_name',
+            ])->withCount(['participants' => function (Builder $query) {
+                $query->where('participation', LessonParticipationEnum::SIGNED_IN)
+                    ->orWhere('participation', LessonParticipationEnum::LATE);
+            }])
+                ->whereNotIn('id', function (DbBuilder $query) use ($user) {
+                    $query->select('lesson_id')->from('lesson_user')
+                        ->where('user_id', $user->id);
+                })
+                ->whereIn('course_id', function (DbBuilder $query) use ($user) {
+                    $query->select('compensation_id')->from('compensations')
+                        ->whereIn('original_id', function (DbBuilder $query) use ($user) {
+                            $query->select('course_id')->from('course_user')->where('user_id', '=', $user->id);
+                        });
+                })
+                ->where('start', '>', Carbon::now()->toDateString())
+                ->oldest('start')->limit(5)->get();
+            $studentLessons = $studentLessons->merge($compensationLessons)->sortBy('start')->values();
+        }
 
         $teacherLessons = $user->teacherLessons()
             ->with([
@@ -76,7 +101,7 @@ class DashboardController extends Controller
         $coursesNotSignedUp->setHidden(['description', 'created_at', 'updated_at', 'pivot']);
 
         return Inertia::render('Dashboard', [
-            'user' => $user->only('id', 'first_name'),
+            'user' => $user->only('id', 'first_name', 'karma'),
             'studentLessons' => $studentLessons,
             'teacherLessons' => $teacherLessons,
             'coursesSignedUp' => $coursesSignedUp,

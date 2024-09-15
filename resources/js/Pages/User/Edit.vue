@@ -15,12 +15,16 @@ const form = useForm({
     last_name: props.user.last_name,
     email: props.user.email,
     role: props.user.role,
+    karma: String(props.user.karma),
     team_id: props.user.team_id,
 });
 
-const canPost = ref(false);
+const infiniteKarma = ref(props.user.karma === null);
 
 const submit = () => {
+    if (infiniteKarma.value) {
+        form.karma = null;
+    }
     form.put(route("users.update", props.user.id));
 }
 
@@ -57,6 +61,15 @@ const submit = () => {
                             <option v-for="role in roles" :value="role">{{ role }}</option>
                         </select>
                         <InputError :message="form.errors.role" class="mt-2" />
+
+                        <!-- Taiko Karma -->
+                        <InputLabel for="karma" value="Karma" class="mt-3" />
+                        <input type="checkbox" id="infiniteKarma" v-model="infiniteKarma"
+                            @click="form.karma = '0'"
+                            class="ml-1 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
+                        <label for="infiniteKarma" class="mx-3">infinite karma</label>
+                        <TextInput v-if="!infiniteKarma" id="karma" v-model="form.karma" type="number" class="mt-1 block w-full" />
+                        <InputError :message="form.errors.karma" class="mt-2" />
 
                         <InputLabel for="team" value="Team" class="mt-3" />
                         <p>

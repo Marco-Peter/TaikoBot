@@ -44,6 +44,7 @@ function migrate() {
                                 <th class="pr-5">Email</th>
                                 <th class="pr-5">Role</th>
                                 <th class="pr-5">Teams</th>
+                                <th class="pr-5">Karma</th>
                                 <th colspan="2" class="pr-5"></th>
                             </tr>
                         </thead>
@@ -58,6 +59,7 @@ function migrate() {
                                 <td class="pr-5">{{ user.email }}</td>
                                 <td class="pr-5">{{ user.role }}</td>
                                 <td class="pr-5">{{ user.team ? user.team.name : 'NO GROUP' }}</td>
+                                <td class="pr-5">{{ user.karma === null ? '\u{221E}' : user.karma }}</td>
                                 <td>
                                     <Link :href="route('users.edit', user.id)">
                                     <SecondaryButton>Edit</SecondaryButton>

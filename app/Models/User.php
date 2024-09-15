@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -38,6 +39,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'karma',
         'team_id',
     ];
 
@@ -128,6 +130,17 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Lesson::class)->withPivot('participation')
             ->withTimestamps()->wherePivot('participation', '=', LessonParticipationEnum::TEACHER->value);
+    }
+
+    public function compensationLessons(): BelongsToMany
+    {
+        $courses = Course::where('id', 'in', function (Builder $query) {
+            $query->select('compensation_id')
+            ->from('compensations')
+            ->whereColumn('original_id', '=', 'courses.id');
+        })->get();
+        dd($courses);
+        return $courses;
     }
 
     public function courses(): BelongsToMany

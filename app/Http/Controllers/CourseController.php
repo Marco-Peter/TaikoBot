@@ -73,6 +73,7 @@ class CourseController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'string',
             'capacity' => 'integer|min:1',
+            'signout_limit' => 'integer|min:0',
             'teams.*' => 'integer',
         ]);
 
@@ -127,13 +128,21 @@ class CourseController extends Controller
             'material:id,course_id,path,name,external,notes',
         ]);
 
-        $team = Team::with([
+        $teams = Team::with([
             'users:id,first_name,last_name,team_id',
         ])->get(['id', 'name']);
 
+        $compCourses = Course::all([
+            'id', 'name'
+        ]);
+
+        $compCoursesSelected = $course->compensations;
+
         return Inertia::render('Course/Edit', [
             'course' => $course,
-            'teams' => $team,
+            'teams' => $teams,
+            'compCourses' => $compCourses,
+            'compCoursesSelected' => $compCoursesSelected,
         ]);
     }
 
@@ -148,6 +157,7 @@ class CourseController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'string',
             'capacity' => 'integer|min:1',
+            'signout_limit' => 'integer|min:0',
             'teams.*' => 'integer',
         ]);
 
@@ -249,6 +259,20 @@ class CourseController extends Controller
         )->detach($course->lessons);
         $user->courses()->detach($course->id);
 
+        return back();
+    }
+
+    public function addCompensationCourse(Request $request, Course $course): RedirectResponse
+    {
+        $compCourse = Course::find($request->compCourse);
+        $course->compensations()->attach($compCourse);
+        return back();
+    }
+
+    public function removeCompensationCourse(Request $request, Course $course): RedirectResponse
+    {
+        $compCourse = Course::find($request->compCourse);
+        $course->compensations()->detach($compCourse);
         return back();
     }
 

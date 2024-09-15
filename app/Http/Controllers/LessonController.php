@@ -7,6 +7,7 @@ use App\Enums\UserRoleEnum;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -101,7 +102,7 @@ class LessonController extends Controller
         ]);
 
         $lesson->update($validated);
-        foreach($lesson->participants as $participant) {
+        foreach ($lesson->participants as $participant) {
             $participant->pivot->setReminder();
         }
         return redirect(route('courses.edit', $lesson->course));
@@ -120,7 +121,13 @@ class LessonController extends Controller
 
     public function signOut(Request $request, Lesson $lesson): RedirectResponse
     {
-        Auth::user()->lessons()->updateExistingPivot($lesson->id, [
+        $user = Auth::user();
+
+        if ($user->karma !== null && $lesson->start > Carbon::now()->addHours($lesson->course->signout_limit)) {
+            $user->karma++;
+            $user->save();
+        }
+        $user->lessons()->updateExistingPivot($lesson->id, [
             'participation' => LessonParticipationEnum::SIGNED_OUT->value,
             'message' => $request->message,
         ]);
@@ -129,10 +136,37 @@ class LessonController extends Controller
 
     public function signIn(Request $request, Lesson $lesson): RedirectResponse
     {
-        Auth::user()->lessons()->updateExistingPivot($lesson->id, [
-            'participation' => LessonParticipationEnum::SIGNED_IN->value,
-            'message' => $request->message,
-        ]);
+        $user = Auth::user();
+        if (
+            $user->karma !== 0 &&
+            $lesson->course->capacity - $lesson->students()
+            ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
+        ) {
+            $user->lessons()->updateExistingPivot($lesson->id, [
+                'participation' => LessonParticipationEnum::SIGNED_IN->value,
+                'message' => $request->message,
+            ]);
+            if ($user->karma !== null) {
+                $user->karma--;
+                $user->save();
+            }
+        }
+        return back();
+    }
+
+    public function compensate(Request $request, Lesson $lesson): RedirectResponse
+    {
+        $user = Auth::user();
+
+        if ($user->karma !== 0 && $lesson->course->capacity - $lesson->students()->count() > 0) {
+            $user->lessons()->attach($lesson, [
+                'message' => $request->message,
+            ]);
+            if ($user->karma !== null) {
+                $user->karma--;
+                $user->save();
+            }
+        }
         return back();
     }
 

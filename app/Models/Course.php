@@ -16,12 +16,14 @@ class Course extends Model
         'name',
         'description',
         'capacity',
+        'signout_limit',
     ];
 
     protected $attributes = [
         'name' => '',
         'description' => '',
         'capacity' => 0,
+        'signout_limit' => 0,
     ];
 
     /**
@@ -33,9 +35,15 @@ class Course extends Model
     }
 
     /* Contains courses, which can be used for compensation */
-    public function compensation(): BelongsToMany
+    public function compensations(): BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'compensations', 'original_id', 'compensation_id');
+    }
+
+    /* Contains courses for which this course can be used as compensation */
+    public function originals(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'compensations', 'compensation_id', 'original_id');
     }
 
     public function lessons(): HasMany

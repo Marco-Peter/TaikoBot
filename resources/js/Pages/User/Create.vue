@@ -14,6 +14,7 @@ const form = useForm({
     last_name: '',
     email: '',
     role: '',
+    karma: '0',
     team_id: '',
 });
 
@@ -53,6 +54,10 @@ const submit = () => {
                             <option v-for="role in roles" :value="role">{{ role }}</option>
                         </select>
                         <InputError :message="form.errors.role" class="mt-2" />
+
+                        <InputLabel for="karma" value="Karma" class="mt-3" />
+                        <TextInput id="karma" v-model="form.karma" type="number" class="mt-1 block w-full" />
+                        <InputError :message="form.errors.karma" class="mt-2" />
 
                         <InputLabel for="team" value="Team" class="mt-3" />
                         <p>

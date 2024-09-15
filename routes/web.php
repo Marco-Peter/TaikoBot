@@ -59,12 +59,15 @@ Route::middleware([
     Route::post('courses/{course}/removeParticipant', [CourseController::class, 'removeParticipant'])->name('courses.removeParticipant');
     Route::post('courses/{course}/addParticipant', [CourseController::class, 'addParticipant'])->name('courses.addParticipant');
     Route::post('courses/{course}/upload-material', [CourseController::class, 'uploadMaterial'])->name('courses.uploadMaterial');
+    Route::post('courses/{course}/removeCompCourse', [CourseController::class, 'removeCompensationCourse'])->name('courses.removeCompCourse');
+    Route::post('courses/{course}/addCompCourse', [CourseController::class, 'addCompensationCourse'])->name('courses.addCompCourse');
     Route::get('courses/download-material/{courseMaterial}', [CourseController::class, 'downloadMaterial'])->name('courses.downloadMaterial');
     Route::post('courses/{course}/delete-material', [CourseController::class, 'deleteMaterial'])->name('courses.deleteMaterial');
     Route::resource('courses', CourseController::class);
 
     Route::post('lessons/{lesson}/signout', [LessonController::class, 'signOut'])->name('lessons.signout');
     Route::post('lessons/{lesson}/signin', [LessonController::class, 'signIn'])->name('lessons.signin');
+    Route::post('lessons/{lesson}/compensate', [LessonController::class, 'compensate'])->name('lessons.compensate');
     Route::post('lessons/{lesson}/send-message', [LessonController::class, 'sendMessage'])->name('lessons.sendMessage');
     Route::post('lessons/{lesson}/add-teacher', [LessonController::class, 'addTeacher'])->name('lessons.addTeacher');
     Route::post('lessons/{lesson}/remove-teacher', [LessonController::class, 'removeTeacher'])->name('lessons.removeTeacher');
