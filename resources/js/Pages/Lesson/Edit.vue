@@ -36,6 +36,11 @@ function removeTeacher(teacher) {
     }
 }
 
+function setExcused(participant) {
+    router.post(route('lessons.setExcused', props.lesson.id),
+        { 'participant': participant.id }, { preserveScroll: true });
+}
+
 function setLate(participant) {
     router.post(route('lessons.setLate', props.lesson.id),
         { 'participant': participant.id }, { preserveScroll: true });
@@ -104,7 +109,8 @@ function setNoShow(participant) {
                         {{ participant.message }}
                     </div>
                     <div v-if="participant.pivot.participation === 'signed_in'" class="mt-2">
-                        <SecondaryButton @click="setLate(participant)">Late</SecondaryButton>
+                        <SecondaryButton @click="setExcused(participant)">Excused</SecondaryButton>
+                        <SecondaryButton class="ml-3" @click="setLate(participant)">Late</SecondaryButton>
                         <SecondaryButton class="ml-3" @click="setNoShow(participant)">No Show</SecondaryButton>
                     </div>
                     <div v-else-if="participant.pivot.participation === 'late'">

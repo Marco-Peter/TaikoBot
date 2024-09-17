@@ -158,7 +158,9 @@ class LessonController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->karma !== 0 && $lesson->course->capacity - $lesson->students()->count() > 0) {
+        if ($user->karma !== 0 && $lesson->course->capacity - $lesson->students()
+            ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
+        ) {
             $user->lessons()->attach($lesson, [
                 'message' => $request->message,
             ]);
@@ -204,6 +206,14 @@ class LessonController extends Controller
             $lesson->participants()->detach($teacher);
         }
 
+        return back();
+    }
+
+    public function setExcused(Request $request, Lesson $lesson): RedirectResponse
+    {
+        $participant = User::find($request->participant);
+        $lesson->participants()
+            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::SIGNED_OUT->value]);
         return back();
     }
 
