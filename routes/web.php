@@ -36,10 +36,16 @@ Route::get('/scheduler', function () {
     return response("Calling Scheduler: $res");
 });
 
-Route::get('/remindUsers', function() {
+Route::get('/remindUsers', function () {
     $rc = Artisan::call('app:remind-users');
     $res = $rc == 0 ? "Success" : "Failed";
     return response("Reminding users: $res");
+});
+
+Route::get('/cancelWaitlist', function () {
+    $rc = Artisan::call('app:cancel-waitlist');
+    $res = $rc == 0 ? "Success" : "Failed";
+    return response("Clearing waitlists: $res");
 });
 
 Route::middleware([
@@ -76,6 +82,5 @@ Route::middleware([
     Route::post('lessons/{lesson}/set-noshow', [LessonController::class, 'setNoShow'])->name('lessons.setNoShow');
     Route::resource('lessons', LessonController::class);
 
-    Route::put('/user/settings', [UserSettingsController::class, 'update'])
-    ->name('user-settings.update');
+    Route::put('/user/settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
 });

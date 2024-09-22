@@ -250,7 +250,13 @@ if (isPushNotificationSupported()) {
                                             day: "2-digit",
                                             hour: "2-digit",
                                             minute: "2-digit",
-                                        }) }}</h3>
+                                        }) }}
+                                    <span v-if="lesson.pivot && lesson.pivot.participation === 'waitlist'">(on
+                                        waitlist)</span>
+                                </h3>
+                                <span v-if="lesson.pivot && lesson.pivot.participation === 'waitlist'">You will be
+                                    notified as
+                                    soon as your space gets available</span>
                                 <p>{{ lesson.title }} of {{ lesson.course.name }}</p>
                                 <p v-for="teacher in lesson.teachers" :key="teacher.id" class="italic">{{
                                     teacher.first_name
@@ -259,18 +265,18 @@ if (isPushNotificationSupported()) {
                                     lesson.participants_count }} spaces free).</p>
                             </div>
                             <SecondaryButton class="my-2 mr-2" v-if="lesson.pivot === undefined"
-                                @click="compensate(lesson)"
-                                :disabled="lesson.course.capacity - lesson.participants_count <= 0">
-                                Compensate</SecondaryButton>
-                            <DangerButton class="my-2 mr-2" v-else-if="lesson.pivot.participation === 'signed_in'"
-                                @click="signOut(lesson)">
-                                Sign Out</DangerButton>
-                            <SecondaryButton class="my-2 mr-2" v-else-if="lesson.pivot.participation === 'signed_out'"
-                                @click="signIn(lesson)">
-                                Sign In</SecondaryButton>
-                            <SecondaryButton class="mr-2" v-if="lesson.pivot !== undefined"
-                                @click="sendMessage(lesson)">Send
-                                Message</SecondaryButton>
+                                @click="compensate(lesson)">
+                                {{ lesson.course.capacity - lesson.participants_count <= 0 ? 'Compensate (Waitlist)'
+                                    : 'Compensate' }}</SecondaryButton>
+                                    <DangerButton class="my-2 mr-2"
+                                        v-else-if="lesson.pivot.participation === 'signed_in' || lesson.pivot.participation === 'waitlist'" @click="signOut(lesson)">
+                                        Sign Out</DangerButton>
+                                    <SecondaryButton class="my-2 mr-2"
+                                        v-else-if="lesson.pivot.participation === 'signed_out'" @click="signIn(lesson)">
+                                        Sign In</SecondaryButton>
+                                    <SecondaryButton class="mr-2" v-if="lesson.pivot !== undefined"
+                                        @click="sendMessage(lesson)">Send
+                                        Message</SecondaryButton>
                         </div>
                     </div>
                 </div>

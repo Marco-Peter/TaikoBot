@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\CancelWaitlist;
 use App\Console\Commands\RemindUsers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -14,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command(RemindUsers::class)->hourly();
+        $schedule->command(CancelWaitlist::class)->hourly();
     }
 
     /**

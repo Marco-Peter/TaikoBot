@@ -113,6 +113,9 @@ function setNoShow(participant) {
                         <SecondaryButton class="ml-3" @click="setLate(participant)">Late</SecondaryButton>
                         <SecondaryButton class="ml-3" @click="setNoShow(participant)">No Show</SecondaryButton>
                     </div>
+                    <div v-else-if="participant.pivot.participation === 'waitlist'">
+                        On Waitlist
+                    </div>
                     <div v-else-if="participant.pivot.participation === 'late'">
                         Was late
                     </div>

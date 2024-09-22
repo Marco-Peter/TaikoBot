@@ -5,15 +5,16 @@ import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm, usePage } from '@inertiajs/vue3';
 
 const props = defineProps({ teams: Object });
 
+const page = usePage();
 const form = useForm({
     name: '',
     description: '',
     capacity: '10',
-    signout_limit: '7',
+    signout_limit: page.props.env.app.taikokarmaSignoutLimit,
     teams: [],
 });
 

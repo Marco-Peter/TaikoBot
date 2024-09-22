@@ -7,6 +7,7 @@ use App\Enums\UserRoleEnum;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\User;
+use App\Notifications\LessonConfirmed;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -122,15 +123,7 @@ class LessonController extends Controller
     public function signOut(Request $request, Lesson $lesson): RedirectResponse
     {
         $user = Auth::user();
-
-        if ($user->karma !== null && $lesson->start > Carbon::now()->addHours($lesson->course->signout_limit)) {
-            $user->karma++;
-            $user->save();
-        }
-        $user->lessons()->updateExistingPivot($lesson->id, [
-            'participation' => LessonParticipationEnum::SIGNED_OUT->value,
-            'message' => $request->message,
-        ]);
+        $this->signOutParticipant($user, $lesson, $request->message);
         return back();
     }
 
@@ -142,14 +135,19 @@ class LessonController extends Controller
             $lesson->course->capacity - $lesson->students()
             ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
         ) {
-            $user->lessons()->updateExistingPivot($lesson->id, [
-                'participation' => LessonParticipationEnum::SIGNED_IN->value,
-                'message' => $request->message,
-            ]);
-            if ($user->karma !== null) {
-                $user->karma--;
-                $user->save();
-            }
+            $participation = LessonParticipationEnum::SIGNED_IN;
+        } else {
+            $participation = LessonParticipationEnum::WAITLIST;
+        }
+
+        $user->lessons()->updateExistingPivot($lesson->id, [
+            'participation' => $participation,
+            'message' => $request->message,
+        ]);
+
+        if ($user->karma !== null) {
+            $user->karma--;
+            $user->save();
         }
         return back();
     }
@@ -158,16 +156,23 @@ class LessonController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->karma !== 0 && $lesson->course->capacity - $lesson->students()
+        if (
+            $user->karma !== 0 && $lesson->course->capacity - $lesson->students()
             ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
         ) {
-            $user->lessons()->attach($lesson, [
-                'message' => $request->message,
-            ]);
-            if ($user->karma !== null) {
-                $user->karma--;
-                $user->save();
-            }
+            $participation = LessonParticipationEnum::SIGNED_IN;
+        } else {
+            $participation = LessonParticipationEnum::WAITLIST;
+        }
+
+        $user->lessons()->attach($lesson, [
+            'message' => $request->message,
+            'participation' => $participation,
+        ]);
+
+        if ($user->karma !== null) {
+            $user->karma--;
+            $user->save();
         }
         return back();
     }
@@ -212,8 +217,7 @@ class LessonController extends Controller
     public function setExcused(Request $request, Lesson $lesson): RedirectResponse
     {
         $participant = User::find($request->participant);
-        $lesson->participants()
-            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::SIGNED_OUT->value]);
+        $this->signOutParticipant($participant, $lesson, $request->message);
         return back();
     }
 
@@ -231,5 +235,36 @@ class LessonController extends Controller
         $lesson->participants()
             ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::NO_SHOW->value]);
         return back();
+    }
+
+    private function signOutParticipant(User $user, Lesson $lesson, $message)
+    {
+        if (
+            $user->karma !== null &&
+            ($user->lessons()->where('id', $lesson->id)->first()->pivot->participation === LessonParticipationEnum::WAITLIST ||
+                $lesson->start > Carbon::now()->addHours($lesson->course->signout_limit))
+        ) {
+            $user->karma++;
+            $user->save();
+        }
+
+        $user->lessons()->updateExistingPivot($lesson->id, [
+            'participation' => LessonParticipationEnum::SIGNED_OUT->value,
+            'message' => $message,
+        ]);
+        $this->checkWaitlist($lesson);
+    }
+
+    private function checkWaitlist(Lesson $lesson)
+    {
+        $nextInLine = $lesson->participants()
+            ->wherePivot('participation', LessonParticipationEnum::WAITLIST)
+            ->orderByPivot('created_at', 'asc')->first();
+        if ($nextInLine) {
+            $lesson->participants()->updateExistingPivot($nextInLine->id, [
+                'participation' => LessonParticipationEnum::SIGNED_IN,
+            ]);
+        }
+        $nextInLine->notify(new LessonConfirmed($lesson));
     }
 }

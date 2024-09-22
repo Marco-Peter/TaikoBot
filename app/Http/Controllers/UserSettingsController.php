@@ -19,11 +19,13 @@ class UserSettingsController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'lessonNotificationTime' => 'required|numeric',
+            'lessonNotificationTime' => 'required|numeric|min:0',
+            'waitlistCancelTime' => 'required|numeric|min:0'
         ]);
 
         $settings = $user->settings;
         $settings['lessonNotificationTime'] = $validated['lessonNotificationTime'];
+        $settings['waitlistCancelTime'] = $validated['waitlistCancelTime'];
         $user->settings = $settings;
         $user->save();
 

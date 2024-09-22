@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\LessonParticipationEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -35,6 +36,10 @@ class LessonUser extends Pivot
         'remind_at',
         'participation',
         'message',
+    ];
+
+    protected $casts = [
+        'participation' => LessonParticipationEnum::class,
     ];
 
     protected static function booted(): void

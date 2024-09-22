@@ -24,6 +24,10 @@ enum LessonParticipationEnum: string
      * Did not show up to the lesson
      */
     case NO_SHOW = 'no_show';
+    /**
+     * Waiting for a free space in the lesson
+     */
+    case WAITLIST = 'waitlist';
 
     public static function values(): array
     {

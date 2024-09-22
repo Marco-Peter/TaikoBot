@@ -40,6 +40,8 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth.canEditUsers' => Gate::allows('edit-users'),
             'auth.canEditCourses' => Gate::allows('edit-courses'),
+            'env.app.taikokarmaSignoutLimit' => env('APP_TAIKOKARMA_SIGNOUT_LIMIT', '7'),
+            'env.app.waitlistAutocancelTime' => env('APP_WAITLIST_AUTOCANCEL_TIME', '7'),
         ]);
     }
 }
