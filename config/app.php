@@ -73,6 +73,12 @@ return [
     'timezone' => 'UTC',
 
     /*
+    | Default timezone for display and notification purposes
+    */
+
+    'timezone_default' => env('APP_DEFAULT_TIMEZONE', 'Europe/Zurich'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------

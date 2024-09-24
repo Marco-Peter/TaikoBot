@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\LessonParticipationEnum;
 use App\Models\Course;
 use App\Models\CourseMaterial;
+use App\Models\Lesson;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -97,6 +98,11 @@ class CourseController extends Controller
             },
         ])->loadCount('participants');
 
+        $course->lessons->each(function (Lesson $lesson, int $key) {
+            $lesson->start->inApplicationTz();
+            $lesson->finish->inApplicationTz();
+        });
+
         $signedIn = $course->participants->contains(Auth::user());
         if ($signedIn) {
             $course->load([
@@ -133,7 +139,8 @@ class CourseController extends Controller
         ])->get(['id', 'name']);
 
         $compCourses = Course::all([
-            'id', 'name'
+            'id',
+            'name'
         ]);
 
         $compCoursesSelected = $course->compensations;

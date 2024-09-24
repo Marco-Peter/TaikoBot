@@ -38,18 +38,18 @@ class RemindUsers extends Command
     {
         Log::info("Reminding teachers and students");
         $reminders = LessonUser::where('participation', LessonParticipationEnum::TEACHER)
-            ->where('remind_at', '<', now(config('timezone')))->get();
+            ->where('remind_at', '<', now())->get();
         foreach ($reminders as $reminder) {
             $reminder->user->notify(new RemindTeachingLesson($reminder->lesson));
         }
 
         $reminders = LessonUser::where('participation', LessonParticipationEnum::SIGNED_IN)
-            ->where('remind_at', '<', now(config('timezone')))->get();
+            ->where('remind_at', '<', now())->get();
         foreach ($reminders as $reminder) {
             $reminder->user->notify(new RemindLesson($reminder->lesson));
         }
 
-        LessonUser::where('remind_at', '<', now(config('timezone')))
+        LessonUser::where('remind_at', '<', now())
             ->update(['remind_at' => null,]);
     }
 }

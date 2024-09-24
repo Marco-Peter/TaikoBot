@@ -21,16 +21,6 @@ class Lesson extends Model
         'notes',
     ];
 
-    public function getStartAttribute($value)
-    {
-        return (new Carbon($value))->format('Y-m-d H:i');
-    }
-
-    public function getFinishAttribute($value)
-    {
-        return (new Carbon($value))->format('Y-m-d H:i');
-    }
-
     public function participants(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot('participation')
@@ -40,7 +30,7 @@ class Lesson extends Model
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(User::class)->withPivot('participation')
-        ->wherePivot('participation', '<>', LessonParticipationEnum::TEACHER->value);
+            ->wherePivot('participation', '<>', LessonParticipationEnum::TEACHER->value);
     }
 
     public function teachers(): BelongsToMany
@@ -55,11 +45,8 @@ class Lesson extends Model
         return $this->belongsTo(Course::class);
     }
 
-    protected function casts(): array
-    {
-        return [
-            'start' => 'datetime',
-            'finish' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'start' => 'datetime',
+        'finish' => 'datetime',
+    ];
 }

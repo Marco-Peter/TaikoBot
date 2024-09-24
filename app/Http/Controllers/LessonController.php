@@ -9,6 +9,7 @@ use App\Models\Lesson;
 use App\Models\User;
 use App\Notifications\LessonConfirmed;
 use Carbon\Carbon;
+use DateTimeZone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +76,14 @@ class LessonController extends Controller
             ->get(['id', 'first_name', 'last_name', 'message']);
 
         return Inertia::render('Lesson/Edit', [
-            'lesson' => $lesson,
+            'lesson' => [
+                'id' => $lesson->id,
+                'course_id' => $lesson->course_id,
+                'title' => $lesson->title,
+                'start' => $lesson->start->startOfMinute()->inApplicationTz()->toDateTimeLocalString(),
+                'finish' => $lesson->finish->startOfMinute()->inApplicationTz()->toDateTimeLocalString(),
+                'notes' => $lesson->notes,
+            ],
             'participants' => $participants,
             'lessonteachers' => $teachers,
             'teachers' => User::where('role', UserRoleEnum::TEACHER->value)
@@ -102,7 +110,12 @@ class LessonController extends Controller
             'notes' => 'string',
         ]);
 
-        $lesson->update($validated);
+        $lesson->title = $validated['title'];
+        $lesson->start = Carbon::parse($validated['start'], config('app.timezone_default'))->setTimezone('UTC');
+        $lesson->finish = Carbon::parse($validated['finish'], config('app.timezone_default'))->setTimezone('UTC');
+        $lesson->notes = $validated['notes'];
+        $lesson->save();
+
         foreach ($lesson->participants as $participant) {
             $participant->pivot->setReminder();
         }

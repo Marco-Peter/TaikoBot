@@ -41,7 +41,7 @@ class CancelWaitlist extends Command
         Log::info("Canceling waitlist entries");
         $allEntries = LessonUser::where('participation', LessonParticipationEnum::WAITLIST)->get();
         foreach ($allEntries as $entry) {
-            $startTime = Carbon::parse($entry->lesson->start, env('APP_TIMEZONE', 'UTC'));
+            $startTime = $entry->lesson->start->inApplicationTz();
             $cancelHours = $entry->user->settings ?
                 $entry->user->settings['waitlistCancelTime'] :
                 env('APP_WAITLIST_AUTOCANCEL_TIME', '7');

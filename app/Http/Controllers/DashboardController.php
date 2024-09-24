@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\LessonParticipationEnum;
+use App\Models\Course;
 use App\Models\Lesson;
 use Carbon\Carbon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -65,6 +66,11 @@ class DashboardController extends Controller
             $studentLessons = $studentLessons->merge($compensationLessons)->sortBy('start')->values();
         }
 
+        $studentLessons->each(function (Lesson $lesson, int $key) {
+            $lesson->start->inApplicationTz();
+            $lesson->finish->inApplicationTz();
+        });
+
         $teacherLessons = $user->teacherLessons()
             ->with([
                 'course:id,name',
@@ -75,6 +81,11 @@ class DashboardController extends Controller
             ->where('start', '>', Carbon::now()->subDays(3)->toDateString())
             ->oldest('start')->get();
 
+        $teacherLessons->each(function (Lesson $lesson, int $key) {
+            $lesson->start->inApplicationTz();
+            $lesson->finish->inApplicationTz();
+        });
+
         if ($user->team) {
             $coursesNotSignedUp = $user->team->courses->diff($user->courses)
                 ->where('firstLesson.start', '>', Carbon::now()->toDateString())
@@ -83,6 +94,11 @@ class DashboardController extends Controller
                     'firstLesson:course_id,start',
                     'lastLesson:course_id,finish',
                 ])->loadCount('participants');
+
+            $coursesNotSignedUp->each(function (Course $course, int $key) {
+                $course->firstLesson->start->inApplicationTz();
+                $course->lastLesson->finish->inApplicationTz();
+            });
             $greeting = '';
         } else {
             $coursesNotSignedUp = new Collection();
@@ -96,6 +112,11 @@ class DashboardController extends Controller
                 'firstLesson:course_id,start',
                 'lastLesson:course_id,finish',
             ]);
+
+        $coursesSignedUp->each(function (Course $course, int $key) {
+            $course->firstLesson->start->inApplicationTz();
+            $course->lastLesson->finish->inApplicationTz();
+        });
 
         $coursesSignedUp->setHidden(['description', 'created_at', 'updated_at', 'pivot']);
         $coursesNotSignedUp->setHidden(['description', 'created_at', 'updated_at', 'pivot']);

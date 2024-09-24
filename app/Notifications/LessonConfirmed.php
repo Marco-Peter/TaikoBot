@@ -39,7 +39,7 @@ class LessonConfirmed extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $url = url(route('dashboard'));
-        $ds = Carbon::parse($this->lesson->start)->format('l, j. M y, G:i');
+        $ds = $this->lesson->start->inApplicationTz()->format('l, j. M y, G:i');
 
         return (new MailMessage)
             ->subject("Lesson Confirmed")
@@ -52,7 +52,7 @@ class LessonConfirmed extends Notification
     public function toWebPush(object $notifiable): WebPushMessage
     {
         $url = url(route('dashboard'));
-        $ds = Carbon::parse($this->lesson->start)->format('l, j. M y, G:i');
+        $ds = $this->lesson->start->inApplicationTz()->format('l, j. M y, G:i');
 
         return (new WebPushMessage)
             /* No actions for now...
