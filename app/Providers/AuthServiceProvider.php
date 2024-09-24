@@ -33,5 +33,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('edit-courses', function (User $user) {
             return $user->role === UserRoleEnum::ADMIN || $user->role === UserRoleEnum::TEACHER;
         });
+
+        Gate::define('assist-lessons', function (User $user) {
+            return $user->role === UserRoleEnum::ADMIN || $user->role === UserRoleEnum::TEACHER;
+        });
     }
 }

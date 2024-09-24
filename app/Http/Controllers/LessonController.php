@@ -190,6 +190,26 @@ class LessonController extends Controller
         return back();
     }
 
+    public function assist(Request $request, Lesson $lesson): RedirectResponse
+    {
+        Gate::authorize('assist-lessons');
+
+        $assistant = Auth::user();
+
+        if ($assistant->hasSignedInToLesson($lesson)) {
+            $lesson->participants()->updateExistingPivot($assistant, [
+                'participation' => LessonParticipationEnum::ASSISTANCE,
+                'message' => $request->message,
+            ]);
+        } else {
+            $lesson->participants()->attach($assistant, [
+                'participation' => LessonParticipationEnum::ASSISTANCE,
+                'message' => $request->message,
+            ]);
+        }
+        return back();
+    }
+
     public function sendMessage(Request $request, Lesson $lesson): RedirectResponse
     {
         Auth::user()->lessons()->updateExistingPivot($lesson->id, [
@@ -277,7 +297,7 @@ class LessonController extends Controller
             $lesson->participants()->updateExistingPivot($nextInLine->id, [
                 'participation' => LessonParticipationEnum::SIGNED_IN,
             ]);
+            $nextInLine->notify(new LessonConfirmed($lesson));
         }
-        $nextInLine->notify(new LessonConfirmed($lesson));
     }
 }

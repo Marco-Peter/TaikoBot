@@ -17,6 +17,10 @@ enum LessonParticipationEnum: string
      */
     case TEACHER = 'teacher';
     /**
+     * Helping hand for the Teacher
+     */
+    case ASSISTANCE = 'assistance';
+    /**
      * Showed up late to the lesson
      */
     case LATE = 'late';

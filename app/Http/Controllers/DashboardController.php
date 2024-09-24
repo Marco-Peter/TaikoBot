@@ -62,7 +62,7 @@ class DashboardController extends Controller
                         });
                 })
                 ->where('start', '>', Carbon::now()->toDateString())
-                ->oldest('start')->limit(5)->get();
+                ->oldest('start')->get();
             $studentLessons = $studentLessons->merge($compensationLessons)->sortBy('start')->values();
         }
 

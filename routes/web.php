@@ -74,6 +74,7 @@ Route::middleware([
     Route::post('lessons/{lesson}/signout', [LessonController::class, 'signOut'])->name('lessons.signout');
     Route::post('lessons/{lesson}/signin', [LessonController::class, 'signIn'])->name('lessons.signin');
     Route::post('lessons/{lesson}/compensate', [LessonController::class, 'compensate'])->name('lessons.compensate');
+    Route::post('lessons/{lesson}/assist', [LessonController::class, 'assist'])->name('lessons.assist');
     Route::post('lessons/{lesson}/send-message', [LessonController::class, 'sendMessage'])->name('lessons.sendMessage');
     Route::post('lessons/{lesson}/add-teacher', [LessonController::class, 'addTeacher'])->name('lessons.addTeacher');
     Route::post('lessons/{lesson}/remove-teacher', [LessonController::class, 'removeTeacher'])->name('lessons.removeTeacher');

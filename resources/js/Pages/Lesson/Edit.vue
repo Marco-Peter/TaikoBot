@@ -104,6 +104,7 @@ function setNoShow(participant) {
                     <div class="font-bold text-lg"
                         :class="participant.pivot.participation == 'signed_out' ? 'line-through' : ''">
                         <h3>{{ participant.first_name }} {{ participant.last_name }}</h3>
+                        <p v-if="participant.pivot.participation === 'assistance'">Assistant</p>
                     </div>
                     <div>
                         {{ participant.message }}
