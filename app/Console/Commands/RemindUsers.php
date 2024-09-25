@@ -37,8 +37,10 @@ class RemindUsers extends Command
     public function handle()
     {
         Log::info("Reminding teachers and students");
-        $reminders = LessonUser::where('participation', LessonParticipationEnum::TEACHER)
-            ->where('remind_at', '<', now())->get();
+        $reminders = LessonUser::whereIn('participation', [
+            LessonParticipationEnum::TEACHER,
+            LessonParticipationEnum::ASSISTANCE,
+        ])->where('remind_at', '<', now())->get();
         foreach ($reminders as $reminder) {
             $reminder->user->notify(new RemindTeachingLesson($reminder->lesson));
         }
