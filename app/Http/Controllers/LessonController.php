@@ -22,6 +22,7 @@ class LessonController extends Controller
     protected $only = [
         'create',
         'store',
+        'show',
         'edit',
         'update',
         'destroy',
@@ -59,6 +60,46 @@ class LessonController extends Controller
         $lesson->participants()->attach($course->participants);
 
         return redirect(route('lessons.edit', $lesson));
+    }
+
+
+    /**
+     * Show the specified resource.
+     */
+    public function show(Lesson $lesson): Response
+    {
+        $lessondata = [
+            'id' => $lesson->id,
+            'course_id' => $lesson->course_id,
+            'title' => $lesson->title,
+            'start' => $lesson->start->startOfMinute()->inApplicationTz()->toDateTimeLocalString(),
+            'finish' => $lesson->finish->startOfMinute()->inApplicationTz()->toDateTimeLocalString(),
+        ];
+
+        if (Gate::check('edit-courses')) {
+            $lessondata['notes'] = $lesson->notes;
+        }
+
+        $participants = $lesson->participants()
+            ->wherePivotIn('participation', [
+                LessonParticipationEnum::SIGNED_IN,
+                LessonParticipationEnum::LATE,
+                LessonParticipationEnum::ASSISTANCE,
+            ])
+            ->orderBy('first_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get(['id', 'profile_photo_path', 'first_name', 'last_name', 'participation', 'message']);
+        $teachers = $lesson->participants()
+            ->wherePivot('participation', LessonParticipationEnum::TEACHER)
+            ->orderBy('first_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get(['id', 'profile_photo_path', 'first_name', 'last_name', 'message']);
+
+        return Inertia::render('Lesson/Show', [
+            'lesson' => $lessondata,
+            'participants' => $participants,
+            'lessonteachers' => $teachers,
+        ]);
     }
 
     /**

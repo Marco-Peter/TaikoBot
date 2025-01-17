@@ -274,6 +274,9 @@ if (isPushNotificationSupported()) {
                                 <p>{{ lesson.participants_count }} students signed in ({{ lesson.course.capacity -
                                     lesson.participants_count }} spaces free).</p>
                             </div>
+                            <Link :href="route('lessons.show', [lesson.id])">
+                            <SecondaryButton class="my-2 mr-2">Details</SecondaryButton>
+                            </Link>
                             <SecondaryButton class="my-2 mr-2" v-if="page.props.auth.canAssistLessons &&
                                 (lesson.pivot === undefined || lesson.pivot.participation === 'signed_out')"
                                 @click="assist(lesson)">Assist</SecondaryButton>
