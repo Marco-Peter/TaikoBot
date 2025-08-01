@@ -56,7 +56,13 @@ class LessonController extends Controller
         ]);
 
         $course = Course::find($validated['id']);
-        $lesson = $course->lessons()->save(new Lesson($validated));
+        $lesson = new Lesson();
+        $lesson->title = $validated['title'];
+        $lesson->start = Carbon::parse($validated['start'], config('app.timezone_default'))->setTimezone('UTC');
+        $lesson->finish = Carbon::parse($validated['finish'], config('app.timezone_default'))->setTimezone('UTC');
+        $lesson->notes = $validated['notes'];
+        $course->lessons()->save($lesson);
+
         $lesson->participants()->attach($course->participants);
 
         return redirect(route('lessons.edit', $lesson));
