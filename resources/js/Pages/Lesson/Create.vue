@@ -6,6 +6,7 @@ import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const props = defineProps({ course_id: String });
 
@@ -17,7 +18,13 @@ const form = useForm({
     id: props.course_id,
 });
 
+const dateVal = defineModel('dateVal');
+const startVal = defineModel('startVal');
+const endVal = defineModel('endVal');
+
 const submit = () => {
+    form.start = dateVal.value + "T" + startVal.value;
+    form.finish = dateVal.value + "T" + endVal.value;
     form.post(route("lessons.store"));
 }
 </script>
@@ -38,12 +45,15 @@ const submit = () => {
                         <TextInput id="title" v-model="form.title" type="text" class="mt-1 block w-full" />
                         <InputError :message="form.errors.title" class="mt-2" />
 
+                        <InputLabel for="date" value="Date" />
+                        <TextInput id="date" v-model="dateVal" type="date" class="mt-1 block w-full" />
+
                         <InputLabel for="start" value="Start" />
-                        <TextInput id="start" v-model="form.start" type="datetime-local" class="mt-1 block w-full" />
+                        <TextInput id="start" v-model="startVal" type="time" class="mt-1 block w-full" />
                         <InputError :message="form.errors.start" class="mt-2" />
 
                         <InputLabel for="finish" value="Finish" />
-                        <TextInput id="finish" v-model="form.finish" type="datetime-local" class="mt-1 block w-full" />
+                        <TextInput id="finish" v-model="endVal" type="time" class="mt-1 block w-full" />
                         <InputError :message="form.errors.finish" class="mt-2" />
 
                         <div class="col-span-6 sm:col-span-4">
