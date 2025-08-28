@@ -79,6 +79,7 @@ Route::middleware([
     Route::post('lessons/{lesson}/add-teacher', [LessonController::class, 'addTeacher'])->name('lessons.addTeacher');
     Route::post('lessons/{lesson}/set-teacher', [LessonController::class, 'setTeacher'])->name('lessons.setTeacher');
     Route::post('lessons/{lesson}/remove-teacher', [LessonController::class, 'removeTeacher'])->name('lessons.removeTeacher');
+    Route::post('lessons/{lesson}/set-signed-in', [LessonController::class, 'setSignedIn'])->name('lessons.setSignedIn');
     Route::post('lessons/{lesson}/set-excused', [LessonController::class, 'setExcused'])->name('lessons.setExcused');
     Route::post('lessons/{lesson}/set-late', [LessonController::class, 'setLate'])->name('lessons.setLate');
     Route::post('lessons/{lesson}/set-noshow', [LessonController::class, 'setNoShow'])->name('lessons.setNoShow');
