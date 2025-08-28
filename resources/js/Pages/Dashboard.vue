@@ -131,7 +131,7 @@ if (isPushNotificationSupported()) {
 
         <div v-if="dashboardGreeting">
             <div class="py-3">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto px-2 px-2 sm:px-6 lg:px-8">
                     <div class="bg-white dark:bg-gray-800 overflow-hidden sm:rounded-lg">
                         <div class="w-full sm:max-w-2xl mt-6 p-6 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg prose dark:prose-invert"
                             v-html="dashboardGreeting" />
@@ -142,35 +142,32 @@ if (isPushNotificationSupported()) {
 
         <div v-else>
             <!-- Prompt for allowing push notifications -->
-            <div class="py-3 max-w-7xl mx-auto sm:px-6 lg:px-8" v-if="showSubscribeToPushNotificationsPropt">
+            <div class="py-3 max-w-7xl mx-auto px-2 px-2 sm:px-6 lg:px-8" v-if="showSubscribeToPushNotificationsPropt">
                 <p>Please subscribe for Push Notifications, so that you will be updated automatically.</p>
                 <SecondaryButton class="mt-5" @click="updatePushSubscription">Subscribe</SecondaryButton>
             </div>
 
             <!-- Available courses and workshop to sign up -->
             <div v-if="coursesNotSignedUp.length" class="py-3">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div class="overflow-hidden shadow-xl sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            Your Available Courses and Workshops
+                            Join up
                         </h2>
-                        <p>Looking for new challenges? Here you can sign up to new courses and workshops.</p>
-                        <div v-for="course in coursesNotSignedUp" class="my-3 px-4 py-2 bg-white dark:bg-gray-800">
+                        <p class="text-xs">Looking for new challenges? Here you can sign up to new courses and workshops.</p>
+                        <div v-for="course in coursesNotSignedUp" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
                             <h3 class="font-bold text-lg">{{ course.name }} ({{ course.capacity -
                                 course.participants_count }} places available)</h3>
-                            <p class="pb-2">From {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
-                                weekday: "long",
-                                month: "long",
-                                day: "2-digit",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                            }) }} to {{ new Date(course.last_lesson.finish).toLocaleString(undefined, {
-                                    weekday: "long",
-                                    month: "long",
-                                    day: "2-digit",
-                                })
-                                }}</p>
+                            <p class="pb-2">
+                                <span v-if="new Date(course.first_lesson.start).toDateString() === new Date(course.last_lesson.finish).toDateString()">
+                                    {{ new Date(course.first_lesson.start).toLocaleDateString() }}
+                                </span>
+                                <span v-else>
+                                    {{ new Date(course.first_lesson.start).toLocaleDateString() }}
+                                    &ndash;
+                                    {{ new Date(course.last_lesson.finish).toLocaleDateString() }}
+                                </span>
+                            </p>
                             <Link :href="route('courses.show', [course.id])">
                             <SecondaryButton>Details / Sign In</SecondaryButton>
                             </Link>
@@ -181,13 +178,13 @@ if (isPushNotificationSupported()) {
 
             <!-- List of the signed up courses and workshops -->
             <div v-if="coursesSignedUp.length" class="py-3">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div class="overflow-hidden sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            Your Signed Up Courses and Workshops
+                            You're signed up for
                         </h2>
-                        <p>Those are the courses and workshops you are signed up for. Looking forward to see you!</p>
-                        <div v-for="course in coursesSignedUp" class="my-3 px-4 py-2 bg-white dark:bg-gray-800">
+                        <p class="text-xs">These are the courses and workshops you are signed up for. Looking forward to see you!</p>
+                        <div v-for="course in coursesSignedUp" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
                             <h3 class="font-bold text-lg">{{ course.name }}</h3>
                             <p class="pb-2">
                                 <span v-if="new Date(course.first_lesson.start).toDateString() === new Date(course.last_lesson.finish).toDateString()">
@@ -209,13 +206,13 @@ if (isPushNotificationSupported()) {
 
             <!-- List of the upcoming teaching lessons -->
             <div v-if="teacherLessons.length" class="py-3">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div class="overflow-hidden sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            Your Teaching Lessons
+                            You're teaching
                         </h2>
-                        <p>Those are the lessons where you will be teaching. ありがとうございます!</p>
-                        <div v-for="lesson in teacherLessons" class="my-3 px-4 py-2 bg-white dark:bg-gray-800">
+                        <p class="text-xs">These are the lessons where you will be teaching. ありがとうございます!</p>
+                        <div v-for="lesson in teacherLessons" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
                             <div class="pb-2">
                                 <h3 class="font-bold text-lg">{{ new
                                     Date(lesson.start).toLocaleString(undefined, {
@@ -238,12 +235,13 @@ if (isPushNotificationSupported()) {
 
             <!-- List of the upcoming student lessons -->
             <div v-if="studentLessons.length" class="py-3">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div class="overflow-hidden sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            Your Next Lessons
+                            Coming up
                         </h2>
-                        <div v-for="lesson in studentLessons" class="my-3 px-4 py-2 bg-white dark:bg-gray-800"
+                        <p class="text-xs">These are your next lessons.</p>
+                        <div v-for="lesson in studentLessons" class="my-3 px-3 py-2 bg-white dark:bg-gray-800"
                             :class="lesson.pivot === undefined || lesson.pivot.participation === 'signed_out' ? 'text-gray-500' : ''">
                             <div class="pb-2">
                                 <h3 class="font-bold text-lg"
