@@ -68,21 +68,27 @@ function setNoShow(participant) {
         <!-- General Lesson Information -->
         <div class="pt-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg px-4 py-2">
                     <form @submit.prevent="submit">
                         <InputLabel for="title" value="Title" />
                         <TextInput id="title" v-model="form.title" type="text" class="mt-1 block w-full" />
                         <InputError :message="form.errors.title" class="mt-2" />
 
-                        <InputLabel for="start" value="Start" />
-                        <TextInput id="start" v-model="form.start" type="datetime-local" class="mt-1 block w-full" />
-                        <InputError :message="form.errors.start" class="mt-2" />
+                        <div class="mt-4 flex flex-row gap-2">
+                            <div>
+                                <InputLabel for="start" value="Start" />
+                                <TextInput id="start" v-model="form.start" type="datetime-local" class="mt-1 block w-full" />
+                                <InputError :message="form.errors.start" class="mt-2" />
+                            </div>
 
-                        <InputLabel for="finish" value="Finish" />
-                        <TextInput id="finish" v-model="form.finish" type="datetime-local" class="mt-1 block w-full" />
-                        <InputError :message="form.errors.finish" class="mt-2" />
+                            <div>
+                                <InputLabel for="finish" value="Finish" />
+                                <TextInput id="finish" v-model="form.finish" type="datetime-local" class="mt-1 block w-full" />
+                                <InputError :message="form.errors.finish" class="mt-2" />
+                            </div>
+                        </div>
 
-                        <div class="col-span-6 sm:col-span-4">
+                        <div class="col-span-6 sm:col-span-4 mt-4">
                             <InputLabel for="notes" value="Notes" />
                             <textarea id="notes" v-model="form.notes" cols="30" rows="10"
                                 placeholder="Private lesson notes, only visible for teachers"
@@ -90,10 +96,12 @@ function setNoShow(participant) {
                             <InputError :message="form.errors.notes" class="mt-2" />
                         </div>
 
-                        <PrimaryButton type="submit" class="mt-3">Submit</PrimaryButton>
-                        <Link :href="route('courses.edit', props.lesson.course_id)">
-                        <SecondaryButton>Back</SecondaryButton>
-                        </Link>
+                        <div class="flex flex-row gap-2 items-stretch mt-4">
+                            <PrimaryButton type="submit">Update Lesson</PrimaryButton>
+                            <Link :href="route('courses.edit', props.lesson.course_id)">
+                                <SecondaryButton>Discard Changes</SecondaryButton>
+                            </Link>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -150,7 +158,7 @@ function setNoShow(participant) {
                     </table>
                     <p v-else>No Teachers added</p>
 
-                    <div className="flex flex-row gap-2 mt-4">
+                    <div class="flex flex-row gap-2 mt-4">
                         <select v-model="newTeacher"
                                 class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                             <option value="" disabled>--- Select a Teacher ---</option>
