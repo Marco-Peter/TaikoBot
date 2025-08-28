@@ -116,7 +116,10 @@ function setNoShow(participant) {
                     :class="participant.pivot.participation == 'signed_out' ? 'text-gray-500' : ''">
                     <div class="font-bold text-lg"
                         :class="participant.pivot.participation == 'signed_out' ? 'line-through' : ''">
-                        <h3>{{ participant.first_name }} {{ participant.last_name }}</h3>
+                        <h3>
+                            {{ participant.first_name }}
+                            {{ participant.last_name }}
+                        </h3>
                         <p v-if="participant.pivot.participation === 'assistance'">Assistant</p>
                     </div>
                     <div>
@@ -148,7 +151,11 @@ function setNoShow(participant) {
                     <table v-if="lessonteachers.length" class="mt-3">
                         <tbody>
                             <tr v-for="lessonteacher in lessonteachers" :key="lessonteacher.id">
-                                <td class="pr-5">{{ lessonteacher.first_name }} {{ lessonteacher.last_name }}</td>
+                                <td class="pr-5">
+                                    {{ lessonteacher.first_name }}
+                                    {{ lessonteacher.last_name[0] }}.
+                                    {{ lessonteacher.first_name === "Mark" ? "😏" : "" }}
+                                </td>
                                 <td class="pr-5">
                                     <DangerButton :small="true" @click="removeTeacher(lessonteacher)">Remove</DangerButton>
                                 </td>
