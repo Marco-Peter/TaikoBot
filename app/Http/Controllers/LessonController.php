@@ -342,6 +342,15 @@ class LessonController extends Controller
         return back();
     }
 
+    public function setSignedIn(Request $request, Lesson $lesson): RedirectResponse
+    {
+        $participant = User::find($request->participant);
+        $lesson->participants()
+            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::SIGNED_IN->value]);
+
+        return back();
+    }
+
     public function setExcused(Request $request, Lesson $lesson): RedirectResponse
     {
         $participant = User::find($request->participant);

@@ -41,6 +41,11 @@ function removeTeacher(teacher) {
     }
 }
 
+function setSignedIn(participant) {
+    router.post(route('lessons.setSignedIn', props.lesson.id),
+        { 'participant': participant.id }, { preserveScroll: true });
+}
+
 function setExcused(participant) {
     router.post(route('lessons.setExcused', props.lesson.id),
         { 'participant': participant.id }, { preserveScroll: true });
@@ -122,22 +127,29 @@ function setNoShow(participant) {
                         </h3>
                         <p v-if="participant.pivot.participation === 'assistance'">Assistant</p>
                     </div>
-                    <div>
+                    <div class="mb-2 italic text-sm">
                         {{ participant.message }}
                     </div>
-                    <div v-if="participant.pivot.participation === 'signed_in'" class="mt-2">
-                        <SecondaryButton @click="setExcused(participant)">Excused</SecondaryButton>
-                        <SecondaryButton class="ml-3" @click="setLate(participant)">Late</SecondaryButton>
-                        <SecondaryButton class="ml-3" @click="setNoShow(participant)">No Show</SecondaryButton>
+                    <div v-if="participant.pivot.participation === 'signed_in'" class="flex flex-row gap-2">
+                        <SecondaryButton :small="true" @click="setExcused(participant)">Excused</SecondaryButton>
+                        <SecondaryButton :small="true" @click="setLate(participant)">Late</SecondaryButton>
+                        <SecondaryButton :small="true" @click="setNoShow(participant)">No Show</SecondaryButton>
                     </div>
                     <div v-else-if="participant.pivot.participation === 'waitlist'">
                         On Waitlist
+                        <SecondaryButton class="ml-1" :small="true" @click="setSignedIn(participant)">undo</SecondaryButton>
                     </div>
                     <div v-else-if="participant.pivot.participation === 'late'">
                         Was late
+                        <SecondaryButton class="ml-1" :small="true" @click="setSignedIn(participant)">undo</SecondaryButton>
                     </div>
                     <div v-else-if="participant.pivot.participation === 'no_show'">
                         Did not show up
+                        <SecondaryButton class="ml-1" :small="true" @click="setSignedIn(participant)">undo</SecondaryButton>
+                    </div>
+                    <div v-else-if="participant.pivot.participation === 'signed_out'">
+                        Signed out / excused
+                        <SecondaryButton class="ml-1" :small="true" @click="setSignedIn(participant)">undo</SecondaryButton>
                     </div>
                 </div>
             </div>
