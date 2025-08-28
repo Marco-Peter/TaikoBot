@@ -189,19 +189,16 @@ if (isPushNotificationSupported()) {
                         <p>Those are the courses and workshops you are signed up for. Looking forward to see you!</p>
                         <div v-for="course in coursesSignedUp" class="my-3 px-4 py-2 bg-white dark:bg-gray-800">
                             <h3 class="font-bold text-lg">{{ course.name }}</h3>
-                            <p class="pb-2">From
-                                {{ new Date(course.first_lesson.start).toLocaleString(undefined, {
-                                    weekday: "long",
-                                    month: "long",
-                                    day: "2-digit",
-                                    year: "numeric",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                }) }} to
-                                {{ new Date(course.last_lesson.finish).toLocaleString(undefined, {
-                                    weekday: "long",
-                                    month: "long", day: "2-digit"
-                                }) }}</p>
+                            <p class="pb-2">
+                                <span v-if="new Date(course.first_lesson.start).toDateString() === new Date(course.last_lesson.finish).toDateString()">
+                                    {{ new Date(course.first_lesson.start).toLocaleDateString() }}
+                                </span>
+                                <span v-else>
+                                    {{ new Date(course.first_lesson.start).toLocaleDateString() }}
+                                    &ndash;
+                                    {{ new Date(course.last_lesson.finish).toLocaleDateString() }}
+                                </span>
+                            </p>
                             <Link :href="route('courses.show', [course.id])">
                             <SecondaryButton>Details</SecondaryButton>
                             </Link>
