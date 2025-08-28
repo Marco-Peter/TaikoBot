@@ -135,9 +135,22 @@ function setNoShow(participant) {
         <!-- Teachers List -->
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg px-4">
-                    <h1 class="font-semibold text-xl mb-2 mt-3">Teachers</h1>
-                    <div className="flex flex-row gap-2">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg px-4 py-2">
+                    <h1 class="font-semibold text-xl mb-2">Who's Teaching?</h1>
+                    <table v-if="lessonteachers.length" class="mt-3">
+                        <tbody>
+                            <tr v-for="lessonteacher in lessonteachers" :key="lessonteacher.id">
+                                <td class="pr-5">{{ lessonteacher.first_name }} {{ lessonteacher.last_name }}</td>
+                                <td class="pr-5">
+                                    <DangerButton :small="true" @click="removeTeacher(lessonteacher)">Remove</DangerButton>
+                                </td>
+                                <td>{{ lessonteacher.message }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p v-else>No Teachers added</p>
+
+                    <div className="flex flex-row gap-2 mt-4">
                         <select v-model="newTeacher"
                                 class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                             <option value="" disabled>--- Select a Teacher ---</option>
@@ -152,27 +165,6 @@ function setNoShow(participant) {
                             Add Teacher
                         </PrimaryButton>
                     </div>
-                    <table v-if="lessonteachers.length" class="mt-3">
-                        <thead>
-                            <tr>
-                                <th class="pr-5">First Name</th>
-                                <th class="pr-5">Last Name</th>
-                                <th class="pr-5"></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="lessonteacher in lessonteachers" :key="lessonteacher.id">
-                                <td class="pr-5">{{ lessonteacher.first_name }}</td>
-                                <td class="pr-5">{{ lessonteacher.last_name }}</td>
-                                <td class="pr-5">
-                                    <DangerButton @click="removeTeacher(lessonteacher)">Remove</DangerButton>
-                                </td>
-                                <td>{{ lessonteacher.message }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p v-else>No Teachers added</p>
                 </div>
             </div>
         </div>
