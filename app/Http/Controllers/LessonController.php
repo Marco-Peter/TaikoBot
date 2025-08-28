@@ -9,7 +9,6 @@ use App\Models\Lesson;
 use App\Models\User;
 use App\Notifications\LessonConfirmed;
 use Carbon\Carbon;
-use DateTimeZone;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,7 +55,7 @@ class LessonController extends Controller
         ]);
 
         $course = Course::find($validated['id']);
-        $lesson = new Lesson();
+        $lesson = new Lesson;
         $lesson->title = $validated['title'];
         $lesson->start = Carbon::parse($validated['start'], config('app.timezone_default'))->setTimezone('UTC');
         $lesson->finish = Carbon::parse($validated['finish'], config('app.timezone_default'))->setTimezone('UTC');
@@ -67,7 +66,6 @@ class LessonController extends Controller
 
         return redirect(route('lessons.edit', $lesson));
     }
-
 
     /**
      * Show the specified resource.
@@ -166,6 +164,7 @@ class LessonController extends Controller
         foreach ($lesson->participants as $participant) {
             $participant->pivot->setReminder();
         }
+
         return redirect(route('courses.edit', $lesson->course));
     }
 
@@ -177,6 +176,7 @@ class LessonController extends Controller
         Gate::authorize('edit-courses');
 
         $lesson->delete();
+
         return back();
     }
 
@@ -184,6 +184,7 @@ class LessonController extends Controller
     {
         $user = Auth::user();
         $this->signOutParticipant($user, $lesson, $request->message);
+
         return back();
     }
 
@@ -193,7 +194,7 @@ class LessonController extends Controller
         if (
             $user->karma !== 0 &&
             $lesson->course->capacity - $lesson->students()
-            ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
+                ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
         ) {
             $participation = LessonParticipationEnum::SIGNED_IN;
         } else {
@@ -209,6 +210,7 @@ class LessonController extends Controller
             $user->karma--;
             $user->save();
         }
+
         return back();
     }
 
@@ -218,7 +220,7 @@ class LessonController extends Controller
 
         if (
             $user->karma !== 0 && $lesson->course->capacity - $lesson->students()
-            ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
+                ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
         ) {
             $participation = LessonParticipationEnum::SIGNED_IN;
         } else {
@@ -234,6 +236,7 @@ class LessonController extends Controller
             $user->karma--;
             $user->save();
         }
+
         return back();
     }
 
@@ -254,6 +257,7 @@ class LessonController extends Controller
                 'message' => $request->message,
             ]);
         }
+
         return back();
     }
 
@@ -262,9 +266,13 @@ class LessonController extends Controller
         Auth::user()->lessons()->updateExistingPivot($lesson->id, [
             'message' => $request->message,
         ]);
+
         return back();
     }
 
+    /**
+     * Add an additional teacher to a lesson.
+     */
     public function addTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
         $teacher = User::find($request->teacher);
@@ -277,9 +285,49 @@ class LessonController extends Controller
                 'participation' => LessonParticipationEnum::TEACHER->value,
             ]);
         }
+
         return back();
     }
 
+    /**
+     * Remove all other teachers from lesson and replace with $request->teacher.
+     */
+    public function setTeacher(Request $request, Lesson $lesson): RedirectResponse
+    {
+        // First, get all current teachers
+        $currentTeachers = $lesson->participants()
+            ->wherePivot('participation', LessonParticipationEnum::TEACHER->value)
+            ->get();
+
+        // Remove all current teachers
+        foreach ($currentTeachers as $currentTeacher) {
+            if ($currentTeacher->hasSignedUpToCourse($lesson->course)) {
+                $lesson->participants()->updateExistingPivot($currentTeacher, [
+                    'participation' => LessonParticipationEnum::SIGNED_OUT->value,
+                ]);
+            } else {
+                $lesson->participants()->detach($currentTeacher);
+            }
+        }
+
+        // Add the new teacher
+        $teacher = User::find($request->teacher);
+        if ($teacher->hasSignedInToLesson($lesson)) {
+            $lesson->participants()->updateExistingPivot($teacher, [
+                'participation' => LessonParticipationEnum::TEACHER->value,
+            ]);
+        } else {
+            $lesson->participants()->attach($teacher, [
+                'participation' => LessonParticipationEnum::TEACHER->value,
+            ]);
+        }
+
+        return back();
+    }
+
+    /**
+     * Remove a teacher from a lesson.
+     */
     public function removeTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
         $teacher = User::find($request->teacher);
@@ -298,6 +346,7 @@ class LessonController extends Controller
     {
         $participant = User::find($request->participant);
         $this->signOutParticipant($participant, $lesson, $request->message);
+
         return back();
     }
 
@@ -306,6 +355,7 @@ class LessonController extends Controller
         $participant = User::find($request->participant);
         $lesson->participants()
             ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::LATE->value]);
+
         return back();
     }
 
@@ -314,6 +364,7 @@ class LessonController extends Controller
         $participant = User::find($request->participant);
         $lesson->participants()
             ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::NO_SHOW->value]);
+
         return back();
     }
 

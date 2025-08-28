@@ -29,6 +29,11 @@ function addTeacher(teacher) {
         { 'teacher': teacher.id }, { preserveScroll: true });
 }
 
+function setTeacher(teacher) {
+    router.post(route('lessons.setTeacher', props.lesson.id),
+        { 'teacher': teacher.id }, { preserveScroll: true });
+}
+
 function removeTeacher(teacher) {
     if (confirm(`Are you sure you want to remove ${teacher.first_name} ${teacher.last_name} as teacher from this lesson?`)) {
         router.post(route('lessons.removeTeacher', props.lesson.id),
@@ -130,17 +135,23 @@ function setNoShow(participant) {
         <!-- Teachers List -->
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg px-4">
                     <h1 class="font-semibold text-xl mb-2 mt-3">Teachers</h1>
-                    <select v-model="newTeacher"
-                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                        <option value="" disabled>--- Select a Teacher ---</option>
-                        <option v-for="teacher in teachers" :key="teacher.id" :value="teacher">{{ teacher.first_name }}
+                    <div className="flex flex-row gap-2">
+                        <select v-model="newTeacher"
+                                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                            <option value="" disabled>--- Select a Teacher ---</option>
+                            <option v-for="teacher in teachers" :key="teacher.id" :value="teacher">{{ teacher.first_name }}
                             {{
-                        teacher.last_name }}</option>
-                    </select>
-                    <PrimaryButton :disabled="newTeacher === ''" @click="addTeacher(newTeacher)">Add Teacher
-                    </PrimaryButton>
+                            teacher.last_name }}</option>
+                        </select>
+                        <PrimaryButton :disabled="newTeacher === ''" @click="setTeacher(newTeacher)">
+                            Set Teacher
+                        </PrimaryButton>
+                        <PrimaryButton :disabled="newTeacher === ''" @click="addTeacher(newTeacher)">
+                            Add Teacher
+                        </PrimaryButton>
+                    </div>
                     <table v-if="lessonteachers.length" class="mt-3">
                         <thead>
                             <tr>
