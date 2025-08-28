@@ -379,10 +379,16 @@ class LessonController extends Controller
             $user->save();
         }
 
-        $user->lessons()->updateExistingPivot($lesson->id, [
+        $updateData = [
             'participation' => LessonParticipationEnum::SIGNED_OUT->value,
-            'message' => $message,
-        ]);
+        ];
+
+        // Only update message if a new one is provided
+        if ($message !== null) {
+            $updateData['message'] = $message;
+        }
+
+        $user->lessons()->updateExistingPivot($lesson->id, $updateData);
         $this->checkWaitlist($lesson);
     }
 
