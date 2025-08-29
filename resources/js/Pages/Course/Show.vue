@@ -1,5 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import PageContent from '@/Components/PageContent.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
@@ -26,7 +27,9 @@ function goBack() {
             </h2>
         </template>
 
-        <div class="pt-12">
+        <PageContent>
+
+        <div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white px-4 py-3 dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="w-full sm:max-w-2xl bg-white dark:bg-gray-800 overflow-hidden sm:rounded-lg"
@@ -37,7 +40,7 @@ function goBack() {
         </div>
 
         <!-- Show course material -->
-        <div v-if="course.material && course.material.length" class="pt-10">
+        <div v-if="course.material && course.material.length">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="px-4 py-3 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h1 class="font-semibold text-xl">Course Material</h1>
@@ -61,7 +64,7 @@ function goBack() {
         </div>
 
         <!-- Show lessons-->
-        <div class="py-10">
+        <div>
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="px-4 py-3 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <h2 class="font-semibold text-xl mb-2 mt-3">Lessons</h2>
@@ -98,7 +101,7 @@ function goBack() {
                                         small
                                     >
                                         <Link :href="page.props.auth.canEditCourses ? route('lessons.edit', [lesson.id]) : route('lessons.show', [lesson.id])">
-                                            Open
+                                        {{ page.props.auth.canEditCourses ? 'Edit' : 'Open' }}
                                         </Link>
                                     </PrimaryButton>
                                 </td>
@@ -115,5 +118,7 @@ function goBack() {
                 </div>
             </div>
         </div>
+
+        </PageContent>
     </AppLayout>
 </template>

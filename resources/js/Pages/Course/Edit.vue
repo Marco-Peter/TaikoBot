@@ -3,6 +3,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import TextInput from '@/Components/TextInput.vue';
+import Box from '@/Components/Box.vue';
+import PageContent from '@/Components/PageContent.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
@@ -97,275 +99,260 @@ function updatePaid(user, paid) {
             </h2>
         </template>
 
+        <PageContent>
+
         <!-- Basic Properties -->
-        <div class="py-12">
-            <div class="px-4 py-3 max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <form @submit.prevent="submit">
-                        <div class="flex flex-col items-stretch gap-2">
-                            <!-- Course Name -->
-                            <div>
-                                <InputLabel for="name" value="Name" />
-                                <TextInput id="name" v-model="form.name" type="text" autocomplete="off"
-                                    class="mt-1 block w-full" />
-                                <InputError :message="form.errors.name" class="mt-2" />
-                            </div>
+        <Box>
+            <form @submit.prevent="submit">
+                <div class="flex flex-col items-stretch gap-2">
+                    <!-- Course Name -->
+                    <div>
+                        <InputLabel for="name" value="Name" />
+                        <TextInput id="name" v-model="form.name" type="text" autocomplete="off"
+                            class="mt-1 block w-full" />
+                        <InputError :message="form.errors.name" class="mt-2" />
+                    </div>
 
-                            <!-- Course Description -->
-                            <div class="">
-                                <InputLabel for="description" value="Description (Markdown Tags possible)" />
-                                <textarea
-                                    title="This text will be formatted using GitHub style Markdown format.&#013;Check Google about what is possible!&#013;Double line breaks for paragraph&#013;#, ##, ### for hierarchic titles&#013;'-' for unorderet lists&#013;'1)', '2)', '3)' for ordered lists, ..."
-                                    id="description" v-model="form.description" cols="30" rows="10"
-                                    placeholder="Public course description - make it catchy"
-                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
-                                <InputError :message="form.errors.description" class="mt-2" />
-                            </div>
+                    <!-- Course Description -->
+                    <div class="">
+                        <InputLabel for="description" value="Description (Markdown Tags possible)" />
+                        <textarea
+                            title="This text will be formatted using GitHub style Markdown format.&#013;Check Google about what is possible!&#013;Double line breaks for paragraph&#013;#, ##, ### for hierarchic titles&#013;'-' for unorderet lists&#013;'1)', '2)', '3)' for ordered lists, ..."
+                            id="description" v-model="form.description" cols="30" rows="10"
+                            placeholder="Public course description - make it catchy"
+                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
+                        <InputError :message="form.errors.description" class="mt-2" />
+                    </div>
 
-                            <!-- Course Capacity (max number of participants) -->
-                            <div>
-                                <InputLabel for="capacity" value="Capacity" />
-                                <TextInput id="capacity" v-model="form.capacity" type="number"
-                                    class="mt-1 block w-full" />
-                                <InputError :message="form.errors.capacity" class="mt-2" />
-                            </div>
+                    <!-- Course Capacity (max number of participants) -->
+                    <div>
+                        <InputLabel for="capacity" value="Capacity" />
+                        <TextInput id="capacity" v-model="form.capacity" type="number"
+                            class="mt-1 block w-full" />
+                        <InputError :message="form.errors.capacity" class="mt-2" />
+                    </div>
 
-                            <!-- Sign Out time limit to gain TaikoKarma -->
-                            <div>
-                                <InputLabel for="signoutLimit" value="Sign Out time limit (hours)" />
-                                <TextInput id="signoutLimit" v-model="form.signout_limit" type="number" min="0"
-                                    title="Minimum hours to sign out before lessons to gain TaikoKarma"
-                                    class="mt-1 block w-full" />
-                                <InputError :message="form.errors.signout_limit" class="mt-2" />
-                            </div>
+                    <!-- Sign Out time limit to gain TaikoKarma -->
+                    <div>
+                        <InputLabel for="signoutLimit" value="Sign Out time limit (hours)" />
+                        <TextInput id="signoutLimit" v-model="form.signout_limit" type="number" min="0"
+                            title="Minimum hours to sign out before lessons to gain TaikoKarma"
+                            class="mt-1 block w-full" />
+                        <InputError :message="form.errors.signout_limit" class="mt-2" />
+                    </div>
 
-                            <!-- Groups to which the Course is Published -->
-                            <div>
-                                <h1 class="font-semibold text-xl mb-2 mt-3">Publish to Groups</h1>
-                                <div v-for="team in props.teams" :key="team.id">
-                                    <input type="checkbox" :id="team.name" v-model="form.teams" :value="String(team.id)"
-                                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
-                                    <label :for="team.name" class="ml-3">{{ team.name }}</label>
-                                </div>
-                            </div>
-
-                            <!-- Form Submission -->
-                            <div class="flex flex-col items-center gap-2">
-                                <Link :href="route('courses.index')">
-                                <!-- Return without Changing Data-->
-                                <SecondaryButton>Cancel</SecondaryButton>
-                                </Link>
-                                <PrimaryButton type="submit" class="mt-3">Save</PrimaryButton>
-                            </div>
+                    <!-- Groups to which the Course is Published -->
+                    <div>
+                        <h1 class="font-semibold text-xl mb-2 mt-3">Publish to Groups</h1>
+                        <div v-for="team in props.teams" :key="team.id">
+                            <input type="checkbox" :id="team.name" v-model="form.teams" :value="String(team.id)"
+                                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
+                            <label :for="team.name" class="ml-3">{{ team.name }}</label>
                         </div>
-                    </form>
+                    </div>
+
+                    <!-- Form Submission -->
+                    <div class="flex flex-row items-center gap-2 mt-2">
+                        <Link :href="route('courses.index')">
+                        <!-- Return without Changing Data-->
+                            <SecondaryButton>Cancel</SecondaryButton>
+                        </Link>
+                        <PrimaryButton type="submit">Save</PrimaryButton>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </form>
+        </Box>
 
         <!-- Course Material -->
-        <div class="pt-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <h1 class="font-semibold text-xl mb-2 mt-3">Material</h1>
-                    <form name="uploadForm" @submit.prevent="uploadMaterial">
+        <Box>
+            <h1 class="font-semibold text-xl mb-2 mt-3">Material</h1>
+            <form name="uploadForm" @submit.prevent="uploadMaterial">
 
-                        <!-- Material is accessed via external Link -->
-                        <input type="checkbox" id="external" v-model="uploadForm.external"
-                            @click="uploadForm.path = null"
-                            class="ml-1 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
-                        <label for="external" class="mx-3">external link</label>
+                <!-- Material is accessed via external Link -->
+                <input type="checkbox" id="external" v-model="uploadForm.external"
+                    @click="uploadForm.path = null"
+                    class="ml-1 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
+                <label for="external" class="mx-3">external link</label>
 
-                        <!-- Material Source -->
-                        <TextInput v-if="uploadForm.external" id="name" type="text" v-model="uploadForm.name"
-                            placeholder="displayed name" autocomplete="off" size="40"></TextInput>
-                        <TextInput v-if="uploadForm.external" id="extUrl" type="text" v-model="uploadForm.path"
-                            placeholder="external url" autocomplete="off" size="80"></TextInput>
-                        <span v-else>
-                            <input id="uploadFile" class="hidden" ref="uploadFileInput" type="file"
-                                @input="uploadForm.path = $event.target.files[0]">
-                            <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="uploadFileInput.click()">
-                                Select File
-                            </SecondaryButton>
-                            <span v-if="uploadForm.path">{{ uploadForm.path.name }}</span>
-                            <progress v-if="uploadForm.progress" :value="uploadForm.progress.percentage" max="100">
-                                {{ uploadForm.progress.percentage }}%
-                            </progress>
-                        </span>
-                        <InputError :message="uploadForm.errors.path" class="mt-2" />
+                <!-- Material Source -->
+                <TextInput v-if="uploadForm.external" id="name" type="text" v-model="uploadForm.name"
+                    placeholder="displayed name" autocomplete="off" size="40"></TextInput>
+                <TextInput v-if="uploadForm.external" id="extUrl" type="text" v-model="uploadForm.path"
+                    placeholder="external url" autocomplete="off" size="80"></TextInput>
+                <span v-else>
+                    <input id="uploadFile" class="hidden" ref="uploadFileInput" type="file"
+                        @input="uploadForm.path = $event.target.files[0]">
+                    <SecondaryButton class="mt-2 me-2" type="button" @click.prevent="uploadFileInput.click()">
+                        Select File
+                    </SecondaryButton>
+                    <span v-if="uploadForm.path">{{ uploadForm.path.name }}</span>
+                    <progress v-if="uploadForm.progress" :value="uploadForm.progress.percentage" max="100">
+                        {{ uploadForm.progress.percentage }}%
+                    </progress>
+                </span>
+                <InputError :message="uploadForm.errors.path" class="mt-2" />
 
-                        <!-- Notes (Description of the Material) -->
-                        <textarea id="notes" v-model="uploadForm.notes" cols="30" rows="10"
-                            placeholder="Material description"
-                            class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
-                        <InputError :message="uploadForm.errors.notes" class="mt-2" />
+                <!-- Notes (Description of the Material) -->
+                <textarea id="notes" v-model="uploadForm.notes" cols="30" rows="10"
+                    placeholder="Material description"
+                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"></textarea>
+                <InputError :message="uploadForm.errors.notes" class="mt-2" />
 
-                        <!-- Form Submission -->
-                        <PrimaryButton type="submit" class="mt-3">Upload</PrimaryButton>
-                    </form>
-                </div>
-            </div>
-        </div>
+                <!-- Form Submission -->
+                <PrimaryButton type="submit" class="mt-3">Upload</PrimaryButton>
+            </form>
+        </Box>
 
         <!-- Compensations List -->
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <h1 class="font-semibold text-xl mb-2 mt-3">Compensation Possibilities</h1>
-                    <select v-model="newCompensation"
-                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                        <option value="" disabled>--- Select a Compensation Class ---</option>
-                        <option v-for="compCourse in compCourses" :key="compCourse.id" :value="compCourse">{{ compCourse.name }}</option>
-                    </select>
-                    <PrimaryButton :disabled="newCompensation === ''" @click="addCompCourse(newCompensation)">Add Compensation
-                    </PrimaryButton>
-                    <table v-if="compCoursesSelected.length" class="mt-3">
-                        <thead>
-                            <tr>
-                                <th class="pr-5">Name</th>
-                                <th class="pr-5"></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="compCourseSelected in compCoursesSelected" :key="compCourseSelected.id">
-                                <td class="pr-5">{{ compCourseSelected.name }}</td>
-                                <td class="pr-5">
-                                    <DangerButton @click="removeCompCourse(compCourseSelected)">Remove</DangerButton>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p v-else>No Compensations added</p>
-                </div>
-            </div>
-        </div>
+        <Box>
+            <h1 class="font-semibold text-xl mb-2 mt-3">Compensation Possibilities</h1>
+            <select v-model="newCompensation"
+                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                <option value="" disabled>--- Select a Compensation Class ---</option>
+                <option v-for="compCourse in compCourses" :key="compCourse.id" :value="compCourse">{{ compCourse.name }}</option>
+            </select>
+            <PrimaryButton :disabled="newCompensation === ''" @click="addCompCourse(newCompensation)">Add Compensation
+            </PrimaryButton>
+            <table v-if="compCoursesSelected.length" class="mt-3">
+                <thead>
+                    <tr>
+                        <th class="pr-5">Name</th>
+                        <th class="pr-5"></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="compCourseSelected in compCoursesSelected" :key="compCourseSelected.id">
+                        <td class="pr-5">{{ compCourseSelected.name }}</td>
+                        <td class="pr-5">
+                            <DangerButton @click="removeCompCourse(compCourseSelected)">Remove</DangerButton>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p v-else>No Compensations added</p>
+        </Box>
 
         <!-- Course Material Listing -->
-        <div v-for="mat in course.material" class="py-5">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <!-- Link or File Name -->
-                    <h1 class="mt-3 text-xl">{{ mat.name }}</h1>
-                    <p v-if="mat.notes">{{ mat.notes }}</p>
+        <Box>
+            <div v-for="mat in course.material">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                        <!-- Link or File Name -->
+                        <h1 class="mt-3 text-xl">{{ mat.name }}</h1>
+                        <p v-if="mat.notes">{{ mat.notes }}</p>
 
-                    <!-- Open or Download Button -->
-                    <a v-if="mat.external" :href="mat.path" target="_blank">
-                        <SecondaryButton class="mt-3">Open</SecondaryButton>
-                    </a>
-                    <a v-else :href="route('courses.downloadMaterial', mat.id)" download>
-                        <SecondaryButton class="mt-3">Download</SecondaryButton>
-                    </a>
+                        <!-- Open or Download Button -->
+                        <a v-if="mat.external" :href="mat.path" target="_blank">
+                            <SecondaryButton class="mt-3">Open</SecondaryButton>
+                        </a>
+                        <a v-else :href="route('courses.downloadMaterial', mat.id)" download>
+                            <SecondaryButton class="mt-3">Download</SecondaryButton>
+                        </a>
 
-                    <!-- Delete Button -->
-                    <DangerButton class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
+                        <!-- Delete Button -->
+                        <DangerButton class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Box>
 
         <!-- Lesson Listing -->
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <Box>
+            <!-- Lesson Listing -->
+            <h1 class="font-semibold text-xl mb-2 mt-3">Lessons</h1>
+            <!-- Lesson Table -->
+            <table v-if="course.lessons.length">
+                <thead>
+                    <tr>
+                        <th class="pr-5">Date</th>
+                        <th class="pr-5">Teacher(s)</th>
+                        <th colspan="2"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="lesson in course.lessons">
+                        <td class="pr-5" :class="new Date(lesson.finish) < Date.now() ? 'line-through pr-5' : 'pr-5'">{{ lesson.start.slice(0, 10) }}</td>
+                        <td class="pr-5">
+                            <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{
+                                teacher.last_name[0] }}.
+                                {{ teacher.first_name === "Mark" ? "😏" : "" }}</p>
+                            <p v-if="lesson.teachers.length === 0" class="italic">&mdash;</p>
+                        </td>
+                        <td>
+                            <!-- Edit Button -->
+                            <Link :href="route('lessons.edit', lesson.id)">
+                            <SecondaryButton>Edit</SecondaryButton>
+                            </Link>
+                        </td>
+                        <td>
+                            <!-- Delete Button -->
+                            <DangerButton @click="destroyLesson(lesson.id)">Delete</DangerButton>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Alternate Text, when no Lessons are defined -->
+            <p v-else>No Lessons available</p>
 
-                <!-- Add Lesson Button -->
-                <Link :href="route('lessons.create', { course_id: props.course.id })">
+            <!-- Add Lesson Button -->
+            <Link :href="route('lessons.create', { course_id: props.course.id })">
                 <PrimaryButton>Add Lesson</PrimaryButton>
-                </Link>
-
-                <!-- Lesson Listing -->
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <h1 class="font-semibold text-xl mb-2 mt-3">Lessons</h1>
-                    <!-- Lesson Table -->
-                    <table v-if="course.lessons.length">
-                        <thead>
-                            <tr>
-                                <th class="pr-5">Date</th>
-                                <th class="pr-5">Teacher(s)</th>
-                                <th colspan="2"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="lesson in course.lessons">
-                                <td class="pr-5" :class="new Date(lesson.finish) < Date.now() ? 'line-through pr-5' : 'pr-5'">{{ lesson.start.slice(0, 10) }}</td>
-                                <td class="pr-5">
-                                    <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{
-                                        teacher.last_name[0] }}.
-                                        {{ teacher.first_name === "Mark" ? "😏" : "" }}</p>
-                                    <p v-if="lesson.teachers.length === 0" class="italic">&mdash;</p>
-                                </td>
-                                <td>
-                                    <!-- Edit Button -->
-                                    <Link :href="route('lessons.edit', lesson.id)">
-                                    <SecondaryButton>Edit</SecondaryButton>
-                                    </Link>
-                                </td>
-                                <td>
-                                    <!-- Delete Button -->
-                                    <DangerButton @click="destroyLesson(lesson.id)">Delete</DangerButton>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <!-- Alternate Text, when no Lessons are defined -->
-                    <p v-else>No Lessons available</p>
-                </div>
-            </div>
-        </div>
+            </Link>
+        </Box>
 
         <!-- Participants Listing -->
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <h1 class="font-semibold text-xl mb-2 mt-3">Participants</h1>
+        <Box>
+            <h1 class="font-semibold text-xl mb-2 mt-3">Participants</h1>
 
-                    <!-- Add Participant Selection -->
-                    <!-- Team Select Box -->
-                    <select id="TeamSelect" v-model="newParticipantTeam"
-                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                        <option value="" disabled>--- Select a Group ---</option>
-                        <option v-for="(team, index) in teams" :value="index">{{ team.name }}</option>
-                    </select>
+            <!-- Add Participant Selection -->
+            <!-- Team Select Box -->
+            <select id="TeamSelect" v-model="newParticipantTeam"
+                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                <option value="" disabled>--- Select a Group ---</option>
+                <option v-for="(team, index) in teams" :value="index">{{ team.name }}</option>
+            </select>
 
-                    <!-- Participant Select Box -->
-                    <select id="ParticipantSelect" v-model="newParticipant" :disabled="newParticipantTeam === ''"
-                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                        <option value="" disabled>--- Select a Participant ---</option>
-                        <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users"
-                            :value="user">
-                            {{ user.first_name }} {{ user.last_name }}</option>
-                    </select>
+            <!-- Participant Select Box -->
+            <select id="ParticipantSelect" v-model="newParticipant" :disabled="newParticipantTeam === ''"
+                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                <option value="" disabled>--- Select a Participant ---</option>
+                <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users"
+                    :value="user">
+                    {{ user.first_name }} {{ user.last_name }}</option>
+            </select>
 
-                    <!-- Add Participant Button -->
-                    <PrimaryButton @click="addUser(newParticipant)">Add Participant</PrimaryButton>
+            <!-- Add Participant Button -->
+            <PrimaryButton @click="addUser(newParticipant)">Add Participant</PrimaryButton>
 
-                    <table v-if="course.participants.length">
-                        <thead>
-                            <tr>
-                                <th class="pr-5">First Name</th>
-                                <th class="pr-5">Last Name</th>
-                                <th class="pr-5">Paid</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="participant in props.course.participants" :key="participant.id">
-                                <td class="pr-5">{{ participant.first_name }}</td>
-                                <td class="pr-5">{{ participant.last_name }}</td>
-                                <td class="pr-5">
-                                    <input :id="'paid_' + participant.id" type="checkbox"
-                                        v-model="participant.pivot.paid" true-value="1" false-value="0"
-                                        @change="updatePaid(participant.id, participant.pivot.paid)"
-                                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
-                                </td>
-                                <td>
-                                    <DangerButton @click="removeUser(participant)">Remove</DangerButton>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p v-else>No Participants signed up</p>
-                </div>
-            </div>
-        </div>
+            <table v-if="course.participants.length">
+                <thead>
+                    <tr>
+                        <th class="pr-5">First Name</th>
+                        <th class="pr-5">Last Name</th>
+                        <th class="pr-5">Paid</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="participant in props.course.participants" :key="participant.id">
+                        <td class="pr-5">{{ participant.first_name }}</td>
+                        <td class="pr-5">{{ participant.last_name }}</td>
+                        <td class="pr-5">
+                            <input :id="'paid_' + participant.id" type="checkbox"
+                                v-model="participant.pivot.paid" true-value="1" false-value="0"
+                                @change="updatePaid(participant.id, participant.pivot.paid)"
+                                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
+                        </td>
+                        <td>
+                            <DangerButton @click="removeUser(participant)">Remove</DangerButton>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p v-else>No Participants signed up</p>
+        </Box>
+
+        </PageContent>
     </AppLayout>
 </template>
