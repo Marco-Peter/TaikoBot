@@ -1,6 +1,8 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
+import Box from '@/Components/Box.vue';
+import PageContent from '@/Components/PageContent.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
@@ -28,53 +30,51 @@ function migrate() {
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <Link :href="route('users.create')">
-                <PrimaryButton class="mb-2">Add User</PrimaryButton>
-                </Link>
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <table v-if="users.length">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th class="pr-5">Nickname</th>
-                                <th class="pr-5">First Name</th>
-                                <th class="pr-5">Last Name</th>
-                                <th class="pr-5">Email</th>
-                                <th class="pr-5">Role</th>
-                                <th class="pr-5">Teams</th>
-                                <th class="pr-5">Karma</th>
-                                <th colspan="2" class="pr-5"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="user in users">
-                                <td class="pr-5"><img class="h-8 w-8 rounded-full object-cover"
-                                        :src="user.profile_photo_url"
-                                        :alt="user.nickname"></td>
-                                <td class="pr-5">{{ user.nickname }}</td>
-                                <td class="pr-5">{{ user.first_name }}</td>
-                                <td class="pr-5">{{ user.last_name }}</td>
-                                <td class="pr-5">{{ user.email }}</td>
-                                <td class="pr-5">{{ user.role }}</td>
-                                <td class="pr-5">{{ user.team ? user.team.name : 'NO GROUP' }}</td>
-                                <td class="pr-5">{{ user.karma === null ? '\u{221E}' : user.karma }}</td>
-                                <td>
-                                    <Link :href="route('users.edit', user.id)">
-                                    <SecondaryButton>Edit</SecondaryButton>
-                                    </Link>
-                                </td>
-                                <td>
-                                    <DangerButton @click="destroy(user.id)">Delete</DangerButton>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p v-else>No Users available</p>
-                </div>
-            </div>
-        </div>
+        <PageContent>
+
+        <Box>
+            <table v-if="users.length">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="px-2 text-left">Nickname</th>
+                        <th class="px-2 text-left">First Name</th>
+                        <th class="px-2 text-left">Last Name</th>
+                        <th class="px-2 text-left">Email</th>
+                        <th class="px-2 text-left">Role</th>
+                        <th class="px-2 text-left">Teams</th>
+                        <th class="px-2 text-left">Karma</th>
+                        <th class="px-2 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="user in users">
+                        <td class="px-2"><img class="h-8 w-8 rounded-full object-cover"
+                                :src="user.profile_photo_url"
+                                :alt="user.nickname"></td>
+                        <td class="px-2">{{ user.nickname }}</td>
+                        <td class="px-2">{{ user.first_name }}</td>
+                        <td class="px-2">{{ user.last_name }}</td>
+                        <td class="px-2">{{ user.email }}</td>
+                        <td class="px-2">{{ user.role }}</td>
+                        <td class="px-2">{{ user.team ? user.team.name : 'NO GROUP' }}</td>
+                        <td class="px-2">{{ user.karma === null ? '\u{221E}' : user.karma }}</td>
+                        <td>
+                            <div class="flex flex-row items-center gap-2">
+                            <Link :href="route('users.edit', user.id)">
+                                <SecondaryButton small>Edit</SecondaryButton>
+                            </Link>
+                            <DangerButton small @click="destroy(user.id)">Delete</DangerButton>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p v-else>No Users available</p>
+            <Link :href="route('users.create')">
+                <PrimaryButton class="mt-4">Add User</PrimaryButton>
+            </Link>
+        </Box>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -84,5 +84,7 @@ function migrate() {
                 </div>
             </div>
         </div>
+
+        </PageContent>
 </AppLayout>
 </template>
