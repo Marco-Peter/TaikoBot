@@ -10,8 +10,10 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { Link, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 
 const props = defineProps({ lesson: Object, participants: Object, lessonteachers: Object, teachers: Array });
+const page = usePage();
 
 const form = useForm({
     title: props.lesson.title,
@@ -76,7 +78,10 @@ function goBack() {
 
                 <div class="flex-1" />
 
-                <Link :href="route('lessons.show', [lesson.id])">
+                <Link :href="route('courses.edit', [lesson.course_id])" v-if="page.props.auth.canEditCourses">
+                    <SecondaryButton small>Edit Course</SecondaryButton>
+                </Link>
+                <Link :href="route('lessons.show', [lesson.id])" v-if="page.props.auth.canEditCourses">
                     <SecondaryButton small>Open</SecondaryButton>
                 </Link>
                 <Link @click="goBack">
