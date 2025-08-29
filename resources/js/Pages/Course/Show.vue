@@ -7,6 +7,8 @@ import DialogModal from '@/Components/DialogModal.vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
+import { formatDate, formatTime } from '@/utils.js';
+
 const props = defineProps({ course: Object, signedIn: Boolean, teachers: Array });
 const page = usePage();
 
@@ -126,14 +128,8 @@ function closeModal() {
                         <tbody>
                             <tr v-for="lesson in course.lessons" :class="new Date(lesson.finish) < Date.now() ? 'line-through' : ''">
                                 <td class="px-2 font-mono text-xs">
-                                    {{ new Date(lesson.start).toLocaleDateString() }}
-                                    {{ new Date(lesson.finish).toLocaleString(undefined, {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    }) }}-{{ new Date(lesson.finish).toLocaleString(undefined, {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    }) }}
+                                    {{ formatDate(lesson.start) }}
+                                    {{ formatTime(lesson.start) }}-{{ formatTime(lesson.finish) }}
                                 </td>
                                 <td class="px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700" @click="page.props.auth.canEditCourses ? chooseTeacher(lesson) : null">
                                     <span v-for="(teacher, index) in lesson.teachers" :key="teacher.id" class="">
