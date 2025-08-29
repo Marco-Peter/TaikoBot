@@ -96,6 +96,7 @@ class CourseController extends Controller
                 $query->orderBy('start', 'asc')
                     ->select('id', 'course_id', 'title', 'start', 'finish');
             },
+            'lessons.teachers:id,first_name,last_name',
         ])->loadCount('participants');
 
         $course->lessons->each(function (Lesson $lesson, int $key) {

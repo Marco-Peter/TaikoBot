@@ -2,9 +2,10 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 
 const props = defineProps({ course: Object, signedIn: Boolean });
+const page = usePage();
 
 function signUp(id) {
     if (confirm("By signing up you confirm having read and agree with the terms of service as well as the code of conduct.")) {
@@ -67,25 +68,40 @@ function goBack() {
                     <table v-if="course.lessons.length">
                         <thead>
                             <tr>
-                                <th class="pr-5 text-left">Date</th>
-                                <th class="pr-5 text-left">Title</th>
+                                <th class="px-2 text-left">Date</th>
+                                <th class="px-2 text-left">Teacher</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="lesson in course.lessons" :class="new Date(lesson.finish) < Date.now() ? 'line-through' : ''">
-                                <td class="pr-5">
+                                <td class="px-2 font-mono text-xs">
                                     {{ new Date(lesson.start).toLocaleDateString() }}
                                     {{ new Date(lesson.finish).toLocaleString(undefined, {
                                         hour: "2-digit",
                                         minute: "2-digit",
-                                    }) }}
-                                    -
-                                    {{ new Date(lesson.finish).toLocaleString(undefined, {
+                                    }) }}-{{ new Date(lesson.finish).toLocaleString(undefined, {
                                         hour: "2-digit",
                                         minute: "2-digit",
                                     }) }}
                                 </td>
-                                <td><Link :href="route('lessons.show', [lesson.id])">{{ lesson.title }}</Link></td>
+                                <td class="px-2">
+                                    <span v-for="teacher in lesson.teachers" :key="teacher.id" class="">
+                                        {{ teacher.first_name }}
+                                        {{ teacher.last_name[0] }}
+                                    </span>
+                                    <span v-if="lesson.teachers.length === 0">
+                                        &ndash;
+                                    </span>
+                                </td>
+                                <td class="px-2">
+                                    <PrimaryButton
+                                        small
+                                    >
+                                        <Link :href="page.props.auth.canEditCourses ? route('lessons.edit', [lesson.id]) : route('lessons.show', [lesson.id])">
+                                            Open
+                                        </Link>
+                                    </PrimaryButton>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
