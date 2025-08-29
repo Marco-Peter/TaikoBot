@@ -319,13 +319,13 @@ function goBack() {
                     <tr>
                         <th class="px-2 text-left">Date</th>
                         <th class="px-2 text-left">Teacher</th>
-                        <th colspan="2"></th>
+                        <th class="px-2 text-left w-full">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="lesson in course.lessons">
-                        <td class="px-2 text-sm" :class="new Date(lesson.finish) < Date.now() ? 'line-through pr-5' : 'pr-5'">{{ lesson.start.slice(0, 10) }}</td>
-                        <td class="px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700" @click="page.props.auth.canEditCourses ? chooseTeacher(lesson) : null">
+                        <td class="px-2 text-sm whitespace-nowrap" :class="new Date(lesson.finish) < Date.now() ? 'line-through pr-5' : 'pr-5'">{{ lesson.start.slice(0, 10) }}</td>
+                        <td class="px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 whitespace-nowrap" @click="page.props.auth.canEditCourses ? chooseTeacher(lesson) : null">
                             <span v-for="(teacher, index) in lesson.teachers" :key="teacher.id">
                                 {{ index === 0 ? '' : ', ' }}
                                 {{ teacher.first_name }}
@@ -335,15 +335,16 @@ function goBack() {
                                 &ndash;
                             </span>
                         </td>
-                        <td>
-                            <!-- Edit Button -->
-                            <Link :href="route('lessons.edit', lesson.id)">
-                            <SecondaryButton small>Edit</SecondaryButton>
-                            </Link>
-                        </td>
-                        <td>
-                            <!-- Delete Button -->
-                            <DangerButton small @click="destroyLesson(lesson.id)">Delete</DangerButton>
+                        <td class="px-2">
+                            <div class="flex flex-row items-center gap-2">
+                                <!-- Edit Button -->
+                                <Link :href="route('lessons.edit', lesson.id)">
+                                    <SecondaryButton small>Edit</SecondaryButton>
+                                </Link>
+
+                                <!-- Delete Button -->
+                                <DangerButton small @click="destroyLesson(lesson.id)">Delete</DangerButton>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -361,47 +362,52 @@ function goBack() {
         <Box>
             <h1 class="font-semibold text-xl mb-2 mt-3">Participants</h1>
 
-            <!-- Add Participant Selection -->
-            <!-- Team Select Box -->
-            <select id="TeamSelect" v-model="newParticipantTeam"
-                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                <option value="" disabled>--- Select a Group ---</option>
-                <option v-for="(team, index) in teams" :value="index">{{ team.name }}</option>
-            </select>
+            <div class="flex flex-col md:flex-row gap-2">
 
-            <!-- Participant Select Box -->
-            <select id="ParticipantSelect" v-model="newParticipant" :disabled="newParticipantTeam === ''"
-                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                <option value="" disabled>--- Select a Participant ---</option>
-                <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users"
-                    :value="user">
-                    {{ user.first_name }} {{ user.last_name }}</option>
-            </select>
+                <!-- Add Participant Selection -->
+                <!-- Team Select Box -->
+                <select id="TeamSelect" v-model="newParticipantTeam"
+                    class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                    <option value="" disabled>--- Select a Group ---</option>
+                    <option v-for="(team, index) in teams" :value="index">{{ team.name }}</option>
+                </select>
 
-            <!-- Add Participant Button -->
-            <PrimaryButton @click="addUser(newParticipant)">Add Participant</PrimaryButton>
+                <!-- Participant Select Box -->
+                <select id="ParticipantSelect" v-model="newParticipant" :disabled="newParticipantTeam === ''"
+                    class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                    <option value="" disabled>--- Select a Participant ---</option>
+                    <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users"
+                        :value="user">
+                        {{ user.first_name }} {{ user.last_name }}</option>
+                </select>
+
+                <!-- Add Participant Button -->
+                <PrimaryButton @click="addUser(newParticipant)">Add Participant</PrimaryButton>
+            </div>
 
             <table v-if="course.participants.length">
                 <thead>
                     <tr>
-                        <th class="pr-5">First Name</th>
-                        <th class="pr-5">Last Name</th>
-                        <th class="pr-5">Paid</th>
-                        <th></th>
+                        <th class="px-2 text-left">First Name</th>
+                        <th class="px-2 text-left">Last Name</th>
+                        <th class="px-2 text-left">Paid</th>
+                        <th class="px-2 text-left w-full">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="participant in props.course.participants" :key="participant.id">
-                        <td class="pr-5">{{ participant.first_name }}</td>
-                        <td class="pr-5">{{ participant.last_name }}</td>
-                        <td class="pr-5">
+                        <td class="px-2 whitespace-nowrap">{{ participant.first_name }}</td>
+                        <td class="px-2 whitespace-nowrap">{{ participant.last_name }}</td>
+                        <td class="px-2">
                             <input :id="'paid_' + participant.id" type="checkbox"
                                 v-model="participant.pivot.paid" true-value="1" false-value="0"
                                 @change="updatePaid(participant.id, participant.pivot.paid)"
                                 class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
                         </td>
-                        <td>
-                            <DangerButton @click="removeUser(participant)">Remove</DangerButton>
+                        <td class="px-2">
+                            <div class="flex flex-row items-center gap-2">
+                                <DangerButton small @click="removeUser(participant)">Remove</DangerButton>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
