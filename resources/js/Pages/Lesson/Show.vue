@@ -3,9 +3,10 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Box from '@/Components/Box.vue';
 import PageContent from '@/Components/PageContent.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
 const props = defineProps({ lesson: Object, participants: Array, lessonteachers: Array });
+const page = usePage();
 
 function goBack() {
     window.history.back();
@@ -18,11 +19,11 @@ function goBack() {
     <AppLayout title="Show Lesson">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex flex-row items-center gap-1">
-                Lesson
+                {{ lesson.title }}
 
                 <div class="flex-1" />
 
-                <Link :href="route('lessons.edit', [lesson.id])">
+                <Link :href="route('lessons.edit', [lesson.id])" v-if="page.props.auth.canEditCourses">
                     <SecondaryButton small>Edit</SecondaryButton>
                 </Link>
                 <Link @click="goBack">
@@ -34,7 +35,6 @@ function goBack() {
         <PageContent>
 
         <Box>
-            <h2 class="font-semibold text-xl">{{ lesson.title }}</h2>
             <h3 class="font-semibold text-l">{{ new Date(lesson.start).toLocaleString(undefined, {
                 weekday: "short",
                 month: "short",

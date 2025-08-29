@@ -22,8 +22,17 @@ function goBack() {
 <template>
     <AppLayout title="Show Course">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex flex-row items-center gap-1">
                 {{ course.name }}
+
+                <div class="flex-1" />
+
+                <Link :href="route('courses.edit', [course.id])" v-if="page.props.auth.canEditCourses">
+                    <SecondaryButton small>Edit</SecondaryButton>
+                </Link>
+                <Link @click="goBack">
+                    <SecondaryButton small>Back</SecondaryButton>
+                </Link>
             </h2>
         </template>
 

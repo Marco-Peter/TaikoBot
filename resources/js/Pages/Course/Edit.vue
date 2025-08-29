@@ -89,13 +89,26 @@ function updatePaid(user, paid) {
     router.post(route("courses.setPaid", props.course.id),
         { 'user': user, 'paid': paid }, { preserveScroll: true });
 }
+
+function goBack() {
+    window.history.back();
+}
 </script>
 
 <template>
     <AppLayout title="Edit Course">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight flex flex-row items-center gap-1">
                 Edit Course
+
+                <div class="flex-1" />
+
+                <Link :href="route('courses.show', [course.id])">
+                    <SecondaryButton small>Open</SecondaryButton>
+                </Link>
+                <Link @click="goBack">
+                    <SecondaryButton small>Back</SecondaryButton>
+                </Link>
             </h2>
         </template>
 
@@ -282,12 +295,12 @@ function updatePaid(user, paid) {
                         <td>
                             <!-- Edit Button -->
                             <Link :href="route('lessons.edit', lesson.id)">
-                            <SecondaryButton>Edit</SecondaryButton>
+                            <SecondaryButton small>Edit</SecondaryButton>
                             </Link>
                         </td>
                         <td>
                             <!-- Delete Button -->
-                            <DangerButton @click="destroyLesson(lesson.id)">Delete</DangerButton>
+                            <DangerButton small @click="destroyLesson(lesson.id)">Delete</DangerButton>
                         </td>
                     </tr>
                 </tbody>
