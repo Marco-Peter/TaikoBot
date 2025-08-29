@@ -210,7 +210,7 @@ function formatDate(start) {
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                             Courses
                         </h2>
-                        <p class="text-xs">These are the courses and workshops you are signed up for. Looking forward to see you!</p>
+                        <p class="text-xs">These are the courses and workshops you are signed up for. Looking forward to seeing you!</p>
                         <div v-for="course in coursesSignedUp" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
                             <h3 class="font-bold text-lg">{{ course.name }}</h3>
                             <p class="pb-2">
