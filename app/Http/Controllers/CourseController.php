@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\LessonParticipationEnum;
+use App\Enums\UserRoleEnum;
 use App\Models\Course;
 use App\Models\CourseMaterial;
 use App\Models\Lesson;
@@ -114,6 +115,13 @@ class CourseController extends Controller
         return Inertia::render('Course/Show', [
             'course' => $course,
             'signedIn' => $signedIn,
+            'teachers' => User::where('role', UserRoleEnum::TEACHER->value)
+                ->orWhere('role', UserRoleEnum::ADMIN->value)
+                ->orderBy('first_name', 'asc')->get([
+                    'id',
+                    'first_name',
+                    'last_name',
+                ]),
         ]);
     }
 

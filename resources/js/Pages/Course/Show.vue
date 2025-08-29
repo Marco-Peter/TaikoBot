@@ -3,10 +3,15 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import PageContent from '@/Components/PageContent.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import DialogModal from '@/Components/DialogModal.vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
-const props = defineProps({ course: Object, signedIn: Boolean });
+const props = defineProps({ course: Object, signedIn: Boolean, teachers: Array });
 const page = usePage();
+
+const showTeacherModal = ref(false);
+const selectedLesson = ref(null);
 
 function signUp(id) {
     if (confirm("By signing up you confirm having read and agree with the terms of service as well as the code of conduct.")) {
@@ -16,6 +21,40 @@ function signUp(id) {
 
 function goBack() {
     window.history.back();
+}
+
+function chooseTeacher(lesson) {
+    if (!page.props.auth.canEditCourses) {
+        return;
+    }
+
+    selectedLesson.value = lesson;
+    showTeacherModal.value = true;
+}
+
+function setTeacher(teacherId) {
+    router.post(route('lessons.setTeacher', selectedLesson.value.id), {
+        teacher: teacherId
+    }, {
+        onSuccess: () => {
+            showTeacherModal.value = false;
+        }
+    });
+}
+
+function addTeacher(teacherId) {
+    router.post(route('lessons.addTeacher', selectedLesson.value.id), {
+        teacher: teacherId
+    }, {
+        onSuccess: () => {
+            showTeacherModal.value = false;
+        }
+    });
+}
+
+function closeModal() {
+    showTeacherModal.value = false;
+    selectedLesson.value = null;
 }
 </script>
 
@@ -96,8 +135,9 @@ function goBack() {
                                         minute: "2-digit",
                                     }) }}
                                 </td>
-                                <td class="px-2">
-                                    <span v-for="teacher in lesson.teachers" :key="teacher.id" class="">
+                                <td class="px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700" @click="page.props.auth.canEditCourses ? chooseTeacher(lesson) : null">
+                                    <span v-for="(teacher, index) in lesson.teachers" :key="teacher.id" class="">
+                                        {{ index === 0 ? '' : ', ' }}
                                         {{ teacher.first_name }}
                                         {{ teacher.last_name[0] }}
                                     </span>
@@ -129,5 +169,37 @@ function goBack() {
         </div>
 
         </PageContent>
+
+        <!-- Teacher Selection Modal -->
+        <DialogModal :show="showTeacherModal" @close="closeModal">
+            <template #title>
+                Select Teacher for {{ selectedLesson?.title }}
+            </template>
+
+            <template #content>
+                <div class="space-y-3">
+                    <div v-for="teacher in teachers" :key="teacher.id"
+                         class="flex flex-row items-center justify-between px-2 py-1 rounded hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div>
+                            <span class="font-medium">{{ teacher.first_name }} {{ teacher.last_name[0] }}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <PrimaryButton small @click="setTeacher(teacher.id)">
+                                Set
+                            </PrimaryButton>
+                            <SecondaryButton small @click="addTeacher(teacher.id)">
+                                Add
+                            </SecondaryButton>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <template #footer>
+                <SecondaryButton @click="closeModal">
+                    Cancel
+                </SecondaryButton>
+            </template>
+        </DialogModal>
     </AppLayout>
 </template>
