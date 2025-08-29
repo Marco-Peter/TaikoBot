@@ -154,7 +154,7 @@ if (isPushNotificationSupported()) {
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                             Join up
                         </h2>
-                        <p class="text-xs">Looking for new challenges? Here you can sign up to new courses and workshops.</p>
+                        <p class="text-xs">Looking for new challenges? Here you can sign up to new courses and workshops. Be sure to sign up before the first class or else it will be too late.</p>
                         <div v-for="course in coursesNotSignedUp" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
                             <h3 class="font-bold text-lg">{{ course.name }} ({{ course.capacity -
                                 course.participants_count }} places available)</h3>
