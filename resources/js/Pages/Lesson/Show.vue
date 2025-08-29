@@ -5,6 +5,10 @@ import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({ lesson: Object, participants: Array, lessonteachers: Array });
 
+function goBack() {
+    window.history.back();
+}
+
 </script>
 
 <template>
@@ -60,7 +64,7 @@ const props = defineProps({ lesson: Object, participants: Array, lessonteachers:
                     </div>
                     <p v-else>No Participants</p>
 
-                    <Link :href="route('dashboard')">
+                    <Link @click="goBack">
                     <SecondaryButton class="mt-6">Back</SecondaryButton>
                     </Link>
                 </div>
