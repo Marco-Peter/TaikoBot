@@ -120,6 +120,7 @@ if (isPushNotificationSupported()) {
 }
 
 function formatDate(start) {
+    const yesterday = new Date(Date.now() - 24*60*60*1000).toISOString().slice(0, 10);
     const today = new Date().toISOString().slice(0, 10);
     const tomorrow = new Date(Date.now() + 24*60*60*1000).toISOString().slice(0, 10);
 
@@ -130,7 +131,10 @@ function formatDate(start) {
         minute: "2-digit",
     });
 
-    if (date === today) {
+    if (date === yesterday) {
+        const when = time >= "17:00" ? "Last night" : "Yesterday";
+        return `${when} at ${time}`
+    } else if (date === today) {
         const when = time >= "17:00" ? "Tonight" : "Today";
         return `${when} at ${time}`
     } else if (date === tomorrow) {
