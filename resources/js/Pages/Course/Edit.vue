@@ -286,11 +286,12 @@ function updatePaid(user, paid) {
                         </thead>
                         <tbody>
                             <tr v-for="lesson in course.lessons">
-                                <td class="pr-5">{{ lesson.start.slice(0, 10) }}</td>
+                                <td class="pr-5" :class="new Date(lesson.finish) < Date.now() ? 'line-through pr-5' : 'pr-5'">{{ lesson.start.slice(0, 10) }}</td>
                                 <td class="pr-5">
                                     <p v-for="teacher in lesson.teachers">{{ teacher.first_name }} {{
                                         teacher.last_name[0] }}.
                                         {{ teacher.first_name === "Mark" ? "😏" : "" }}</p>
+                                    <p v-if="lesson.teachers.length === 0" class="italic">&mdash;</p>
                                 </td>
                                 <td>
                                     <!-- Edit Button -->

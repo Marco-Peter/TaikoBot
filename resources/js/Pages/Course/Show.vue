@@ -11,6 +11,10 @@ function signUp(id) {
         router.post(route('courses.signup', id));
     }
 }
+
+function goBack() {
+    window.history.back();
+}
 </script>
 
 <template>
@@ -68,7 +72,7 @@ function signUp(id) {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="lesson in course.lessons">
+                            <tr v-for="lesson in course.lessons" :class="new Date(lesson.finish) < Date.now() ? 'line-through' : ''">
                                 <td class="pr-5">
                                     {{ new Date(lesson.start).toLocaleDateString() }}
                                     {{ new Date(lesson.finish).toLocaleString(undefined, {
@@ -81,7 +85,7 @@ function signUp(id) {
                                         minute: "2-digit",
                                     }) }}
                                 </td>
-                                <td>{{ lesson.title }}</td>
+                                <td><Link :href="route('lessons.show', [lesson.id])">{{ lesson.title }}</Link></td>
                             </tr>
                         </tbody>
                     </table>
@@ -90,9 +94,7 @@ function signUp(id) {
                         <PrimaryButton v-if="!signedIn && (course.participants_count < course.capacity)"
                             @click="signUp(course)" class="mt-3">Sign Up</PrimaryButton>
 
-                        <Link :href="route('dashboard')">
-                        <SecondaryButton class="mt-3">Back</SecondaryButton>
-                        </Link>
+                        <SecondaryButton @click="goBack" class="mt-3">Back</SecondaryButton>
                     </div>
                 </div>
             </div>
