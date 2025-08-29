@@ -118,6 +118,33 @@ if (isPushNotificationSupported()) {
         }
     });
 }
+
+function formatDate(start) {
+    const today = new Date().toISOString().slice(0, 10);
+    const tomorrow = new Date(Date.now() + 24*60*60*1000).toISOString().slice(0, 10);
+
+    const date = new Date(start).toISOString().slice(0, 10);
+
+    const time = new Date(start).toLocaleString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+
+    if (date === today) {
+        const when = time >= "17:00" ? "Tonight" : "Today";
+        return `${when} at ${time}`
+    } else if (date === tomorrow) {
+        return `Tomorrow at ${time}`;
+    }
+
+    return new Date(start).toLocaleString(undefined, {
+        weekday: "short",
+        month: "short",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+}
 </script>
 
 <template>
@@ -152,7 +179,7 @@ if (isPushNotificationSupported()) {
                 <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div class="overflow-hidden shadow-xl sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            Join up
+                            Sign up
                         </h2>
                         <p class="text-xs">Looking for new challenges? Here you can sign up to new courses and workshops. Be sure to sign up before the first class or else it will be too late.</p>
                         <div v-for="course in coursesNotSignedUp" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
@@ -181,7 +208,7 @@ if (isPushNotificationSupported()) {
                 <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div class="overflow-hidden sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            You're signed up for
+                            Courses
                         </h2>
                         <p class="text-xs">These are the courses and workshops you are signed up for. Looking forward to see you!</p>
                         <div v-for="course in coursesSignedUp" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
@@ -209,19 +236,12 @@ if (isPushNotificationSupported()) {
                 <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div class="overflow-hidden sm:rounded-lg">
                         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                            You're teaching
+                            Teaching
                         </h2>
                         <p class="text-xs">These are the lessons where you will be teaching. ありがとうございます!</p>
                         <div v-for="lesson in teacherLessons" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
                             <div class="pb-2">
-                                <h3 class="font-bold text-lg">{{ new
-                                    Date(lesson.start).toLocaleString(undefined, {
-                                        weekday: "short",
-                                        month: "short",
-                                        day: "2-digit",
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    }) }}</h3>
+                                <h3 class="font-bold text-lg">{{ formatDate(lesson.start) }}</h3>
                                 <p>{{ lesson.title }} of {{ lesson.course.name }}</p>
                                 <p>{{ lesson.participants_count }} students signed in.</p>
                             </div>
