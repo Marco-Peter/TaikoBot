@@ -25,27 +25,26 @@ function destroy(id, title) {
         </template>
 
         <PageContent>
-
             <Box>
                 <table v-if="courses.length">
                     <thead>
                         <tr>
-                            <th class="pr-5 text-left">Name</th>
-                            <th class="pr-5">Participants</th>
-                            <th class="pr-5" colspan="2"></th>
+                            <th class="px-2 text-left">Name</th>
+                            <th class="px-2 text-left">Participants</th>
+                            <th class="px-2 w-full"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="course in courses">
-                            <td class="pr-5">{{ course.name }}</td>
-                            <td class="pr-5">{{ course.participants_count }} / {{ course.capacity }}</td>
-                            <td class="pr-1 py-px">
+                            <td class="px-2 whitespace-nowrap">{{ course.name }}</td>
+                            <td class="px-2">{{ course.participants_count }} / {{ course.capacity }}</td>
+                            <td class="px-2">
+                                <div class="flex flex-row items-center gap-2">
                                 <Link :href="route('courses.edit', course.id)">
                                     <SecondaryButton small>Edit</SecondaryButton>
                                 </Link>
-                            </td>
-                            <td class="py-px">
                                 <DangerButton small @click="destroy(course.id, course.name)">Delete</DangerButton>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
