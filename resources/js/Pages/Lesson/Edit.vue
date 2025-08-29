@@ -177,19 +177,19 @@ function setNoShow(participant) {
                     </table>
                     <p v-else>No Teachers added</p>
 
-                    <div class="flex flex-row gap-2 mt-4">
+                    <div class="flex flex-row items-center gap-2 mt-4">
                         <select v-model="newTeacher"
-                                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                                class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800 p-1 text-sm">
                             <option value="" disabled>--- Select a Teacher ---</option>
                             <option v-for="teacher in teachers" :key="teacher.id" :value="teacher">{{ teacher.first_name }}
                             {{
                             teacher.last_name }}</option>
                         </select>
-                        <PrimaryButton :disabled="newTeacher === ''" @click="setTeacher(newTeacher)">
-                            Set Teacher
+                        <PrimaryButton small :disabled="newTeacher === ''" @click="setTeacher(newTeacher)">
+                            Set
                         </PrimaryButton>
-                        <PrimaryButton :disabled="newTeacher === ''" @click="addTeacher(newTeacher)">
-                            Add Teacher
+                        <PrimaryButton small :disabled="newTeacher === ''" @click="addTeacher(newTeacher)">
+                            Add
                         </PrimaryButton>
                     </div>
                 </div>
