@@ -169,7 +169,7 @@ if (isPushNotificationSupported()) {
                                 </span>
                             </p>
                             <Link :href="route('courses.show', [course.id])">
-                            <SecondaryButton>Details / Sign In</SecondaryButton>
+                            <SecondaryButton>Details / Sign Up</SecondaryButton>
                             </Link>
                         </div>
                     </div>
