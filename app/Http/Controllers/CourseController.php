@@ -159,6 +159,13 @@ class CourseController extends Controller
             'teams' => $teams,
             'compCourses' => $compCourses,
             'compCoursesSelected' => $compCoursesSelected,
+            'teachers' => User::where('role', UserRoleEnum::TEACHER->value)
+                ->orWhere('role', UserRoleEnum::ADMIN->value)
+                ->orderBy('first_name', 'asc')->get([
+                    'id',
+                    'first_name',
+                    'last_name',
+                ]),
         ]);
     }
 
