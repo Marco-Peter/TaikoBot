@@ -78,28 +78,44 @@ async function getUserSubscription() {
 function signOut(lesson) {
     let message = prompt("Optional message to teachers", "");
     if (message != null) {
-        router.post(route('lessons.signout', lesson.id), { 'message': message });
+        router.post(route('lessons.signout', lesson.id), { 'message': message }, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['studentLessons', 'teacherLessons'],
+        });
     }
 }
 
 function signIn(lesson) {
     let message = prompt("Optional message to teachers", "");
     if (message != null) {
-        router.post(route('lessons.signin', lesson.id), { 'message': message });
+        router.post(route('lessons.signin', lesson.id), { 'message': message }, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['studentLessons', 'teacherLessons'],
+        });
     }
 }
 
 function compensate(lesson) {
     let message = prompt("Optional message to teachers", "");
     if (message != null) {
-        router.post(route('lessons.compensate', lesson.id), { 'message': message });
+        router.post(route('lessons.compensate', lesson.id), { 'message': message }, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['studentLessons', 'teacherLessons'],
+        });
     }
 }
 
 function assist(lesson) {
     let message = prompt("Optional message to teachers", "");
     if (message != null) {
-        router.post(route('lessons.assist', lesson.id), { 'message': message });
+        router.post(route('lessons.assist', lesson.id), { 'message': message }, {
+            preserveScroll: true,
+            preserveState: true,
+            only: ['studentLessons', 'teacherLessons'],
+        });
     }
 }
 
@@ -107,7 +123,10 @@ function sendMessage(lesson) {
     let target = lesson.pivot.participation == 'teacher' ? "students" : "teachers";
     let message = prompt(`Message to ${target}`, "");
     if (message != null) {
-        router.post(route('lessons.sendMessage', lesson.id), { 'message': message });
+        router.post(route('lessons.sendMessage', lesson.id), { 'message': message }, {
+            preserveScroll: true,
+            preserveState: true,
+        });
     }
 }
 
