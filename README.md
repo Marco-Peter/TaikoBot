@@ -35,3 +35,15 @@ For develpment purposes it can be used in a PHP8.1 or newer environment, which c
 * Use `sail npm run dev` to watch files
 * Use `sail restart` to reboot the server after changes
 * Use `sail artisan route:clear && sail artisan route:cache` if you change the routes
+
+## Create Package for Deployment
+- Ensure that sail is up and running
+- stop the development Server for the JavaScript files
+- erase the `public/build` folder
+- Build the actual JavaScript Code `sail npm run build`
+- Clear the configuration and application cache `sail artisan config:clear && sail artisan cache:clear`
+- Compress the whole project folder into a zip file. ignore warnings about not found references in `node_modules/.bin` and `public/storage`
+- Upload the new package onto the server using ftp
+- Delete current `TaikoBot` Folder in `software_data`.
+- Unpack zip file to create new `TaikoBot` folder.
+- copy `software_data/.env` to `TaikoBot` folder.
