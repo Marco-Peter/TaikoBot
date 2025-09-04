@@ -253,6 +253,27 @@ function goBack() {
                 <!-- Form Submission -->
                 <PrimaryButton type="submit" class="mt-3">Upload</PrimaryButton>
             </form>
+
+            <div v-for="mat in course.material">
+                <div class="max-w-7xl">
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden">
+                        <h1 class="mt-3 text-xl">{{ mat.name }}</h1>
+                        <p v-if="mat.notes">{{ mat.notes }}</p>
+
+                        <div class="flex flex-row gap-1 items-center mt-1">
+                            <a v-if="mat.external" :href="mat.path" target="_blank" class="leading-none">
+                                <SecondaryButton small class="">Open</SecondaryButton>
+                            </a>
+
+                            <a v-else :href="route('courses.downloadMaterial', mat.id)" download class="leading-none">
+                                <SecondaryButton small class="">Download</SecondaryButton>
+                            </a>
+
+                            <DangerButton small class="" @click="deleteMaterial(mat)">Delete</DangerButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </Box>
 
         <!-- Compensations List -->
@@ -285,30 +306,6 @@ function goBack() {
             <p v-else>No Compensations added</p>
         </Box>
 
-        <!-- Course Material Listing -->
-        <Box>
-            <div v-for="mat in course.material">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                        <!-- Link or File Name -->
-                        <h1 class="mt-3 text-xl">{{ mat.name }}</h1>
-                        <p v-if="mat.notes">{{ mat.notes }}</p>
-
-                        <!-- Open or Download Button -->
-                        <a v-if="mat.external" :href="mat.path" target="_blank">
-                            <SecondaryButton class="mt-3">Open</SecondaryButton>
-                        </a>
-                        <a v-else :href="route('courses.downloadMaterial', mat.id)" download>
-                            <SecondaryButton class="mt-3">Download</SecondaryButton>
-                        </a>
-
-                        <!-- Delete Button -->
-                        <DangerButton class="mt-2" @click="deleteMaterial(mat)">Delete</DangerButton>
-                    </div>
-                </div>
-            </div>
-        </Box>
-
         <!-- Lesson Listing -->
         <Box>
             <!-- Lesson Listing -->
@@ -338,7 +335,7 @@ function goBack() {
                         <td class="px-2">
                             <div class="flex flex-row items-center gap-2">
                                 <!-- Edit Button -->
-                                <Link :href="route('lessons.edit', lesson.id)">
+                                <Link :href="route('lessons.edit', lesson.id)" class="leading-none">
                                     <SecondaryButton small>Edit</SecondaryButton>
                                 </Link>
 
