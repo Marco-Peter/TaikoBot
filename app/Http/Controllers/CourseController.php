@@ -48,7 +48,9 @@ class CourseController extends Controller
         Gate::authorize('edit-courses');
 
         return Inertia::render('Course/Index', [
-            'courses' => Course::withCount('participants')->get(),
+            'courses' => Course::withCount('participants')
+                ->with(['firstLesson:id,course_id,start', 'lastLesson:id,course_id,finish'])
+                ->get(),
         ]);
     }
 
