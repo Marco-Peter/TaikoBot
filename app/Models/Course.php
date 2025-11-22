@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\LessonParticipationEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class Course extends Model
 {
@@ -69,6 +72,32 @@ class Course extends Model
     public function participants_paid(): BelongsToMany
     {
         return $this->participants()->wherePivot('paid', 1)->withTimestamps();
+    }
+
+    public function teachers(): Collection
+    {
+        return DB::table('lesson_user')
+        ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
+        ->join('users', 'lesson_user.user_id', '=', 'users.id')
+        ->selectRaw('users.id, users.first_name, users.last_name, count(lesson_id) as lesson_count')
+        ->where('course_id', '=', $this->id)
+        ->where('participation', '=', LessonParticipationEnum::TEACHER)
+        ->groupBy('users.id')
+        ->orderBy('users.id')
+        ->get();
+    }
+
+    public function assistants(): Collection
+    {
+        return DB::table('lesson_user')
+        ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
+        ->join('users', 'lesson_user.user_id', '=', 'users.id')
+        ->selectRaw('users.id, users.first_name, users.last_name, count(lesson_id) as lesson_count')
+        ->where('course_id', '=', $this->id)
+        ->where('participation', '=', LessonParticipationEnum::ASSISTANCE)
+        ->groupBy('users.id')
+        ->orderBy('users.id')
+        ->get();
     }
 
     public function material(): HasMany

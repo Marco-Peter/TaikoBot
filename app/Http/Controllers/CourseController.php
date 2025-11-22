@@ -156,6 +156,9 @@ class CourseController extends Controller
 
         $compCoursesSelected = $course->compensations;
 
+        $lessonTeachers = $course->teachers();
+        $lessonAssistants = $course->assistants();
+
         return Inertia::render('Course/Edit', [
             'course' => $course,
             'teams' => $teams,
@@ -168,6 +171,8 @@ class CourseController extends Controller
                     'first_name',
                     'last_name',
                 ]),
+            'lessonTeachers' => $lessonTeachers,
+            'lessonAssistants' => $lessonAssistants,
         ]);
     }
 
