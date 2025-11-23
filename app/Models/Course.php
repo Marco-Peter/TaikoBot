@@ -20,6 +20,8 @@ class Course extends Model
         'description',
         'capacity',
         'signout_limit',
+        'teacher_payment',
+        'assist_payment',
     ];
 
     protected $attributes = [
@@ -27,6 +29,8 @@ class Course extends Model
         'description' => '',
         'capacity' => 0,
         'signout_limit' => 0,
+        'teacher_payment' => 0,
+        'assist_payment' => 0,
     ];
 
     /**

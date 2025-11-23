@@ -26,7 +26,7 @@ class UserController extends Controller
     {
         Gate::authorize('edit-users');
 
-        $users = User::with(['team'])->get();
+        $users = User::with(['team'])->orderBy('first_name')->get();
 
         return Inertia::render('User/Index', [
             'users' => $users,
@@ -159,7 +159,18 @@ class UserController extends Controller
 
     public function doMigrations(Request $request): RedirectResponse
     {
+        Gate::authorize('edit-users');
+
         Artisan::call('migrate');
         return to_route('dashboard')->with('message', 'Migration successful');
+    }
+
+    public function updatePayment(User $user): RedirectResponse
+    {
+        Gate::authorize('edit-users');
+
+        $user->last_payment = now();
+        $user->save();
+        return back()->with('message', 'Payment date updated successfully');
     }
 }

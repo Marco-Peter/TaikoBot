@@ -30,67 +30,82 @@ const submit = () => {
     form.put(route("users.update", props.user.id));
 }
 
+function updateTeacherPayment(usr) {
+    if (confirm(`Have you paid ${usr.open_payment} to ${usr.first_name} ${usr.last_name}?`)) {
+        router.post(route("users.updatePayment", usr.id));
+    }
+}
+
 </script>
 
 <template>
     <AppLayout title="Edit User">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Edit User
+                Edit User {{ user.first_name }} {{ user.last_name }}
             </h2>
         </template>
 
         <PageContent>
 
-        <Box>
-            <form @submit.prevent="submit">
-                <InputLabel for="first_name" value="First Name" class="mt-3" />
-                <TextInput id="first_name" v-model="form.first_name" type="text" class="mt-1 block w-full" />
-                <InputError :message="form.errors.first_name" class="mt-2" />
+            <Box>
+                <form @submit.prevent="submit">
+                    <InputLabel for="first_name" value="First Name" class="mt-3" />
+                    <TextInput id="first_name" v-model="form.first_name" type="text" class="mt-1 block w-full" />
+                    <InputError :message="form.errors.first_name" class="mt-2" />
 
-                <InputLabel for="last_name" value="Last Name" class="mt-3" />
-                <TextInput id="last_name" v-model="form.last_name" type="text" class="mt-1 block w-full" />
-                <InputError :message="form.errors.last_name" class="mt-2" />
+                    <InputLabel for="last_name" value="Last Name" class="mt-3" />
+                    <TextInput id="last_name" v-model="form.last_name" type="text" class="mt-1 block w-full" />
+                    <InputError :message="form.errors.last_name" class="mt-2" />
 
-                <InputLabel for="email" value="Email" class="mt-3" />
-                <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full" />
-                <InputError :message="form.errors.email" class="mt-2" />
+                    <InputLabel for="email" value="Email" class="mt-3" />
+                    <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full" />
+                    <InputError :message="form.errors.email" class="mt-2" />
 
-                <InputLabel for="role" value="Role" class="mt-3" />
-                <select v-model="form.role" id="role"
-                    class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                    <option disabled value="">Please select one</option>
-                    <option v-for="role in roles" :value="role">{{ role }}</option>
-                </select>
-                <InputError :message="form.errors.role" class="mt-2" />
-
-                <!-- Taiko Karma -->
-                <InputLabel for="karma" value="Karma" class="mt-3" />
-                <input type="checkbox" id="infiniteKarma" v-model="infiniteKarma"
-                    @click="form.karma = '0'"
-                    class="ml-1 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
-                <label for="infiniteKarma" class="mx-3">infinite karma</label>
-                <TextInput v-if="!infiniteKarma" id="karma" v-model="form.karma" type="number" class="mt-1 block w-full" />
-                <InputError :message="form.errors.karma" class="mt-2" />
-
-                <InputLabel for="team" value="Team" class="mt-3" />
-                <p>
-                    <select v-model="form.team_id" id="team"
+                    <InputLabel for="role" value="Role" class="mt-3" />
+                    <select v-model="form.role" id="role"
                         class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                        <option disabled value=null>Please select one</option>
-                        <option v-for="team in teams" :value="team.id">{{ team.name }}</option>
+                        <option disabled value="">Please select one</option>
+                        <option v-for="role in roles" :value="role">{{ role }}</option>
                     </select>
-                </p>
-                <InputError :message="form.errors.team_id" class="mt-2" />
+                    <InputError :message="form.errors.role" class="mt-2" />
 
-                <div class="flex flex-row gap-2 mt-4">
-                    <PrimaryButton type="submit" class="">Submit</PrimaryButton>
-                    <Link :href="route('users.index')">
+                    <!-- Taiko Karma -->
+                    <InputLabel for="karma" value="Karma" class="mt-3" />
+                    <input type="checkbox" id="infiniteKarma" v-model="infiniteKarma" @click="form.karma = '0'"
+                        class="ml-1 rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" />
+                    <label for="infiniteKarma" class="mx-3">infinite karma</label>
+                    <TextInput v-if="!infiniteKarma" id="karma" v-model="form.karma" type="number"
+                        class="mt-1 block w-full" />
+                    <InputError :message="form.errors.karma" class="mt-2" />
+
+                    <InputLabel for="team" value="Team" class="mt-3" />
+                    <p>
+                        <select v-model="form.team_id" id="team"
+                            class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                            <option disabled value=null>Please select one</option>
+                            <option v-for="team in teams" :value="team.id">{{ team.name }}</option>
+                        </select>
+                    </p>
+                    <InputError :message="form.errors.team_id" class="mt-2" />
+
+                    <div class="flex flex-row gap-2 mt-4">
+                        <PrimaryButton type="submit" class="">Submit</PrimaryButton>
+                        <Link :href="route('users.index')">
                         <SecondaryButton class="">Cancel</SecondaryButton>
-                    </Link>
+                        </Link>
+                    </div>
+                </form>
+            </Box>
+
+            <Box>
+                <h3 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Payment</h3>
+                <div class="flex flex-row gap-2 mt-4">
+                    Open teaching and assistance payment: {{ user.open_payment }}
+                    <PrimaryButton small :disabled="user.open_payment === 0" @click="updateTeacherPayment(user)">Paid
+                    </PrimaryButton>
                 </div>
-            </form>
-        </Box>
+            </Box>
 
         </PageContent>
     </AppLayout>

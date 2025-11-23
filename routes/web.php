@@ -62,6 +62,7 @@ Route::middleware([
     Route::post('users/do-migrations', [UserController::class, 'doMigrations'])->name('users.doMigrations');
     Route::post('users/{user}/updatePushSubscription', [UserController::class, 'updatePushSubscription'])->name('users.updatePushSubscription');
     Route::post('users/{user}/deletePushSubscription', [UserController::class, 'deletePushSubscription'])->name('users.deletePushSubscription');
+    Route::post('users/{user}/updatePayment', [UserController::class, 'updatePayment'])->name('users.updatePayment');
     Route::resource('users', UserController::class);
 
     Route::post('courses/{course}/signup', [CourseController::class, 'signUp'])->name('courses.signup');

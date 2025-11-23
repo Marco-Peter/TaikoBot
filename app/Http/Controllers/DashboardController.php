@@ -122,7 +122,7 @@ class DashboardController extends Controller
         $coursesNotSignedUp->setHidden(['description', 'created_at', 'updated_at', 'pivot']);
 
         return Inertia::render('Dashboard', [
-            'user' => $user->only('id', 'first_name', 'karma'),
+            'user' => $user->only('id', 'first_name', 'karma', 'open_payment'),
             'studentLessons' => $studentLessons,
             'teacherLessons' => $teacherLessons,
             'coursesSignedUp' => $coursesSignedUp,

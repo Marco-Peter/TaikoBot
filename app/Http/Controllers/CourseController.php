@@ -188,6 +188,8 @@ class CourseController extends Controller
             'description' => 'string',
             'capacity' => 'integer|min:1',
             'signout_limit' => 'integer|min:0',
+            'teacher_payment' => 'integer|min:0',
+            'assist_payment' => 'integer|min:0',
             'teams.*' => 'integer',
         ]);
 

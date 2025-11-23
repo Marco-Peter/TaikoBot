@@ -262,6 +262,7 @@ function formatDate(start) {
                             Teaching
                         </h2>
                         <p class="text-xs">These are the lessons where you will be teaching. ありがとうございます!</p>
+                        <p v-if="user.open_payment !== 0" class="text-xs">You can expect a payment of {{ user.open_payment }}</p>
                         <div v-for="lesson in teacherLessons" class="my-3 px-3 py-2 bg-white dark:bg-gray-800">
                             <div class="pb-2">
                                 <h3 class="font-bold text-lg">{{ formatDate(lesson.start) }}</h3>

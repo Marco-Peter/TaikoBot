@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\LessonParticipationEnum;
 use App\Enums\UserRoleEnum;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -41,6 +42,8 @@ class User extends Authenticatable
         'role',
         'karma',
         'team_id',
+        'last_payment',
+        'profile_photo_path',
     ];
 
     /**
@@ -63,6 +66,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'role' => UserRoleEnum::class,
+        'last_payment' => 'datetime',
         'settings' => AsArrayObject::class,
     ];
 
@@ -74,6 +78,7 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
         'nickname',
+        'open_payment',
     ];
 
     public function nickname(): Attribute
@@ -136,8 +141,8 @@ class User extends Authenticatable
     {
         $courses = Course::where('id', 'in', function (Builder $query) {
             $query->select('compensation_id')
-            ->from('compensations')
-            ->whereColumn('original_id', '=', 'courses.id');
+                ->from('compensations')
+                ->whereColumn('original_id', '=', 'courses.id');
         })->get();
         dd($courses);
         return $courses;
@@ -160,7 +165,31 @@ class User extends Authenticatable
 
     public function accepts_mail_notifications(): bool
     {
-        dd($this->settings);
         return false;
+    }
+
+    public function openPayment(): Attribute
+    {
+        return Attribute::get(function (): int {
+            $teaching_payment = DB::table('lesson_user')
+                ->join('users', 'lesson_user.user_id', '=', 'users.id')
+                ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
+                ->join('courses', 'lessons.course_id', '=', 'courses.id')
+                ->where('users.id', $this->id)
+                ->whereRaw('finish BETWEEN last_payment AND NOW()')
+                ->where('participation', '=', LessonParticipationEnum::TEACHER)
+                ->sum('teacher_payment');
+
+            $assist_payment = DB::table('lesson_user')
+                ->join('users', 'lesson_user.user_id', '=', 'users.id')
+                ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
+                ->join('courses', 'lessons.course_id', '=', 'courses.id')
+                ->where('users.id', $this->id)
+                ->whereRaw('finish BETWEEN last_payment AND NOW()')
+                ->where('participation', '=', LessonParticipationEnum::ASSISTANCE)
+                ->sum('assist_payment');
+
+            return $teaching_payment + $assist_payment;
+        });
     }
 }

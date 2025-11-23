@@ -21,6 +21,8 @@ const form = useForm({
     description: props.course.description,
     capacity: String(props.course.capacity),
     signout_limit: String(props.course.signout_limit),
+    teacher_payment: String(props.course.teacher_payment),
+    assist_payment: String(props.course.assist_payment),
     teams: props.course.teams.map(({ id }) => id),
 });
 
@@ -191,6 +193,24 @@ function goBack() {
                                 title="Minimum hours to sign out before lessons to gain TaikoKarma"
                                 class="mt-1 block w-full" />
                             <InputError :message="form.errors.signout_limit" class="mt-2" />
+                        </div>
+
+                        <!-- Teacher payment -->
+                        <div>
+                            <InputLabel for="teacherPayment" value="Teacher Payment" />
+                            <TextInput id="teacherPayment" v-model="form.teacher_payment" type="number" min="0"
+                                title="Financial compensation for teachers per lesson"
+                                class="mt-1 block w-full" />
+                            <InputError :message="form.errors.teacher_payment" class="mt-2" />
+                        </div>
+
+                        <!-- Assistants payment -->
+                        <div>
+                            <InputLabel for="assistantPayment" value="Assistant Payment" />
+                            <TextInput id="assistantPayment" v-model="form.assist_payment" type="number" min="0"
+                                title="Financial compensation for assistants per lesson"
+                                class="mt-1 block w-full" />
+                            <InputError :message="form.errors.assist_payment" class="mt-2" />
                         </div>
 
                         <!-- Groups to which the Course is Published -->
