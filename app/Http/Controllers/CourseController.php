@@ -145,34 +145,23 @@ class CourseController extends Controller
             'material:id,course_id,path,name,external,notes',
         ]);
 
-        $teams = Team::with([
-            'users:id,first_name,last_name,team_id',
-        ])->get(['id', 'name']);
-
-        $compCourses = Course::all([
-            'id',
-            'name'
-        ]);
-
-        $compCoursesSelected = $course->compensations;
-
-        $lessonTeachers = $course->teachers();
-        $lessonAssistants = $course->assistants();
+        $teachers = User::where('role', UserRoleEnum::TEACHER->value)
+            ->orWhere('role', UserRoleEnum::ADMIN->value)
+            ->orderBy('first_name', 'asc')->get([
+                'id',
+                'first_name',
+                'last_name',
+            ]);
 
         return Inertia::render('Course/Edit', [
             'course' => $course,
-            'teams' => $teams,
-            'compCourses' => $compCourses,
-            'compCoursesSelected' => $compCoursesSelected,
-            'teachers' => User::where('role', UserRoleEnum::TEACHER->value)
-                ->orWhere('role', UserRoleEnum::ADMIN->value)
-                ->orderBy('first_name', 'asc')->get([
-                    'id',
-                    'first_name',
-                    'last_name',
-                ]),
-            'lessonTeachers' => $lessonTeachers,
-            'lessonAssistants' => $lessonAssistants,
+            'teams' => Team::all(['id', 'name']),
+            'users' => User::orderBy('first_name')->get(['id', 'first_name', 'last_name']),
+            'compCourses' => Course::all(['id', 'name']),
+            'compCoursesSelected' => $course->compensations,
+            'teachers' => $teachers,
+            'lessonTeachers' => $course->teachers(),
+            'lessonAssistants' => $course->assistants(),
         ]);
     }
 

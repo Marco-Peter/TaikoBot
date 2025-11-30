@@ -12,7 +12,11 @@ import DialogModal from '@/Components/DialogModal.vue';
 import { Link, useForm, router, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
-const props = defineProps({ course: Object, teams: Object, compCourses: Array, compCoursesSelected: Array, teachers: Array, lessonTeachers: Array, lessonAssistants: Array });
+const props = defineProps({
+    course: Object, teams: Object, users: Array, compCourses: Array,
+    compCoursesSelected: Array, teachers: Array, lessonTeachers: Array,
+    lessonAssistants: Array
+});
 const page = usePage();
 router.reload();
 
@@ -199,8 +203,7 @@ function goBack() {
                         <div>
                             <InputLabel for="teacherPayment" value="Teacher Payment" />
                             <TextInput id="teacherPayment" v-model="form.teacher_payment" type="number" min="0"
-                                title="Financial compensation for teachers per lesson"
-                                class="mt-1 block w-full" />
+                                title="Financial compensation for teachers per lesson" class="mt-1 block w-full" />
                             <InputError :message="form.errors.teacher_payment" class="mt-2" />
                         </div>
 
@@ -208,8 +211,7 @@ function goBack() {
                         <div>
                             <InputLabel for="assistantPayment" value="Assistant Payment" />
                             <TextInput id="assistantPayment" v-model="form.assist_payment" type="number" min="0"
-                                title="Financial compensation for assistants per lesson"
-                                class="mt-1 block w-full" />
+                                title="Financial compensation for assistants per lesson" class="mt-1 block w-full" />
                             <InputError :message="form.errors.assist_payment" class="mt-2" />
                         </div>
 
@@ -388,19 +390,11 @@ function goBack() {
                 <div class="flex flex-col md:flex-row gap-2">
 
                     <!-- Add Participant Selection -->
-                    <!-- Team Select Box -->
-                    <select id="TeamSelect" v-model="newParticipantTeam"
-                        class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                        <option value="" disabled>--- Select a Group ---</option>
-                        <option v-for="(team, index) in teams" :value="index">{{ team.name }}</option>
-                    </select>
-
                     <!-- Participant Select Box -->
-                    <select id="ParticipantSelect" v-model="newParticipant" :disabled="newParticipantTeam === ''"
+                    <select id="ParticipantSelect" v-model="newParticipant"
                         class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
                         <option value="" disabled>--- Select a Participant ---</option>
-                        <option v-if="newParticipantTeam !== ''" v-for="user in teams[newParticipantTeam].users"
-                            :value="user">
+                        <option v-for="user in users" :value="user">
                             {{ user.first_name }} {{ user.last_name }}</option>
                     </select>
 
