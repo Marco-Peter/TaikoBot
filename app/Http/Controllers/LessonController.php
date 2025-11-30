@@ -13,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Database\Eloquent\Builder;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -114,11 +115,15 @@ class LessonController extends Controller
         Gate::authorize('edit-courses');
 
         $participants = $lesson->participants()
-            ->wherePivot('participation', '<>', LessonParticipationEnum::TEACHER->value)
+            ->wherePivot('participation', '<>', LessonParticipationEnum::TEACHER)
             ->get(['id', 'first_name', 'last_name', 'participation', 'message']);
-        $teachers = $lesson->participants()
-            ->wherePivot('participation', LessonParticipationEnum::TEACHER->value)
+        $lessonTeachers = $lesson->participants()
+            ->wherePivot('participation', LessonParticipationEnum::TEACHER)
             ->get(['id', 'first_name', 'last_name', 'message']);
+
+        $users = User::whereDoesntHave('lessons', function (Builder $query) use ($lesson) {
+            $query->where('id', '=', $lesson->id);
+        })->orderBy('first_name')->get(['id', 'first_name', 'last_name']);
 
         return Inertia::render('Lesson/Edit', [
             'lesson' => [
@@ -130,14 +135,15 @@ class LessonController extends Controller
                 'notes' => $lesson->notes,
             ],
             'participants' => $participants,
-            'lessonteachers' => $teachers,
-            'teachers' => User::where('role', UserRoleEnum::TEACHER->value)
-                ->orWhere('role', UserRoleEnum::ADMIN->value)
+            'lessonteachers' => $lessonTeachers,
+            'teachers' => User::where('role', UserRoleEnum::TEACHER)
+                ->orWhere('role', UserRoleEnum::ADMIN)
                 ->orderBy('first_name', 'asc')->get([
                     'id',
                     'first_name',
                     'last_name',
                 ]),
+            'users' => $users,
         ]);
     }
 
@@ -194,7 +200,7 @@ class LessonController extends Controller
         if (
             $user->karma !== 0 &&
             $lesson->course->capacity - $lesson->students()
-                ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
+            ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT)->count() > 0
         ) {
             $participation = LessonParticipationEnum::SIGNED_IN;
         } else {
@@ -220,7 +226,7 @@ class LessonController extends Controller
 
         if (
             $user->karma !== 0 && $lesson->course->capacity - $lesson->students()
-                ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT->value)->count() > 0
+            ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT)->count() > 0
         ) {
             $participation = LessonParticipationEnum::SIGNED_IN;
         } else {
@@ -275,14 +281,16 @@ class LessonController extends Controller
      */
     public function addTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
+        Gate::authorize('edit-courses');
+
         $teacher = User::find($request->teacher);
         if ($teacher->hasSignedInToLesson($lesson)) {
             $lesson->participants()->updateExistingPivot($teacher, [
-                'participation' => LessonParticipationEnum::TEACHER->value,
+                'participation' => LessonParticipationEnum::TEACHER,
             ]);
         } else {
             $lesson->participants()->attach($teacher, [
-                'participation' => LessonParticipationEnum::TEACHER->value,
+                'participation' => LessonParticipationEnum::TEACHER,
             ]);
         }
 
@@ -294,16 +302,18 @@ class LessonController extends Controller
      */
     public function setTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
+        Gate::authorize('edit-courses');
+
         // First, get all current teachers
         $currentTeachers = $lesson->participants()
-            ->wherePivot('participation', LessonParticipationEnum::TEACHER->value)
+            ->wherePivot('participation', LessonParticipationEnum::TEACHER)
             ->get();
 
         // Remove all current teachers
         foreach ($currentTeachers as $currentTeacher) {
             if ($currentTeacher->hasSignedUpToCourse($lesson->course)) {
                 $lesson->participants()->updateExistingPivot($currentTeacher, [
-                    'participation' => LessonParticipationEnum::SIGNED_OUT->value,
+                    'participation' => LessonParticipationEnum::SIGNED_OUT,
                 ]);
             } else {
                 $lesson->participants()->detach($currentTeacher);
@@ -314,11 +324,11 @@ class LessonController extends Controller
         $teacher = User::find($request->teacher);
         if ($teacher->hasSignedInToLesson($lesson)) {
             $lesson->participants()->updateExistingPivot($teacher, [
-                'participation' => LessonParticipationEnum::TEACHER->value,
+                'participation' => LessonParticipationEnum::TEACHER,
             ]);
         } else {
             $lesson->participants()->attach($teacher, [
-                'participation' => LessonParticipationEnum::TEACHER->value,
+                'participation' => LessonParticipationEnum::TEACHER,
             ]);
         }
 
@@ -330,10 +340,12 @@ class LessonController extends Controller
      */
     public function removeTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
+        Gate::authorize('edit-courses');
+
         $teacher = User::find($request->teacher);
         if ($teacher->hasSignedUpToCourse($lesson->course)) {
             $lesson->participants()->updateExistingPivot($teacher, [
-                'participation' => LessonParticipationEnum::SIGNED_OUT->value,
+                'participation' => LessonParticipationEnum::SIGNED_OUT,
             ]);
         } else {
             $lesson->participants()->detach($teacher);
@@ -342,17 +354,33 @@ class LessonController extends Controller
         return back();
     }
 
+    public function addParticipant(Request $request, Lesson $lesson): RedirectResponse
+    {
+        Gate::authorize('edit-courses');
+
+        $user = User::find($request->user);
+        $lesson->participants()->attach($user, [
+            'participation' => LessonParticipationEnum::SIGNED_IN,
+        ]);
+
+        return back();
+    }
+
     public function setSignedIn(Request $request, Lesson $lesson): RedirectResponse
     {
+        Gate::authorize('edit-courses');
+
         $participant = User::find($request->participant);
         $lesson->participants()
-            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::SIGNED_IN->value]);
+            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::SIGNED_IN]);
 
         return back();
     }
 
     public function setExcused(Request $request, Lesson $lesson): RedirectResponse
     {
+        Gate::authorize('edit-courses');
+
         $participant = User::find($request->participant);
         $this->signOutParticipant($participant, $lesson, $request->message);
 
@@ -361,18 +389,22 @@ class LessonController extends Controller
 
     public function setLate(Request $request, Lesson $lesson): RedirectResponse
     {
+        Gate::authorize('edit-courses');
+
         $participant = User::find($request->participant);
         $lesson->participants()
-            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::LATE->value]);
+            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::LATE]);
 
         return back();
     }
 
     public function setNoShow(Request $request, Lesson $lesson): RedirectResponse
     {
+        Gate::authorize('edit-courses');
+
         $participant = User::find($request->participant);
         $lesson->participants()
-            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::NO_SHOW->value]);
+            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::NO_SHOW]);
 
         return back();
     }
@@ -389,7 +421,7 @@ class LessonController extends Controller
         }
 
         $updateData = [
-            'participation' => LessonParticipationEnum::SIGNED_OUT->value,
+            'participation' => LessonParticipationEnum::SIGNED_OUT,
         ];
 
         // Only update message if a new one is provided

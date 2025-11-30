@@ -38,7 +38,6 @@ const uploadForm = useForm({
 });
 const uploadFileInput = ref("");
 
-const newParticipantTeam = ref("");
 const newParticipant = ref("");
 const newCompensation = ref("");
 
@@ -84,7 +83,7 @@ function destroyLesson(id) {
     }
 }
 
-function addUser(user) {
+function addParticipant(user) {
     router.post(route('courses.addParticipant', props.course.id),
         { 'user': user.id }, { preserveScroll: true });
 }
@@ -399,7 +398,7 @@ function goBack() {
                     </select>
 
                     <!-- Add Participant Button -->
-                    <PrimaryButton @click="addUser(newParticipant)">Add Participant</PrimaryButton>
+                    <PrimaryButton @click="addParticipant(newParticipant)">Add Participant</PrimaryButton>
                 </div>
 
                 <table v-if="course.participants.length">
