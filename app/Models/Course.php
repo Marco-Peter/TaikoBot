@@ -87,7 +87,7 @@ class Course extends Model
         ->where('course_id', '=', $this->id)
         ->where('participation', '=', LessonParticipationEnum::TEACHER)
         ->groupBy('users.id')
-        ->orderBy('users.id')
+        ->orderBy('users.first_name')
         ->get();
     }
 
@@ -100,7 +100,7 @@ class Course extends Model
         ->where('course_id', '=', $this->id)
         ->where('participation', '=', LessonParticipationEnum::ASSISTANCE)
         ->groupBy('users.id')
-        ->orderBy('users.id')
+        ->orderBy('users.first_name')
         ->get();
     }
 

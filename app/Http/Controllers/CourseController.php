@@ -99,7 +99,11 @@ class CourseController extends Controller
                 $query->orderBy('start', 'asc')
                     ->select('id', 'course_id', 'title', 'start', 'finish');
             },
-            'lessons.teachers:id,first_name,last_name',
+            'lessons.teachers' => function (Builder $query) {
+                $query->orderBy('first_name', 'asc')
+                    ->orderBy('last_name', 'asc')
+                    ->select('id', 'first_name', 'last_name');
+            },
         ])->loadCount('participants');
 
         $course->lessons->each(function (Lesson $lesson, int $key) {
@@ -119,11 +123,9 @@ class CourseController extends Controller
             'signedIn' => $signedIn,
             'teachers' => User::where('role', UserRoleEnum::TEACHER->value)
                 ->orWhere('role', UserRoleEnum::ADMIN->value)
-                ->orderBy('first_name', 'asc')->get([
-                    'id',
-                    'first_name',
-                    'last_name',
-                ]),
+                ->orderBy('first_name', 'asc')
+                ->orderBy('last_name', 'asc')
+                ->get(['id', 'first_name', 'last_name']),
         ]);
     }
 
@@ -140,23 +142,33 @@ class CourseController extends Controller
                 $query->orderBy('start', 'asc')
                     ->select('id', 'course_id', 'title', 'start', 'finish');
             },
-            'lessons.teachers:id,first_name,last_name',
-            'participants:id,first_name,last_name',
+            'lessons.teachers' => function (Builder $query) {
+                $query->orderBy('first_name', 'asc')
+                    ->orderBy('last_name', 'asc')
+                    ->select('id', 'first_name', 'last_name');
+            },
+            'participants' => function (Builder $query) {
+                $query->orderBy('first_name', 'asc')
+                    ->orderBy('last_name', 'asc')
+                    ->select('id', 'first_name', 'last_name');
+            },
             'material:id,course_id,path,name,external,notes',
         ]);
 
         $teachers = User::where('role', UserRoleEnum::TEACHER->value)
             ->orWhere('role', UserRoleEnum::ADMIN->value)
-            ->orderBy('first_name', 'asc')->get([
-                'id',
-                'first_name',
-                'last_name',
-            ]);
+            ->orderBy('first_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get(['id', 'first_name', 'last_name']);
+
+        $users = User::orderBy('first_name')
+            ->orderBy('last_name', 'asc')
+            ->get(['id', 'first_name', 'last_name']);
 
         return Inertia::render('Course/Edit', [
             'course' => $course,
             'teams' => Team::all(['id', 'name']),
-            'users' => User::orderBy('first_name')->get(['id', 'first_name', 'last_name']),
+            'users' => $users,
             'compCourses' => Course::all(['id', 'name']),
             'compCoursesSelected' => $course->compensations,
             'teachers' => $teachers,
