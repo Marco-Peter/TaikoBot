@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', UserRoleEnum::values())->default(UserRoleEnum::STUDENT->value);
-            $table->integer('karma')->default(0);
+            $table->integer('karma')->nullable()->default(0);
             $table->foreignIdFor(Team::class)->nullable()->constrained()->cascadeOnDelete();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->nullable();
