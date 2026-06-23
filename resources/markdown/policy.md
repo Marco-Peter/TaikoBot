@@ -1,29 +1,4 @@
 # Membership Expectations
-## COVID-19 Protective Measures
-
-The following COVID-19 protective measures are mandatory for all members:
-
-**Occupancy** of the elevators and the dojo may not exceed 2 and 30 persons, respectively, at a single time.
-
-**Inform** the designated dojo contact immediately if you had close contact with someone with COVID-19 or experienced symptoms and quarantine for 10 days.
-
-**Face masks** are mandatory and must be worn by all persons within the building, regardless of COVID certificate status, unless otherwise stated. FFP2/FFP3 masks (without vents) are recommended while properly fitted surgical masks are the minimum requirement.
-
-**Shouting & singing** will be done solely by the teacher to a limited extent to minimise aerosol emissions.
-
-**Physical distancing** (1.5 meters) should be observed as much as possible.
-
-**Contact tracing** is critical to mitigating outbreaks amongst our members. Therefore, careful attendance self-management via TaikoBot is required by all.
-
-**Good hygiene** should be exercised by washing or disinfecting before and after training.
-
-In addition to the above, the designated Fundamentals teacher or Open Renshu facilitator is responsible to ensure the following:
-
-**Adherence** to the above measure by all members.
-
-**Validation** of member attendance and COVID-19 certificates.
-
-**Ventilation** in both dojo rooms will be activated 30 minutes before training commences until 2 hours after the training has ended.
 
 ## General conduct
 All students are expected to exercise their utmost tolerance and consideration towards others before, during and after training.
@@ -60,24 +35,19 @@ The class forms a circle.
 
 Everyone bows and says:
 
-お願いします 
-
-Onegai shimasu 
-Please do me this favour.
+お願いします\
+Onegai shimasu (Please do me this favour).
 
 ### The end of training
-
 The class forms a circle.
 The teacher bows after saying:
 
-お疲れ様でした
-
+お疲れ様でした\
 Otsukaresama deshita (Thank you for your hard work).
 
 The students bow after replying:
 
-ありがとうございました 
-
+ありがとうございました\
 Arigatō gozaimashita (Thank you very much).
 
 ## Equipment and instruments
