@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\LessonParticipationEnum;
 use App\Enums\UserRoleEnum;
-use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\User;
-use App\Notifications\LessonConfirmed;
+use App\Services\LessonService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +18,10 @@ use Inertia\Response;
 
 class LessonController extends Controller
 {
+    public function __construct(private LessonService $lessonService)
+    {
+    }
+
     protected $only = [
         'create',
         'store',
@@ -188,82 +191,26 @@ class LessonController extends Controller
 
     public function signOut(Request $request, Lesson $lesson): RedirectResponse
     {
-        $user = Auth::user();
-        $this->signOutParticipant($user, $lesson, $request->message);
-
+        $this->lessonService->signOut(Auth::user(), $lesson, $request->message);
         return back();
     }
 
     public function signIn(Request $request, Lesson $lesson): RedirectResponse
     {
-        $user = Auth::user();
-        if (
-            $user->karma !== 0 &&
-            $lesson->course->capacity - $lesson->students()
-            ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT)->count() > 0
-        ) {
-            $participation = LessonParticipationEnum::SIGNED_IN;
-        } else {
-            $participation = LessonParticipationEnum::WAITLIST;
-        }
-
-        $user->lessons()->updateExistingPivot($lesson->id, [
-            'participation' => $participation,
-            'message' => $request->message,
-        ]);
-
-        if ($user->karma !== null) {
-            $user->karma--;
-            $user->save();
-        }
-
+        $this->lessonService->signIn(Auth::user(), $lesson, $request->message);
         return back();
     }
 
     public function compensate(Request $request, Lesson $lesson): RedirectResponse
     {
-        $user = Auth::user();
-
-        if (
-            $user->karma !== 0 && $lesson->course->capacity - $lesson->students()
-            ->wherePivot('participation', '<>', LessonParticipationEnum::SIGNED_OUT)->count() > 0
-        ) {
-            $participation = LessonParticipationEnum::SIGNED_IN;
-        } else {
-            $participation = LessonParticipationEnum::WAITLIST;
-        }
-
-        $user->lessons()->attach($lesson, [
-            'message' => $request->message,
-            'participation' => $participation,
-        ]);
-
-        if ($user->karma !== null) {
-            $user->karma--;
-            $user->save();
-        }
-
+        $this->lessonService->compensate(Auth::user(), $lesson, $request->message);
         return back();
     }
 
     public function assist(Request $request, Lesson $lesson): RedirectResponse
     {
         Gate::authorize('assist-lessons');
-
-        $assistant = Auth::user();
-
-        if ($assistant->hasSignedInToLesson($lesson)) {
-            $lesson->participants()->updateExistingPivot($assistant, [
-                'participation' => LessonParticipationEnum::ASSISTANCE,
-                'message' => $request->message,
-            ]);
-        } else {
-            $lesson->participants()->attach($assistant, [
-                'participation' => LessonParticipationEnum::ASSISTANCE,
-                'message' => $request->message,
-            ]);
-        }
-
+        $this->lessonService->assist(Auth::user(), $lesson, $request->message);
         return back();
     }
 
@@ -272,85 +219,27 @@ class LessonController extends Controller
         Auth::user()->lessons()->updateExistingPivot($lesson->id, [
             'message' => $request->message,
         ]);
-
         return back();
     }
 
-    /**
-     * Add an additional teacher to a lesson.
-     */
     public function addTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
         Gate::authorize('edit-courses');
-
-        $teacher = User::find($request->teacher);
-        if ($teacher->hasSignedInToLesson($lesson)) {
-            $lesson->participants()->updateExistingPivot($teacher, [
-                'participation' => LessonParticipationEnum::TEACHER,
-            ]);
-        } else {
-            $lesson->participants()->attach($teacher, [
-                'participation' => LessonParticipationEnum::TEACHER,
-            ]);
-        }
-
+        $this->lessonService->addTeacher(User::find($request->teacher), $lesson);
         return back();
     }
 
-    /**
-     * Remove all other teachers from lesson and replace with $request->teacher.
-     */
     public function setTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
         Gate::authorize('edit-courses');
-
-        // First, get all current teachers
-        $currentTeachers = $lesson->participants()
-            ->wherePivot('participation', LessonParticipationEnum::TEACHER)
-            ->get();
-
-        // Remove all current teachers
-        foreach ($currentTeachers as $currentTeacher) {
-            if ($currentTeacher->hasSignedUpToCourse($lesson->course)) {
-                $lesson->participants()->updateExistingPivot($currentTeacher, [
-                    'participation' => LessonParticipationEnum::SIGNED_OUT,
-                ]);
-            } else {
-                $lesson->participants()->detach($currentTeacher);
-            }
-        }
-
-        // Add the new teacher
-        $teacher = User::find($request->teacher);
-        if ($teacher->hasSignedInToLesson($lesson)) {
-            $lesson->participants()->updateExistingPivot($teacher, [
-                'participation' => LessonParticipationEnum::TEACHER,
-            ]);
-        } else {
-            $lesson->participants()->attach($teacher, [
-                'participation' => LessonParticipationEnum::TEACHER,
-            ]);
-        }
-
+        $this->lessonService->setTeacher(User::find($request->teacher), $lesson);
         return back();
     }
 
-    /**
-     * Remove a teacher from a lesson.
-     */
     public function removeTeacher(Request $request, Lesson $lesson): RedirectResponse
     {
         Gate::authorize('edit-courses');
-
-        $teacher = User::find($request->teacher);
-        if ($teacher->hasSignedUpToCourse($lesson->course)) {
-            $lesson->participants()->updateExistingPivot($teacher, [
-                'participation' => LessonParticipationEnum::SIGNED_OUT,
-            ]);
-        } else {
-            $lesson->participants()->detach($teacher);
-        }
-
+        $this->lessonService->removeTeacher(User::find($request->teacher), $lesson);
         return back();
     }
 
@@ -362,87 +251,34 @@ class LessonController extends Controller
         $lesson->participants()->attach($user, [
             'participation' => LessonParticipationEnum::SIGNED_IN,
         ]);
-
         return back();
     }
 
     public function setSignedIn(Request $request, Lesson $lesson): RedirectResponse
     {
         Gate::authorize('edit-courses');
-
-        $participant = User::find($request->participant);
-        $lesson->participants()
-            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::SIGNED_IN]);
-
+        $this->lessonService->setAttendance(User::find($request->participant), $lesson, LessonParticipationEnum::SIGNED_IN, null);
         return back();
     }
 
     public function setExcused(Request $request, Lesson $lesson): RedirectResponse
     {
         Gate::authorize('edit-courses');
-
-        $participant = User::find($request->participant);
-        $this->signOutParticipant($participant, $lesson, $request->message);
-
+        $this->lessonService->signOut(User::find($request->participant), $lesson, $request->message);
         return back();
     }
 
     public function setLate(Request $request, Lesson $lesson): RedirectResponse
     {
         Gate::authorize('edit-courses');
-
-        $participant = User::find($request->participant);
-        $lesson->participants()
-            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::LATE]);
-
+        $this->lessonService->setAttendance(User::find($request->participant), $lesson, LessonParticipationEnum::LATE, null);
         return back();
     }
 
     public function setNoShow(Request $request, Lesson $lesson): RedirectResponse
     {
         Gate::authorize('edit-courses');
-
-        $participant = User::find($request->participant);
-        $lesson->participants()
-            ->updateExistingPivot($participant, ['participation' => LessonParticipationEnum::NO_SHOW]);
-
+        $this->lessonService->setAttendance(User::find($request->participant), $lesson, LessonParticipationEnum::NO_SHOW, null);
         return back();
-    }
-
-    private function signOutParticipant(User $user, Lesson $lesson, $message)
-    {
-        if (
-            $user->karma !== null &&
-            ($user->lessons()->where('id', $lesson->id)->first()->pivot->participation === LessonParticipationEnum::WAITLIST ||
-                $lesson->start > Carbon::now()->addHours($lesson->course->signout_limit))
-        ) {
-            $user->karma++;
-            $user->save();
-        }
-
-        $updateData = [
-            'participation' => LessonParticipationEnum::SIGNED_OUT,
-        ];
-
-        // Only update message if a new one is provided
-        if ($message !== null) {
-            $updateData['message'] = $message;
-        }
-
-        $user->lessons()->updateExistingPivot($lesson->id, $updateData);
-        $this->checkWaitlist($lesson);
-    }
-
-    private function checkWaitlist(Lesson $lesson)
-    {
-        $nextInLine = $lesson->participants()
-            ->wherePivot('participation', LessonParticipationEnum::WAITLIST)
-            ->orderByPivot('created_at', 'asc')->first();
-        if ($nextInLine) {
-            $lesson->participants()->updateExistingPivot($nextInLine->id, [
-                'participation' => LessonParticipationEnum::SIGNED_IN,
-            ]);
-            $nextInLine->notify(new LessonConfirmed($lesson));
-        }
     }
 }

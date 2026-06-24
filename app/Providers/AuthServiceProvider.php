@@ -2,30 +2,34 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
-
 use App\Enums\UserRoleEnum;
-use App\Models\MessageChannel;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
     protected $policies = [
         //
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     */
     public function boot(): void
     {
+        Passport::enablePasswordGrant();
+
+        Passport::tokensCan([
+            'admin'          => 'Perform all administrative actions',
+            'edit-courses'   => 'Create and edit courses and lessons',
+            'assist-lessons' => 'Assist with lessons',
+            'lessons:sign'   => 'Sign in and out of lessons',
+            'read'           => 'Read-only access',
+        ]);
+
+        Passport::tokensExpireIn(now()->addHours(24));
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
+
         Gate::define('edit-users', function (User $user) {
             return $user->role === UserRoleEnum::ADMIN;
         });

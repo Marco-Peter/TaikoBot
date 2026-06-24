@@ -11,7 +11,7 @@
         "laravel-notification-channels/webpush": "^10.2",
         "laravel/framework": "^12.0",
         "laravel/jetstream": "^5.0",
-        "laravel/sanctum": "^4.0",
+        "laravel/passport": "^13.7",
         "laravel/tinker": "^2.8",
         "tightenco/ziggy": "^1.0"
     },
