@@ -3,6 +3,8 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -27,11 +29,17 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
+        $images = Storage::disk('local')->allFiles('profile-photos');
+        $randimage = $images[rand(0, count($images) - 1)];
+        $targetname = 'profile-photos/' . Str::random(50) . "." . pathinfo($randimage, PATHINFO_EXTENSION);
+        Storage::disk('public')->copy($randimage, $targetname);
+
         return User::create([
             'first_name' => $input['first_name'],
             'last_name' => $input['last_name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'profile_photo_path' => $targetname,
         ]);
     }
 }
