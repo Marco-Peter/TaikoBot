@@ -3,11 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-
+use Database\Factories\UserFactory;
 use App\Enums\LessonParticipationEnum;
 use App\Enums\UserRoleEnum;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Casts\AsArrayObject;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\Appends;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,71 +18,78 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
+use Laravel\Fortify\Contracts\PasskeyUser;
+use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Jetstream\HasProfilePhoto;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\Contracts\OAuthenticatable;
+use Laravel\Passport\HasApiTokens;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
-class User extends Authenticatable
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property Carbon|null $email_verified_at
+ * @property string $password
+ * @property string|null $two_factor_secret
+ * @property string|null $two_factor_recovery_codes
+ * @property Carbon|null $two_factor_confirmed_at
+ * @property string|null $remember_token
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ */
+#[Fillable([
+    'first_name',
+    'last_name',
+    'email',
+    'password',
+    'role',
+    'karma',
+    'team_id',
+    'last_payment',
+    'profile_photo_path',
+])]
+#[Hidden([
+    'password',
+    'two_factor_secret',
+    'two_factor_recovery_codes',
+    'remember_token'
+])]
+#[Appends([
+    'profile_photo_url',
+    'name',
+    'nickname',
+    'open_payment',
+])]
+class User extends Authenticatable implements PasskeyUser, OAuthenticatable
 {
-    use HasApiTokens;
-    use HasFactory;
-    use HasProfilePhoto;
-    use Notifiable;
-    use TwoFactorAuthenticatable;
-    use HasPushSubscriptions;
+    /** @use HasFactory<UserFactory> */
+    use HasApiTokens, HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable, HasPushSubscriptions;
 
     /**
-     * The attributes that are mass assignable.
+     * Get the attributes that should be cast.
      *
-     * @var array<int, string>
+     * @return array<string, string>
      */
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'password',
-        'role',
-        'karma',
-        'team_id',
-        'last_payment',
-        'profile_photo_path',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'two_factor_confirmed_at' => 'datetime',
+            'role' => UserRoleEnum::class,
+            'last_payment' => 'datetime',
+            'settings' => AsArrayObject::class,
+        ];
+    }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'role' => UserRoleEnum::class,
-        'last_payment' => 'datetime',
-        'settings' => AsArrayObject::class,
-    ];
-
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
-     */
-    protected $appends = [
-        'profile_photo_url',
-        'nickname',
-        'open_payment',
-    ];
+    public function name(): Attribute
+    {
+        return Attribute::get(function(): string {
+            return $this->first_name . " " . $this->last_name;
+        });
+    }
 
     public function nickname(): Attribute
     {
@@ -96,6 +106,13 @@ class User extends Authenticatable
             } else {
                 return ucfirst($this->first_name);
             }
+        });
+    }
+
+    public function profilePhotoUrl(): Attribute
+    {
+        return Attribute::get(function(): string {
+            return $this->profile_photo_path ? asset($this->profile_photo_path) : $this->defaultProfilePhotoUrl();
         });
     }
 
@@ -191,5 +208,11 @@ class User extends Authenticatable
 
             return $teaching_payment + $assist_payment;
         });
+    }
+
+    protected function defaultProfilePhotoUrl()
+    {
+        $name = $this->first_name . $this->last_name;
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=7F9CF5&background=EBF4FF';
     }
 }

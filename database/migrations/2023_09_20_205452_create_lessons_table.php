@@ -4,6 +4,9 @@ use App\Models\Course;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User;
+use App\Models\Lesson;
+use App\Enums\LessonParticipationEnum;
 
 return new class extends Migration
 {
@@ -26,6 +29,16 @@ return new class extends Migration
 
             $table->timestamps();
         });
+
+        Schema::create('lesson_user', function (Blueprint $table) {
+            $table->foreignIdFor(Lesson::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->primary(['lesson_id', 'user_id']);
+            $table->enum('participation', LessonParticipationEnum::values())->default(LessonParticipationEnum::SIGNED_IN);
+            $table->dateTime('remind_at')->nullable();
+            $table->text('message')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -33,6 +46,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('lesson_user');
         Schema::dropIfExists('lessons');
     }
 };

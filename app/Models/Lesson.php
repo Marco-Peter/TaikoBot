@@ -4,22 +4,22 @@ namespace App\Models;
 
 use App\Enums\LessonParticipationEnum;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+#[Fillable([
+    'start',
+    'finish',
+    'course_id',
+    'title',
+    'notes',
+])]
 class Lesson extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'start',
-        'finish',
-        'course_id',
-        'title',
-        'notes',
-    ];
 
     public function participants(): BelongsToMany
     {
@@ -45,8 +45,11 @@ class Lesson extends Model
         return $this->belongsTo(Course::class);
     }
 
-    protected $casts = [
-        'start' => 'datetime',
-        'finish' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'start' => 'datetime',
+            'finish' => 'datetime',
+        ];
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\LessonParticipationEnum;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -11,18 +12,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
+#[Fillable([
+    'name',
+    'description',
+    'capacity',
+    'signout_limit',
+    'teacher_payment',
+    'assist_payment',
+])]
 class Course extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'name',
-        'description',
-        'capacity',
-        'signout_limit',
-        'teacher_payment',
-        'assist_payment',
-    ];
 
     protected $attributes = [
         'name' => '',
@@ -81,27 +81,27 @@ class Course extends Model
     public function teachers(): Collection
     {
         return DB::table('lesson_user')
-        ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
-        ->join('users', 'lesson_user.user_id', '=', 'users.id')
-        ->selectRaw('users.id, users.first_name, users.last_name, count(lesson_id) as lesson_count')
-        ->where('course_id', '=', $this->id)
-        ->where('participation', '=', LessonParticipationEnum::TEACHER)
-        ->groupBy('users.id')
-        ->orderBy('users.first_name')
-        ->get();
+            ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
+            ->join('users', 'lesson_user.user_id', '=', 'users.id')
+            ->selectRaw('users.id, users.first_name, users.last_name, count(lesson_id) as lesson_count')
+            ->where('course_id', '=', $this->id)
+            ->where('participation', '=', LessonParticipationEnum::TEACHER)
+            ->groupBy('users.id')
+            ->orderBy('users.first_name')
+            ->get();
     }
 
     public function assistants(): Collection
     {
         return DB::table('lesson_user')
-        ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
-        ->join('users', 'lesson_user.user_id', '=', 'users.id')
-        ->selectRaw('users.id, users.first_name, users.last_name, count(lesson_id) as lesson_count')
-        ->where('course_id', '=', $this->id)
-        ->where('participation', '=', LessonParticipationEnum::ASSISTANCE)
-        ->groupBy('users.id')
-        ->orderBy('users.first_name')
-        ->get();
+            ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
+            ->join('users', 'lesson_user.user_id', '=', 'users.id')
+            ->selectRaw('users.id, users.first_name, users.last_name, count(lesson_id) as lesson_count')
+            ->where('course_id', '=', $this->id)
+            ->where('participation', '=', LessonParticipationEnum::ASSISTANCE)
+            ->groupBy('users.id')
+            ->orderBy('users.first_name')
+            ->get();
     }
 
     public function material(): HasMany

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Course;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_materials', function (Blueprint $table) {
+        Schema::create('passkeys', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Course::class)->constrained()->cascadeOnDelete();
-            $table->string('path');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('notes')->nullable();
-            $table->boolean('external')->default(false);
+            $table->string('credential_id')->unique();
+            $table->json('credential');
+            $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
+
+            $table->index('user_id');
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('course_materials');
+        Schema::dropIfExists('passkeys');
     }
 };

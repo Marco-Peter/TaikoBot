@@ -4,9 +4,15 @@ namespace App\Models;
 
 use App\Enums\LessonParticipationEnum;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+#[Fillable([
+    'remind_at',
+    'participation',
+    'message',
+])]
 class LessonUser extends Pivot
 {
     public function user(): BelongsTo
@@ -32,16 +38,13 @@ class LessonUser extends Pivot
         $this->save();
     }
 
-    protected $fillable = [
-        'remind_at',
-        'participation',
-        'message',
-    ];
-
-    protected $casts = [
-        'participation' => LessonParticipationEnum::class,
-        'remind_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'participation' => LessonParticipationEnum::class,
+            'remind_at' => 'datetime',
+        ];
+    }
 
     protected static function booted(): void
     {

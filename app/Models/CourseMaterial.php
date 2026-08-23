@@ -2,20 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[Fillable([
+    'path',
+    'name',
+    'notes',
+    'external',
+])]
 class CourseMaterial extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'path',
-        'name',
-        'notes',
-        'external',
-    ];
 
     public function course(): BelongsTo
     {
