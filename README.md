@@ -21,14 +21,22 @@ Taikobot builds on top of the Laravel framework (see below) and their Jetstream 
 
 For develpment purposes it can be used in a PHP8.1 or newer environment, which can be run natively on the computer or in a Docker container using Laravel Sail.
 
+### Setup of Laravel Herd Environment
+1. Clone into the herd projects directory
+2. Install dependencies (`composer install`)
+3. Migrate database (`sail artisan migrate --seed`).
+4. Generate application encryption key (`sail artisan key:generate`).
+5. Build the javascript files (`sail npm run build`).
+
 ### Setup of Sail-Environment (Docker)
 1. Clone repository into a directory under the WSL or Linux environment.
 2. Execute the sail_setup.sh script.
 3. Start sail (`.vendor/bin/sail up -d`, or `sail up -d`, when shell alias is set).
-4. Install JavaScript dependencies (`sail npm install`).
-5. Migrate database (`sail artisan migrate --seed`).
-6. Generate application encryption key (`sail artisan key:generate`).
-7. Build the javascript files (`sail npm run build`).
+4. Install dependencies (`composer install`)
+5. Install JavaScript dependencies (`sail npm install`).
+6. Migrate database (`sail artisan migrate --seed`).
+7. Generate application encryption key (`sail artisan key:generate`).
+8. Build the javascript files (`sail npm run build`).
 
 ### Getting started
 
