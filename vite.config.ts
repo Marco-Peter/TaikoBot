@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig } from 'vite';
+import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig({
     plugins: [
@@ -29,6 +30,9 @@ export default defineConfig({
         }),
         wayfinder({
             formVariants: true,
+        }),
+        vueDevTools({
+            appendTo: "app.ts",
         }),
     ],
     server: {
